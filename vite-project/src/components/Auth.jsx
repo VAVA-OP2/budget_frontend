@@ -1,7 +1,7 @@
 // src/components/Auth.js
 import React, { useState } from 'react';
-import { supabase } from '/supabaseClient';  // Oikea import polku
-import { useNavigate } from 'react-router-dom'; // Lisää useNavigate
+import { supabase } from '/supabaseClient';  
+import { useNavigate } from 'react-router-dom'; 
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -30,7 +30,7 @@ const Auth = () => {
 
       alert('Authentication successful!');
       
-      // Ohjaa käyttäjä Home-sivulle onnistuneen kirjautumisen jälkeen
+      // Kun kirjautuu niin Home-sivulle ohjautuu
       navigate('/home');
     } catch (error) {
       alert('Error: ' + error.message);

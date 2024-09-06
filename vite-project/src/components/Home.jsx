@@ -20,7 +20,7 @@ const Home = () => {
       if (data?.session?.user) {
         setUser(data.session.user);
         fetchTotals(data.session.user.id); // Hae käyttäjän tulojen ja menojen yhteissummat
-        fetchCategories(); // Hae kategoriat
+        fetchCategories(); // Haekee kategoriat eli siel nyt valmiiks food ja shopping
       } else {
         navigate('/');
       }
@@ -79,7 +79,7 @@ const Home = () => {
       const totalExpense = Object.values(groupedExpenses).reduce((acc, amount) => acc + amount, 0);
       setTotalExpense(totalExpense);
 
-      // Laske tulojen ja menojen erotus
+      // tulojen ja menojen erotus
       setBalance(totalIncome - totalExpense);
 
     } catch (error) {
