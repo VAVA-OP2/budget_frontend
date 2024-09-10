@@ -6,6 +6,7 @@ import App from './App';
 import Home from './components/Home';
 import Statistics from './components/Statistics';
 import Auth from './components/Auth';
+import AddTransaction from './components/AddTransaction';
 
 const AppWrapper = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -28,6 +29,11 @@ const AppWrapper = () => {
           path: 'statistics',
           element: isAuthenticated ? <Statistics /> : <Auth setIsAuthenticated={setIsAuthenticated} />,
         },
+        {
+          path: 'addTransaction',
+          element: isAuthenticated ? <AddTransaction /> : <Auth setIsAuthenticated={setIsAuthenticated} />
+
+        }
       ],
     },
   ]);

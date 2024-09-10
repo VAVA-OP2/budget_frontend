@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '/supabaseClient';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Home = () => {
   const [user, setUser] = useState(null);
@@ -235,6 +235,20 @@ const Home = () => {
         </ul>
 
       </div>
+
+      <Link to="/addTransaction">
+  <button style={{ 
+    padding: '5px 15px', 
+    backgroundColor: 'blue', 
+    color: 'white', 
+    border: 'none', 
+    borderRadius: '5px', 
+    fontSize: '24px',
+    cursor: 'pointer'
+  }}>
+    +
+  </button>
+</Link>
 
       <button onClick={handleLogout} style={{ marginTop: '20px' }}>
         Log Out
