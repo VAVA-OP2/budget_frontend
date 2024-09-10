@@ -28,7 +28,7 @@ const Home = () => {
 
     fetchUser();
   }, [navigate]);
-
+0
   const fetchCategories = async () => {
     try {
       const { data, error } = await supabase.from('category').select('categoryid, categoryname, categoryLimit');
