@@ -220,7 +220,7 @@ const Home = () => {
 
         </ul>
 
-        <h3>Your Expenses by Category and Remaining Budget</h3>
+        <h3>Remaining Budget Limit</h3>
         <ul>
           {categories.map((category) => {
             const totalSpent = expensesByCategory[category.categoryname]
@@ -228,7 +228,7 @@ const Home = () => {
 
             return (
               <li key={category.categoryid}>
-                {category.categoryname}: {totalSpent} € spent, and remaining  {remainingBudget} €
+                {category.categoryname}:  {remainingBudget} €
               </li>
             );
           })}
