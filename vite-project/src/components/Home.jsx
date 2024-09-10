@@ -220,7 +220,20 @@ const Home = () => {
         </ul>
       </div>
 
-      <Link to="/addTransaction">+</Link>
+      <Link to="/addTransaction">
+  <button style={{ 
+    padding: '5px 15px', 
+    backgroundColor: 'blue', 
+    color: 'white', 
+    border: 'none', 
+    borderRadius: '5px', 
+    fontSize: '24px',
+    cursor: 'pointer'
+  }}>
+    +
+  </button>
+</Link>
+
       <button onClick={handleLogout} style={{ marginTop: '20px' }}>
         Log Out
       </button>
