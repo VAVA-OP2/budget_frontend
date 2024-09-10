@@ -4,7 +4,7 @@ import { Link, Outlet } from 'react-router-dom';
 function App({ isAuthenticated }) {
   return (
     <div className='App'>
-      {} 
+      
       {isAuthenticated && (
         <>
           <h1>Vava Budget</h1>
@@ -18,7 +18,7 @@ function App({ isAuthenticated }) {
           </nav>
         </>
       )}
-      {}
+      
       <Outlet />
     </div>
   );
