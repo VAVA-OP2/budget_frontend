@@ -1,17 +1,26 @@
-// src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Auth from './components/Auth';
-import Home from './components/Home';
+import { Link, Outlet } from 'react-router-dom';
 
-function App() {
+function App({ isAuthenticated }) {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Auth />} />
-        <Route path="/home" element={<Home />} />
-      </Routes>
-    </Router>
+    <div className='App'>
+      {} 
+      {isAuthenticated && (
+        <>
+          <h1>Vava Budget</h1>
+          <nav>
+            <button>
+              <Link to="/home" style={{ color: 'black' }}>Home</Link>
+            </button>{" "}
+            <button>
+              <Link to="/statistics" style={{ color: 'black' }}>Statistics</Link>
+            </button>{" "}
+          </nav>
+        </>
+      )}
+      {}
+      <Outlet />
+    </div>
   );
 }
 

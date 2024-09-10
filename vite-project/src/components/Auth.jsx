@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import { supabase } from '/supabaseClient';  
 import { useNavigate } from 'react-router-dom'; 
 
-const Auth = () => {
+const Auth = ({setIsAuthenticated}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [authType, setAuthType] = useState('login');
-  const navigate = useNavigate(); // Navigointi hook
+  const navigate = useNavigate();
 
   const handleAuth = async () => {
     setLoading(true);
@@ -31,6 +31,7 @@ const Auth = () => {
       alert('Authentication successful!');
       
       // Kun kirjautuu niin Home-sivulle ohjautuu
+      setIsAuthenticated(true);
       navigate('/home');
     } catch (error) {
       alert('Error: ' + error.message);
