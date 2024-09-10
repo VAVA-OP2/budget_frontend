@@ -28,7 +28,7 @@ const Home = () => {
 
     fetchUser();
   }, [navigate]);
-0
+  0
   const fetchCategories = async () => {
     try {
       const { data, error } = await supabase.from('category').select('categoryid, categoryname, categoryLimit');
@@ -106,8 +106,8 @@ const Home = () => {
     try {
       const { data, error } = await supabase
         .from('income')
-        .insert([{ 
-          amount: parseFloat(incomeAmount), 
+        .insert([{
+          amount: parseFloat(incomeAmount),
           user_id: user.id,
         }]);
 
@@ -131,8 +131,8 @@ const Home = () => {
     try {
       const { data, error } = await supabase
         .from('expense')
-        .insert([{ 
-          amount: parseFloat(expenseAmount), 
+        .insert([{
+          amount: parseFloat(expenseAmount),
           user_id: user.id,
           categoryid: selectedCategoryId
         }]);
@@ -217,13 +217,31 @@ const Home = () => {
               {category.categoryname}: {category.categoryLimit} €
             </li>
           ))}
+
         </ul>
+
+        <h3>Your Expenses by Category and Remaining Budget</h3>
+        <ul>
+          {categories.map((category) => {
+            const totalSpent = expensesByCategory[category.categoryname]
+            const remainingBudget = category.categoryLimit - totalSpent; 
+
+            return (
+              <li key={category.categoryid}>
+                {category.categoryname}: {totalSpent} € spent, and remaining  {remainingBudget} €
+              </li>
+            );
+          })}
+        </ul>
+
       </div>
 
       <button onClick={handleLogout} style={{ marginTop: '20px' }}>
         Log Out
       </button>
+
     </div>
+
   );
 };
 
