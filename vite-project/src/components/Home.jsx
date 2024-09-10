@@ -4,14 +4,14 @@ import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const [user, setUser] = useState(null);
-  const [incomeAmount, setIncomeAmount] = useState(''); // Tulojen määrä
-  const [expenseAmount, setExpenseAmount] = useState(''); // Menojen määrä
-  const [totalIncome, setTotalIncome] = useState(0); // Tulojen summa
-  const [totalExpense, setTotalExpense] = useState(0); // Menojen summa
-  const [balance, setBalance] = useState(0); // Tulojen ja menojen erotus
-  const [expensesByCategory, setExpensesByCategory] = useState({}); // Menot kategorioittain
-  const [categories, setCategories] = useState([]); // Kategoriat dropdownille, tallennettu pari kategoriaa valmiiks supaan.
-  const [selectedCategoryId, setSelectedCategoryId] = useState(''); // Valittu kategoria menolle
+  const [incomeAmount, setIncomeAmount] = useState('');
+  const [expenseAmount, setExpenseAmount] = useState('');
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [totalExpense, setTotalExpense] = useState(0);
+  const [balance, setBalance] = useState(0);
+  const [expensesByCategory, setExpensesByCategory] = useState({});
+  const [categories, setCategories] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,8 +19,8 @@ const Home = () => {
       const { data, error } = await supabase.auth.getSession();
       if (data?.session?.user) {
         setUser(data.session.user);
-        fetchTotals(data.session.user.id); // Hae käyttäjän tulojen ja menojen yhteissummat
-        fetchCategories(); // Haekee kategoriat eli siel nyt valmiiks food ja shopping
+        fetchTotals(data.session.user.id);
+        fetchCategories();
       } else {
         navigate('/');
       }
@@ -31,9 +31,9 @@ const Home = () => {
 
   const fetchCategories = async () => {
     try {
-      const { data, error } = await supabase.from('category').select('*');
+      const { data, error } = await supabase.from('category').select('categoryid, categoryname, categoryLimit');
       if (error) throw error;
-      setCategories(data); // Tallenna kategoriat tilaan
+      setCategories(data);
     } catch (error) {
       console.error('Error fetching categories:', error.message);
     }
@@ -41,7 +41,7 @@ const Home = () => {
 
   const fetchTotals = async (userId) => {
     try {
-      // Hae käyttäjän tulot
+      // Fetch income data and calculate total income using forEach
       const { data: incomeData, error: incomeError } = await supabase
         .from('income')
         .select('amount')
@@ -49,39 +49,43 @@ const Home = () => {
 
       if (incomeError) throw incomeError;
 
-      const totalIncome = incomeData.reduce((acc, income) => acc + parseFloat(income.amount), 0);
+      let totalIncome = 0;
+      incomeData.forEach((income) => {
+        totalIncome += parseFloat(income.amount);
+      });
       setTotalIncome(totalIncome);
 
-      // Hae käyttäjän menot ja niihin liittyvät kategoriat
+      // Fetch expense data and group them by category using forEach
       const { data: expenseData, error: expenseError } = await supabase
         .from('expense')
         .select(`
           amount,
-          category:categoryid (categoryname)  -- Hae menot ja kategoriat yhdistämällä categoryid viittaukseen
+          category:categoryid (categoryname)
         `)
         .eq('user_id', userId);
 
       if (expenseError) throw expenseError;
 
-      // Ryhmittele menot kategorioittain ja laske yhteissummat
-      const groupedExpenses = expenseData.reduce((acc, expense) => {
+      const groupedExpenses = {};
+      expenseData.forEach((expense) => {
         const categoryName = expense.category ? expense.category.categoryname : 'No Category';
-        if (!acc[categoryName]) {
-          acc[categoryName] = 0;
+        if (!groupedExpenses[categoryName]) {
+          groupedExpenses[categoryName] = 0;
         }
-        acc[categoryName] += parseFloat(expense.amount);
-        return acc;
-      }, {});
+        groupedExpenses[categoryName] += parseFloat(expense.amount);
+      });
 
       setExpensesByCategory(groupedExpenses);
 
-      // Laske kokonaismenot
-      const totalExpense = Object.values(groupedExpenses).reduce((acc, amount) => acc + amount, 0);
+      // Calculate total expenses
+      let totalExpense = 0;
+      Object.values(groupedExpenses).forEach((amount) => {
+        totalExpense += amount;
+      });
       setTotalExpense(totalExpense);
 
-      // tulojen ja menojen erotus
+      // Calculate balance
       setBalance(totalIncome - totalExpense);
-
     } catch (error) {
       console.error('Error fetching totals:', error.message);
     }
@@ -93,7 +97,6 @@ const Home = () => {
     navigate('/');
   };
 
-  // Funktio tulojen tallentamiseen Supabaseen
   const addIncome = async () => {
     if (incomeAmount === '' || isNaN(incomeAmount)) {
       alert('Please enter a valid income amount');
@@ -105,21 +108,20 @@ const Home = () => {
         .from('income')
         .insert([{ 
           amount: parseFloat(incomeAmount), 
-          user_id: user.id, // Tallennetaan kirjautuneen käyttäjän ID
+          user_id: user.id,
         }]);
 
       if (error) throw error;
 
       alert('Income added successfully!');
-      setIncomeAmount(''); // Tyhjennä kenttä tallennuksen jälkeen
-      fetchTotals(user.id); // Päivitä yhteissummat lisäyksen jälkeen
+      setIncomeAmount('');
+      fetchTotals(user.id);
     } catch (error) {
       console.error('Error adding income:', error.message);
       alert('Error adding income');
     }
   };
 
-  // Funktio menojen tallentamiseen Supabaseen
   const addExpense = async () => {
     if (expenseAmount === '' || isNaN(expenseAmount) || selectedCategoryId === '') {
       alert('Please enter a valid expense amount and select a category');
@@ -131,16 +133,16 @@ const Home = () => {
         .from('expense')
         .insert([{ 
           amount: parseFloat(expenseAmount), 
-          user_id: user.id, // Tallennetaan kirjautuneen käyttäjän ID
-          categoryid: selectedCategoryId // Tallennetaan valittu kategoria
+          user_id: user.id,
+          categoryid: selectedCategoryId
         }]);
 
       if (error) throw error;
 
       alert('Expense added successfully!');
-      setExpenseAmount(''); // Tyhjennä kenttä tallennuksen jälkeen
-      setSelectedCategoryId(''); // Tyhjennä kategoriavalinta
-      fetchTotals(user.id); // Päivitä yhteissummat lisäyksen jälkeen
+      setExpenseAmount('');
+      setSelectedCategoryId('');
+      fetchTotals(user.id);
     } catch (error) {
       console.error('Error adding expense:', error.message);
       alert('Error adding expense');
@@ -176,7 +178,6 @@ const Home = () => {
           style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
         />
 
-        {/* Dropdown kategorioille */}
         <select
           value={selectedCategoryId}
           onChange={(e) => setSelectedCategoryId(e.target.value)}
@@ -185,7 +186,7 @@ const Home = () => {
           <option value="">Select Category</option>
           {categories.map((category) => (
             <option key={category.categoryid} value={category.categoryid}>
-              {category.categoryname}
+              {category.categoryname} (Limit: {category.categoryLimit} €)
             </option>
           ))}
         </select>
@@ -205,6 +206,15 @@ const Home = () => {
           {Object.entries(expensesByCategory).map(([categoryName, totalAmount], index) => (
             <li key={index}>
               {categoryName}: {totalAmount} €
+            </li>
+          ))}
+        </ul>
+
+        <h3>Category Limits</h3>
+        <ul>
+          {categories.map((category) => (
+            <li key={category.categoryid}>
+              {category.categoryname}: {category.categoryLimit} €
             </li>
           ))}
         </ul>
