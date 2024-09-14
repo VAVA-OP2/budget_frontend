@@ -28,11 +28,11 @@ const Auth = ({setIsAuthenticated}) => {
 
       if (result.error) throw result.error;
 
-      alert('Authentication successful!');
+      // alert('Authentication successful!');
       
       // Kun kirjautuu niin Home-sivulle ohjautuu
       setIsAuthenticated(true);
-      navigate('/home');
+      navigate('/home2');
     } catch (error) {
       alert('Error: ' + error.message);
     }
