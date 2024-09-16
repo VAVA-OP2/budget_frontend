@@ -44,6 +44,7 @@ export default function Home2() {
       await getUser();
       await getCategories();
       if (userInfo) { // Ensure userInfo is available before calculating totals
+        await expensesByCategory();
         await getTotals();
         calculateBalance();
       }
@@ -119,6 +120,7 @@ export default function Home2() {
 
     // lasketaan lisäämisen jälkeen menot yhteen 
     calculateTotalExpense();
+    await expensesByCategory();
 
   }
 
@@ -204,22 +206,45 @@ export default function Home2() {
     setExpenseByCategory(grouped);
 
   }
-  // näytetään kategoria limitit ja kutsutaan tän funktion nimee return osiossa
-  const renderCategoryLimits = () => {
+ 
+
+  const renderExpensesByCategory = () => {
     if (categories.length > 0) {
       return (
         <ul>
           {categories.map((category) => (
             <li key={category.categoryid}>
-              {category.categoryname}: Limit {category.categoryLimit} €
+              {category.categoryname}: {expenseByCateory[category.categoryid] || 0} € {/* jos undefined niin arvo 0 */}
             </li>
           ))}
+        </ul>
+      );
+    } else {
+      return <p>No expenses by category</p>;
+    }
+  };
+
+  const renderRemainingMoneyByCategory = () => {
+    if (categories.length > 0) {
+      return (
+        <ul>
+          {categories.map((category) => {
+            const spent = expenseByCateory[category.categoryid] || 0; // käytetyt rahat, jos undefined niin arvo 0
+            const remaining = category.categoryLimit - spent; // jäljellä oleva raha
+            return (
+              <li key={category.categoryid}>
+                {category.categoryname}: Remaining {remaining} €
+              </li>
+            );
+          })}
         </ul>
       );
     } else {
       return <p>No categories available</p>;
     }
   };
+  
+  
 
 
 
@@ -301,13 +326,13 @@ export default function Home2() {
         <h3>Balance: {balance} </h3>
 
         <h3>Your Expenses by Category</h3>
+        {renderExpensesByCategory()}
 
 
 
-        <p>Mappaa tähän kategorioittan menot</p>
 
-        <h3>Category Limits</h3>
-        {renderCategoryLimits()}
+        <h3>Your remaining money for each category: </h3>
+        {renderRemainingMoneyByCategory()} 
 
         
       </div>
