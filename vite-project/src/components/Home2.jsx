@@ -29,13 +29,25 @@ export default function Home2() {
     const navigate = useNavigate();
 
     // en ymmärrä useEffectiä joten tämä on todnäk väärin t. alina
-    useEffect(() => {
+   /*  useEffect(() => {
         getUser();
         getCategories();
         getTotals();
     }, []);
+ */
 
+    useEffect(() => {
+      const fetchData = async () => {
+          await getUser();
+          await getCategories();
+          if (userInfo) { // Ensure userInfo is available before calculating totals
+              await getTotals();
+          }
+      };
+      fetchData();
+  }, [userInfo]); // Include userInfo in the dependency array to recalculate when it changes
 
+  
     const getTotals = () => {
       calculateTotalExpense();
       calculateTotalIncome();
@@ -260,6 +272,9 @@ export default function Home2() {
             <h3>Total Expense: {totalExpense} €</h3>
     
             <h3>Your Expenses by Category</h3>
+
+            
+            
               <p>Mappaa tähän kategorioittan menot</p>
 
             <h3>Category Limits</h3>
