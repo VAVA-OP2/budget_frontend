@@ -43,14 +43,15 @@ export default function Home2() {
     const fetchData = async () => {
       await getUser();
       await getCategories();
-      if (userInfo) { // Ensure userInfo is available before calculating totals
+      if (userInfo) { // Jos userInfo on onnistuneesti haettu (käyttäjä on kirjautunut sisään), jatka tietojen käsittelyyn
+
         await expensesByCategory();
         await getTotals();
         calculateBalance();
       }
     };
     fetchData();
-  }, [userInfo]); // Include userInfo in the dependency array to recalculate when it changes
+  }, [userInfo]); // use effect suoritetaan aina uudestaan kun userinfo muuttuja muuttuu
 
 
   const getTotals = () => {
@@ -327,9 +328,6 @@ export default function Home2() {
 
         <h3>Your Expenses by Category</h3>
         {renderExpensesByCategory()}
-
-
-
 
         <h3>Your remaining money for each category: </h3>
         {renderRemainingMoneyByCategory()} 
