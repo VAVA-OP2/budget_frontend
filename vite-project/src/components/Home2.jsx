@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from '/supabaseClient';
 import { Link, useNavigate } from "react-router-dom";
+import { resetIncome, resetExpense } from "./Reset";
 
 
 export default function Home2() {
@@ -244,8 +245,23 @@ export default function Home2() {
       return <p>No categories available</p>;
     }
   };
-  
-  
+
+    // reset suoritetaan, kun tarkistetaan, että userInfo on olemassa
+    const handleResetIncome = () => {
+      if (userInfo) {
+        resetIncome(userInfo);
+      } else{
+        alert("Log in to reset.")
+      }
+    };
+
+    const handleResetExpense = () => {
+      if (userInfo) {
+        resetExpense(userInfo);
+      } else{
+        alert("Log in to reset.")
+      }
+    };
 
 
 
@@ -322,7 +338,11 @@ export default function Home2() {
       <div style={{ marginTop: '20px' }}>
         <h3>Total Income: {totalIncome} €</h3>
 
+        <button onClick={handleResetIncome}>Reset Income</button>
+
         <h3>Total Expense: {totalExpense} €</h3>
+
+        <button onClick={handleResetExpense}>Reset Expense</button>
 
         <h3>Balance: {balance} </h3>
 
