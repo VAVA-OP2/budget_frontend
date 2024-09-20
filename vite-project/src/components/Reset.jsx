@@ -3,7 +3,7 @@ import { supabase } from '/supabaseClient';
 
 //Kysytään käyttäjältä varmistus ja poistetaan tiedot tulo taulusta
 export const resetIncome = async (userInfo) => {
-    const isConfirmed = confirm("Are you sure you want to delete all income?");
+    const isConfirmed = confirm("Are you sure you want to delete all income? This action cannot be reversed.");
 
     if (isConfirmed) {
         const { error } = await supabase
@@ -21,7 +21,7 @@ export const resetIncome = async (userInfo) => {
 
 //Kysytään käyttäjältä varmistus ja poistetaan tiedot menot taulusta
 export const resetExpense = async (userInfo) => {
-    const isConfirmed = confirm("Are you sure you want to delete all expenses");
+    const isConfirmed = confirm("Are you sure you want to delete all expenses? This action cannot be reversed.");
 
     if (isConfirmed) {
         const { error } = await supabase

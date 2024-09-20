@@ -41,6 +41,8 @@ const Auth = ({setIsAuthenticated}) => {
     setPassword('');
   };
 
+  // handleLogOut
+
   return (
     <div style={{ padding: '50px', maxWidth: '500px', margin: '0 auto' }}>
       <h2>{authType === 'login' ? 'Log in' : 'Sign up'}</h2>

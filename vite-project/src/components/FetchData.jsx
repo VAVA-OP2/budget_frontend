@@ -1,0 +1,2 @@
+// tänne datan haku supabasesta
+

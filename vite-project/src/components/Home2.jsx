@@ -32,14 +32,6 @@ export default function Home2() {
   // react routerin navigate että uloskirjautuessa siirtyy takasin kirjautumissivulle
   const navigate = useNavigate();
 
-  // en ymmärrä useEffectiä joten tämä on todnäk väärin t. alina
-  /*  useEffect(() => {
-       getUser();
-       getCategories();
-       getTotals();
-   }, []);
-*/
-
   useEffect(() => {
     const fetchData = async () => {
       await getUser();
@@ -69,10 +61,10 @@ export default function Home2() {
 
   // supabase tarjoaa valmiit koodinpätkät taulujen hallintaan (await) jotka vaatii async -funktion
   // haetaan kirjautuneen käyttäjän tiedot
-  const getUser = async () => {
-    const { data: { user } } = await supabase.auth.getUser(); // nämä koodit siis suoraan supabasesta
-    setUserInfo(user);
-  }
+  // const getUser = async () => {
+  //   const { data: { user } } = await supabase.auth.getUser(); // nämä koodit siis suoraan supabasesta
+  //   setUserInfo(user);
+  // }
 
 
 
