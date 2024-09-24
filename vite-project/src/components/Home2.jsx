@@ -4,10 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { resetIncome, resetExpense } from "./Reset";
 
 
-export default function Home2() {
-
-  // kirjautuneen käyttäjän tiedot
-  const [user, setUser] = useState(null);
+export default function Home2(props) {
 
   // lasketut tulojen ja menojen yhteissummat
   const [totalIncome, setTotalIncome] = useState(0);
@@ -17,22 +14,20 @@ export default function Home2() {
   const [balance, setBalance] = useState(0);
 
   // menot jaettuina kategorioiden mukaan
-  const [expenseByCateory, setExpenseByCategory] = useState({});
+  const [expenseByCategory, setExpenseByCategory] = useState({});
 
   // react routerin navigate että uloskirjautuessa siirtyy takasin kirjautumissivulle
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (user) { // Jos userInfo on onnistuneesti haettu (käyttäjä on kirjautunut sisään), jatka tietojen käsittelyyn
-
-        // await expensesByCategory();
-        await getTotals();
+       const getData = async () => {
         calculateBalance();
-      }
-    };
-    fetchData();
-  }, [user]); // use effect suoritetaan aina uudestaan kun userinfo muuttuja muuttuu
+        expensesByCategory();
+       }
+      getTotals();
+      getData();
+
+      }, [props.userInfo]); // use effect suoritetaan aina uudestaan kun userinfo muuttuja muuttuu
 
 
   const getTotals = () => {
@@ -46,20 +41,12 @@ export default function Home2() {
     setBalance(currentBalance);
   };
 
-
-
-
-
-
   // laskee käyttäjän lisäämät tulot yhteen: hakee ensin taulusta kaikki "amount" tiedot, joissa user_id vastaa kirjautuneen käyttäjän id -tietoa
   const calculateTotalIncome = async () => {
     const { data: income, error } = await supabase
       .from('income')
       .select('amount')
-      .eq('user_id', user.id)
-
-    // "income" palauttaa amount -määrät JSON muodossa {amount: 1}
-    // console.log(income);
+      .eq('user_id', props.userInfo.id)
 
     // lasketaan määrät yhteen
     let total = 0;
@@ -82,7 +69,7 @@ export default function Home2() {
     const { data: expense, error } = await supabase
       .from('expense')
       .select('amount')
-      .eq('user_id', user.id)
+      .eq('user_id', props.userInfo.id)
 
     let total = 0;
 
@@ -98,89 +85,84 @@ export default function Home2() {
 
 
 
-  // expenses by category
-  // tällä voi myöhemmin näyttää kategorioittan menot 
-  // const expensesByCategory = async () => {
-  //   // haetaan taas kaikki expense tiedot (määrä ja kategorian id)
-  //   const { data: expenses, error } = await supabase
-  //     .from('expense')
-  //     .select('amount, categoryid')
-  //     .eq('user_id', user.id)
+  const expensesByCategory = async () => {
+    const { data: expenses, error } = await supabase
+      .from('expense')
+      .select('amount, categoryid')
+      .eq('user_id', props.userInfo.id)
 
-  //   // apuobjekti, johon tallennetaan id ja yhteissumma
-  //   const grouped = {};
+    const grouped = {};
 
-  //   // käydään kaikki aiemmin noudetut expenses -taulukon objektit läpi
-  //   expenses.forEach((expense) => {
-  //     const categoryId = expense.categoryid;
+    expenses.forEach((expense) => {
+      const categoryId = expense.categoryid;
+ssa
+      if (!grouped[categoryId]) {
 
-  //     // tarkistetaan onko grouped -objektissa jo kyseistä kategorian id:tä olemassa
-  //     if (!grouped[categoryId]) {
+        grouped[categoryId] = 0;
+      }
 
-  //       // jos ei, alustetaan sen arvoksi (summaksi) 0
-  //       grouped[categoryId] = 0;
-  //     }
+      grouped[categoryId] += parseFloat(expense.amount);
+    });
+g(grouped);
 
-  //     // lisätään aiempaan kategoria id:n summaan uusi käsiteltävä summa
-  //     grouped[categoryId] += parseFloat(expense.amount);
-  //   });
+    setExpenseByCategory(grouped);
 
-  //   // asetetaan apuobjekti useStaten arvoksi
-  //   // console.log(grouped);
-
-  //   setExpenseByCategory(grouped);
-
-  // }
+  }
  
 
-  // const renderExpensesByCategory = () => {
-  //   if (categories.length > 0) {
-  //     return (
-  //       <ul>
-  //         {categories.map((category) => (
-  //           <li key={category.categoryid}>
-  //             {category.categoryname}: {expenseByCateory[category.categoryid] || 0} € {/* jos undefined niin arvo 0 */}
-  //           </li>
-  //         ))}
-  //       </ul>
-  //     );
-  //   } else {
-  //     return <p>No expenses by category</p>;
-  //   }
-  // };
 
-  // const renderRemainingMoneyByCategory = () => {
-  //   if (categories.length > 0) {
-  //     return (
-  //       <ul>
-  //         {categories.map((category) => {
-  //           const spent = expenseByCateory[category.categoryid] || 0; // käytetyt rahat, jos undefined niin arvo 0
-  //           const remaining = category.categoryLimit - spent; // jäljellä oleva raha
-  //           return (
-  //             <li key={category.categoryid}>
-  //               {category.categoryname}: Remaining {remaining} €
-  //             </li>
-  //           );
-  //         })}
-  //       </ul>
-  //     );
-  //   } else {
-  //     return <p>No categories available</p>;
-  //   }
-  // };
+  const renderExpensesByCategory = () => {
+    if (props.categories.length > 0) {
+      return (
+        <ul>
+          {props.categories.map((category) => (
+            <li key={category.categoryid}>
+              {category.categoryname}: {expenseByCategory[category.categoryid] || 0} € {/* jos undefined niin arvo 0 */}
+            </li>
+          ))}
+        </ul>
+      );
+    } else {
+      return <p>No expenses by category</p>;
+    }
+  };
+
+
+
+  const renderRemainingMoneyByCategory = () => {
+    if (props.categories.length > 0) {
+      return (
+        <ul>
+          {props.categories.map((category) => {
+            const spent = expenseByCategory[category.categoryid] || 0; // käytetyt rahat, jos undefined niin arvo 0
+            const remaining = category.categoryLimit - spent; // jäljellä oleva raha
+            return (
+              <li key={category.categoryid}>
+                {category.categoryname}: Remaining {remaining} €
+              </li>
+            );
+          })}
+        </ul>
+      );
+    } else {
+      return <p>No categories available</p>;
+    }
+  };
 
     // reset suoritetaan, kun tarkistetaan, että userInfo on olemassa
     const handleResetIncome = () => {
-      if (user) {
-        resetIncome(user);
+      if (props.userInfo) {
+        resetIncome(props.userInfo);
       } else{
         alert("Log in to reset.")
       }
     };
 
+    
+
     const handleResetExpense = () => {
-      if (user) {
-        resetExpense(user);
+      if (props.userInfo) {
+        resetExpense(props.userInfo);
       } else{
         alert("Log in to reset.")
       }
@@ -191,7 +173,7 @@ export default function Home2() {
   // käyttäjän uloskirjautuminen
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    setUser(null);
+    // setUser(null);
     setTotalExpense(0);
     setTotalIncome(0);
     setBalance(0);
@@ -207,12 +189,6 @@ export default function Home2() {
 
       <h1>Welcome to the Home Page</h1>
 
-      
-
-      {/* Menon lisääminen */}
-      <div style={{ marginTop: '20px' }}>
-        
-      </div>
 
 
       <div style={{ marginTop: '20px' }}>
@@ -224,13 +200,13 @@ export default function Home2() {
 
         <button onClick={handleResetExpense}>Reset Expense</button>
 
-        <h3>Balance: {balance} </h3>
+        <h3>Balance: {balance} €</h3>
 
-        {/* <h3>Your Expenses by Category</h3>
+        <h3>Your Expenses by Category</h3>
         {renderExpensesByCategory()}
 
         <h3>Your remaining money for each category: </h3>
-        {renderRemainingMoneyByCategory()}  */}
+        {renderRemainingMoneyByCategory()} 
 
         
       </div>

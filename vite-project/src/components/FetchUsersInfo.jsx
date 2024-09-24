@@ -37,7 +37,7 @@ export default function FetchUsersInfo() {
             
         </div>
 
-        <Home2 />
+        <Home2 categories={categories} userInfo={userInfo} />
        
       {/* Tulon lisääminen uuden sivun kautta*/}
 
