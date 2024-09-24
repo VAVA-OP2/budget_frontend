@@ -7,6 +7,7 @@ import Statistics from './components/Statistics';
 import Auth from './components/Auth';
 import AddTransaction from './components/AddTransaction';
 import Home2 from './components/Home2';
+import FetchUsersInfo from './components/FetchUsersInfo';
 
 const AppWrapper = () => {
   
@@ -23,7 +24,7 @@ const AppWrapper = () => {
         />
         <Route
           path="/home2"
-          element={isAuthenticated ? <Home2 /> : <Auth setIsAuthenticated={setIsAuthenticated} />}
+          element={isAuthenticated ? <FetchUsersInfo /> : <Auth setIsAuthenticated={setIsAuthenticated} />}
         />
         <Route
           path="/statistics"
