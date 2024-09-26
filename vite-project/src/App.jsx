@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
 
 
@@ -11,7 +10,7 @@ function App({ isAuthenticated }) {
           <h1>Vava Budget</h1>
           <nav>
             <button>
-              <Link to="/home" style={{ color: 'black' }}>Home</Link>
+              <Link to="/home2" style={{ color: 'black' }}>Home</Link>
             </button>{" "}
             <button>
               <Link to="/statistics" style={{ color: 'black' }}>Statistics</Link>
