@@ -28,6 +28,12 @@ export default function Home2(props) {
       getData();
 
       }, [props.userInfo]); // use effect suoritetaan aina uudestaan kun userinfo muuttuja muuttuu
+  
+      useEffect(() => { // uus useeffect niin balance näkyy, vois tehä samaan useeffectiin myös
+        calculateBalance(); // Lasketaan saldo automaattisesti, kun tuloja tai menoja päivitetään
+      }, [totalIncome, totalExpense]); // Tämä useEffect käynnistyy, kun tulojen tai menojen arvo muuttuu
+    
+      
 
 
   const getTotals = () => {
