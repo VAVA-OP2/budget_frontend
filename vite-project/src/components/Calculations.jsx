@@ -28,7 +28,7 @@ export default function Calculations(props) {
       getTotals();
       getData();
 
-      }, [props.userInfo]); // use effect suoritetaan aina uudestaan kun userinfo muuttuja muuttuu
+      }, [props.userInfo, totalIncome, totalExpense]); // use effect suoritetaan aina uudestaan kun userinfo muuttuja muuttuu
 
 
   const getTotals = () => {
