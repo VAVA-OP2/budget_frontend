@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { resetIncome, resetExpense } from "./Reset";
 
 
-export default function Home2(props) {
+export default function Calculations(props) {
 
   // lasketut tulojen ja menojen yhteissummat
   const [totalIncome, setTotalIncome] = useState(0);

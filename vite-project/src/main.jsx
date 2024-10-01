@@ -6,7 +6,6 @@ import App from './App';
 import Statistics from './components/Statistics';
 import Auth from './components/Auth';
 import AddTransaction from './components/AddTransaction';
-import Home2 from './components/Home2';
 import FetchUsersInfo from './components/FetchUsersInfo';
 
 const AppWrapper = () => {

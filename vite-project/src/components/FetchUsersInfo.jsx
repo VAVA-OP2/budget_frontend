@@ -1,7 +1,8 @@
 import { supabase } from '/supabaseClient';
 import { useState, useEffect } from 'react';
-import Home2 from './Home2';
 import { Link } from 'react-router-dom';
+import Calculations from './Calculations';
+
 
 export default function FetchUsersInfo() {
 
@@ -37,7 +38,7 @@ export default function FetchUsersInfo() {
             
         </div>
 
-        <Home2 categories={categories} userInfo={userInfo} />
+        <Calculations categories={categories} userInfo={userInfo} />
        
       {/* Tulon lisääminen uuden sivun kautta*/}
 
