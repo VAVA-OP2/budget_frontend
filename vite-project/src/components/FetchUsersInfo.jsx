@@ -50,15 +50,7 @@ export default function FetchUsersInfo() {
       </Link>
 
     <Link to="/statistics" state={{ userInfo, categories }}>
-        <button style={{
-          padding: '5px 15px',
-          backgroundColor: 'blue',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          fontSize: '24px',
-          cursor: 'pointer'
-        }}>
+        <button className="statistics-button">
           Statistics
         </button>
 

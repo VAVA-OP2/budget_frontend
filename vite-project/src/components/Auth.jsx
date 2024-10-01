@@ -49,7 +49,7 @@ const Auth = ({ setIsAuthenticated }) => {
       <img
         src="./vava-high-resolution-logo-transparent.png"
         alt="Vava Logo"
-        style={{ width: '500px', marginBottom: '20px' }} // Adjust width and spacing as needed
+        style={{ width: '500px', marginBottom: '20px', marginTop: '100px' }} // Adjust width and spacing as needed
       />
 
       <h2>{authType === 'login' ? 'Log in' : 'Sign up'}</h2>
