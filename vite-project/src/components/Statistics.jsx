@@ -55,7 +55,7 @@ export default function Statistics() {
   }
 
   return (
-    <div>
+    <div style={{textAlign:"center"}}>
       <h3>Expenses by Category</h3>
       {bubbleData.length > 0 ? ( // Jos vähintään yksi kategoria, jossa on kuluja palauttaa bubbleDatan
         <BubbleChart
