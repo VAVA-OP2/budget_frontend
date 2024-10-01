@@ -62,7 +62,7 @@ export default function AddTransaction() {
                 placeholder="Enter your income amount"
                 value={incomeAmount}
                 onChange={(e) => setIncomeAmount(e.target.value)}
-                style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                className="input-field"
                 />
 
                 <button onClick={addIncome} style={{ padding: '10px', width: '100%' }}>
@@ -78,13 +78,13 @@ export default function AddTransaction() {
                 placeholder="Enter your expense amount"
                 value={expenseAmount}
                 onChange={(e) => setExpenseAmount(e.target.value)}
-                style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                className="input-field"
                 />
 
                 <select
                 value={selectedCategoryId}
                 onChange={(e) => setSelectedCategoryId(e.target.value)}
-                style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                className="input-field"
                 >
                 <option value="">Select Category</option>
                 {state.categories.map((category) => (

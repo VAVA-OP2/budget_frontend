@@ -42,15 +42,7 @@ export default function FetchUsersInfo() {
       {/* Tulon lisääminen uuden sivun kautta*/}
 
         <Link to="/addTransaction" state={{userInfo, categories}}>
-            <button style={{
-            padding: '5px 15px',
-            backgroundColor: 'blue',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            fontSize: '24px',
-            cursor: 'pointer'
-            }}>
+            <button className="add-button">
             +
             </button>
       </Link>
