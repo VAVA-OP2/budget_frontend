@@ -2,8 +2,6 @@ import { useEffect, useState } from "react"
 import { supabase } from '/supabaseClient';
 import { useNavigate } from "react-router-dom";
 import { resetIncome, resetExpense } from "./Reset";
-import Statistics from "./Statistics";
-
 import '../styles.css';
 
 
@@ -215,7 +213,7 @@ export default function Calculations(props) {
         
       </div>
 
-      <Statistics userInfo={props.userInfo} categories={props.categories} />
+      
 
       <button onClick={handleLogout} style={{ marginTop: '20px' }}>
         Log Out
