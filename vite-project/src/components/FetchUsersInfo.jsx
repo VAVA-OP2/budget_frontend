@@ -5,38 +5,39 @@ import Calculations from './Calculations';
 
 
 export default function FetchUsersInfo() {
+  const [userInfo, setUserInfo] = useState(null);
+  const [categories, setCategories] = useState([]);
 
-    const [userInfo, setUserInfo] = useState(null);
-    const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    getUser();
+    getCategories();
+  }, []);
+
+  const getUser = async () => {
+  const { data: { user } } = await supabase.auth.getUser(); 
+  console.log("Fetched user:", user);
+  setUserInfo(user);
+}
+
+  const getCategories = async () => {
+  const { data } = await supabase
+    .from('category')
+    .select('*');
+  console.log("Fetched categories:", data); // Debuggaus
+  setCategories(data);
+}
 
 
-    useEffect(() => {
-        getUser();
-        getCategories();
-    }, []);
+  // Tarkistetaan, että userInfo ja categories ovat ladattu ennen komponenttien renderöintiä
+  if (!userInfo || categories.length === 0) {
+    return <p>Loading user info and categories...</p>;
+  }
 
-    const getUser = async () => {
-        const { data: { user } } = await supabase.auth.getUser(); 
-        setUserInfo(user);
-      }
-
-    const getCategories = async () => {
-        const { data } = await supabase
-        .from('category')
-        .select('*')
-      setCategories(data);
-    }  
-
-
-    return (
-
-        <div>
-            
-
-        <div style={{ marginTop: '20px' }}>
+  return (
+    <div>
+      <div style={{ marginTop: '20px' }}>
         {userInfo ? <p>Logged in as: {userInfo.email}</p> : <p>Loading...</p>}
-            
-        </div>
+      </div>
 
         <Calculations categories={categories} userInfo={userInfo} />
        
@@ -48,9 +49,23 @@ export default function FetchUsersInfo() {
             </button>
       </Link>
 
-        </div>
+    <Link to="/statistics" state={{ userInfo, categories }}>
+        <button style={{
+          padding: '5px 15px',
+          backgroundColor: 'blue',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          fontSize: '24px',
+          cursor: 'pointer'
+        }}>
+          Statistics
+        </button>
 
         
-    );
-
+      </Link> 
+      
+      
+    </div>
+  );
 }
