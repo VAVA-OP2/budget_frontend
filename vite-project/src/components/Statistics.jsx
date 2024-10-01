@@ -3,7 +3,7 @@ import BubbleChart from '@weknow/react-bubble-chart-d3';
 import { supabase } from '/supabaseClient';
 import { useLocation } from 'react-router-dom';
 
-export default function Statistics({ userInfo, categories }) {
+export default function Statistics() {
 
   const [expenses, setExpenses] = useState([]);
 
@@ -50,7 +50,7 @@ export default function Statistics({ userInfo, categories }) {
   }).filter(data => data.value > 0); // Pitää vain kulut joilla on tietoa
 
   // Jos userInfo ja categories renderöinnissä ongelmaa näyttää lautaus viestin
-  if (!userInfo || categories.length === 0) {
+  if (!state.userInfo || state.categories.length === 0) {
     return <p>Loading user info and categories...</p>;
   }
 
@@ -60,8 +60,8 @@ export default function Statistics({ userInfo, categories }) {
       {bubbleData.length > 0 ? ( // Jos vähintään yksi kategoria, jossa on kuluja palauttaa bubbleDatan
         <BubbleChart
           data={bubbleData}
-          width={800}
-          height={800}
+          width={1000}
+          height={1000}
           fontSize={16}
           showLegend={true}
         />
