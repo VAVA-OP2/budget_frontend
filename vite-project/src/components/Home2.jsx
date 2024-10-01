@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { supabase } from '/supabaseClient';
 import { useNavigate } from "react-router-dom";
 import { resetIncome, resetExpense } from "./Reset";
+import '../styles.css';
 
 
 export default function Home2(props) {
