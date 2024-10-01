@@ -35,7 +35,9 @@ export default function FetchUsersInfo() {
 
   return (
     <div>
-      <div style={{ marginTop: '20px' }}>
+
+{/* <h1>Welcome to the Home Page</h1> */}
+      <div style={{ marginTop: '20px', float: 'right' }}>
         {userInfo ? <p>Logged in as: {userInfo.email}</p> : <p>Loading...</p>}
       </div>
 

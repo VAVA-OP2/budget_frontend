@@ -189,7 +189,6 @@ export default function Calculations(props) {
   return (
     <div style={{ padding: '50px', maxWidth: '600px', margin: '0 auto' }}>
 
-      <h1>Welcome to the Home Page</h1>
 
 
 
