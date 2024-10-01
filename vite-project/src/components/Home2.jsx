@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import { supabase } from '/supabaseClient';
 import { useNavigate } from "react-router-dom";
 import { resetIncome, resetExpense } from "./Reset";
+import Statistics from "./Statistics";
+
 
 
 export default function Home2(props) {
@@ -95,7 +97,7 @@ export default function Home2(props) {
 
     expenses.forEach((expense) => {
       const categoryId = expense.categoryid;
-ssa
+
       if (!grouped[categoryId]) {
 
         grouped[categoryId] = 0;
@@ -103,7 +105,7 @@ ssa
 
       grouped[categoryId] += parseFloat(expense.amount);
     });
-g(grouped);
+(grouped);
 
     setExpenseByCategory(grouped);
 
@@ -211,7 +213,7 @@ g(grouped);
         
       </div>
 
-      
+      <Statistics userInfo={props.userInfo} categories={props.categories} />
 
       <button onClick={handleLogout} style={{ marginTop: '20px' }}>
         Log Out
