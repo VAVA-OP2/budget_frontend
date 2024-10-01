@@ -10,16 +10,16 @@ export default function Statistics({ userInfo, categories }) {
   // Tähän kuplien käyttämät värit
   const colors = ['#77dd77', '#ff6961', '#ffb347', '#84b6f4', '#d79bfb', '#ffdd77', '#77f3e4'];
 
-  //let { state } = useLocation();
+  let { state } = useLocation();
 
   useEffect(() => {
-    if (!userInfo) return; // Ei palauta mitään jos ei saa userInfo tiedon
+    if (!state.userInfo) return; // Ei palauta mitään jos ei saa userInfo tiedon
 
     const fetchExpenses = async () => {
       const { data, error } = await supabase
         .from('expense')
         .select('amount, categoryid')
-        .eq('user_id', userInfo.id);
+        .eq('user_id', state.userInfo.id);
 
       if (error) {
         console.error('Error fetching expenses:', error);
@@ -29,10 +29,10 @@ export default function Statistics({ userInfo, categories }) {
     };
 
     fetchExpenses();
-  }, [userInfo]);
+  }, [state.userInfo]);
 
   // Tämä näytetään bubbleChartille
-  const bubbleData = categories.map((category, index) => {
+  const bubbleData = state.categories.map((category, index) => {
     let totalAmount = 0;
 
     expenses.forEach(expense => {
