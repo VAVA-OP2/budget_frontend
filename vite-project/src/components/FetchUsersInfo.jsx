@@ -1,7 +1,8 @@
 import { supabase } from '/supabaseClient';
 import { useState, useEffect } from 'react';
-import Home2 from './Home2';
 import { Link } from 'react-router-dom';
+import Calculations from './Calculations';
+
 
 export default function FetchUsersInfo() {
   const [userInfo, setUserInfo] = useState(null);
@@ -38,25 +39,14 @@ export default function FetchUsersInfo() {
         {userInfo ? <p>Logged in as: {userInfo.email}</p> : <p>Loading...</p>}
       </div>
 
-      {/* Varmistetaan, että userInfo ja categories välitetään oikein */}
-      <Home2 categories={categories} userInfo={userInfo} />
-      
-      
-      {/* Tulon lisääminen uuden sivun kautta */}
-      <Link to="/addTransaction" state={{ userInfo, categories }}>
-        <button style={{
-          padding: '5px 15px',
-          backgroundColor: 'blue',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          fontSize: '24px',
-          cursor: 'pointer'
-        }}>
-          +
-        </button>
+        <Calculations categories={categories} userInfo={userInfo} />
+       
+      {/* Tulon lisääminen uuden sivun kautta*/}
 
-        
+        <Link to="/addTransaction" state={{userInfo, categories}}>
+            <button className="add-button">
+            +
+            </button>
       </Link>
 
     <Link to="/statistics" state={{ userInfo, categories }}>

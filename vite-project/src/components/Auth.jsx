@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { supabase } from '/supabaseClient';  
 import { useNavigate } from 'react-router-dom'; 
 
-const Auth = ({setIsAuthenticated}) => {
+
+const Auth = ({ setIsAuthenticated }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -41,10 +42,16 @@ const Auth = ({setIsAuthenticated}) => {
     setPassword('');
   };
 
-  // handleLogOut
 
   return (
     <div style={{ padding: '50px', maxWidth: '500px', margin: '0 auto' }}>
+
+      <img
+        src="./vava-high-resolution-logo-transparent.png"
+        alt="Vava Logo"
+        style={{ width: '500px', marginBottom: '20px' }} // Adjust width and spacing as needed
+      />
+
       <h2>{authType === 'login' ? 'Log in' : 'Sign up'}</h2>
       <div>
         <input
@@ -52,7 +59,7 @@ const Auth = ({setIsAuthenticated}) => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={{ marginBottom: '10px', padding: '8px', width: '100%' }}
+          className="input-field"
         />
       </div>
       <div>
@@ -61,7 +68,7 @@ const Auth = ({setIsAuthenticated}) => {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{ marginBottom: '20px', padding: '8px', width: '100%' }}
+          className="input-field"
         />
       </div>
       <button onClick={handleAuth} disabled={loading}>

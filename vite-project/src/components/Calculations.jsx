@@ -2,11 +2,10 @@ import { useEffect, useState } from "react"
 import { supabase } from '/supabaseClient';
 import { useNavigate } from "react-router-dom";
 import { resetIncome, resetExpense } from "./Reset";
-import Statistics from "./Statistics";
+import '../styles.css';
 
 
-
-export default function Home2(props) {
+export default function Calculations(props) {
 
   // lasketut tulojen ja menojen yhteissummat
   const [totalIncome, setTotalIncome] = useState(0);
@@ -105,7 +104,7 @@ export default function Home2(props) {
 
       grouped[categoryId] += parseFloat(expense.amount);
     });
-(grouped);
+ (grouped);
 
     setExpenseByCategory(grouped);
 
@@ -213,7 +212,7 @@ export default function Home2(props) {
         
       </div>
 
-      <Statistics userInfo={props.userInfo} categories={props.categories} />
+      
 
       <button onClick={handleLogout} style={{ marginTop: '20px' }}>
         Log Out

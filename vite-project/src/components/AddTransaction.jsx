@@ -11,7 +11,7 @@ export default function AddTransaction() {
     const [selectedCategoryId, setSelectedCategoryId] = useState('');
 
     let { state } = useLocation();
-    // toimii vähän kuin props mutta <Link> -komponentin kanssa
+    // toimii vähän kuin props mutta <Link to=""> -komponentin kanssa
 
     const addIncome = async () => {
         const { data, error } = await supabase
@@ -26,8 +26,6 @@ export default function AddTransaction() {
         console.error(error);
         }
 
-    // lasketaan lisäämisen jälkeen kaikki taulun tulot yhteen 
-    // calculateTotalIncome();
 
   }
 
@@ -45,9 +43,6 @@ export default function AddTransaction() {
       console.error(error);
     }
 
-    // lasketaan lisäämisen jälkeen menot yhteen 
-    // calculateTotalExpense();
-    // await expensesByCategory();
 
   }
 
@@ -62,7 +57,7 @@ export default function AddTransaction() {
                 placeholder="Enter your income amount"
                 value={incomeAmount}
                 onChange={(e) => setIncomeAmount(e.target.value)}
-                style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                className="input-field"
                 />
 
                 <button onClick={addIncome} style={{ padding: '10px', width: '100%' }}>
@@ -78,13 +73,13 @@ export default function AddTransaction() {
                 placeholder="Enter your expense amount"
                 value={expenseAmount}
                 onChange={(e) => setExpenseAmount(e.target.value)}
-                style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                className="input-field"
                 />
 
                 <select
                 value={selectedCategoryId}
                 onChange={(e) => setSelectedCategoryId(e.target.value)}
-                style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                className="input-field"
                 >
                 <option value="">Select Category</option>
                 {state.categories.map((category) => (
@@ -96,8 +91,8 @@ export default function AddTransaction() {
 
                 <button onClick={addExpense} style={{ padding: '10px', width: '100%' }}>
                 Add Expense
-                </button>
-</div>  
+                </button> 
+        </div>  
         </div>
     );
 }
