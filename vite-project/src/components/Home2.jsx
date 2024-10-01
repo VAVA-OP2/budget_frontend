@@ -95,7 +95,7 @@ export default function Home2(props) {
 
     expenses.forEach((expense) => {
       const categoryId = expense.categoryid;
-ssa
+
       if (!grouped[categoryId]) {
 
         grouped[categoryId] = 0;
@@ -103,7 +103,7 @@ ssa
 
       grouped[categoryId] += parseFloat(expense.amount);
     });
-g(grouped);
+ (grouped);
 
     setExpenseByCategory(grouped);
 
