@@ -33,7 +33,7 @@ const Auth = ({ setIsAuthenticated }) => {
       
       // Kun kirjautuu niin Home-sivulle ohjautuu
       setIsAuthenticated(true);
-      navigate('/home2');
+      navigate('/home');
     } catch (error) {
       alert('Error: ' + error.message);
     }

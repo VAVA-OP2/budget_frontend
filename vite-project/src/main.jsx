@@ -22,7 +22,7 @@ const AppWrapper = () => {
           element={<Auth setIsAuthenticated={setIsAuthenticated} />}
         />
         <Route
-          path="/home2"
+          path="/home"
           element={isAuthenticated ? <FetchUsersInfo /> : <Auth setIsAuthenticated={setIsAuthenticated} />}
         />
         <Route

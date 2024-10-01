@@ -10,11 +10,9 @@ function App({ isAuthenticated }) {
           <h1 className="header">Vava Budget</h1>
           <nav>
             <button style={{ marginRight: '16px' }}>
-              <Link to="/home2" style={{ color: 'black' }}>Home</Link>
+              <Link to="/home" style={{ color: 'black' }}>Home</Link>
             </button>{" "}
-            <button>
-              <Link to="/statistics" style={{ color: 'black' }}>Statistics</Link>
-            </button>{" "}
+            
           </nav>
         </>
       )}
