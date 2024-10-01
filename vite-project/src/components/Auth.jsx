@@ -1,7 +1,7 @@
 // src/components/Auth.js
 import React, { useState } from 'react';
-import { supabase } from '/supabaseClient';
-import { useNavigate } from 'react-router-dom';
+import { supabase } from '/supabaseClient';  
+import { useNavigate } from 'react-router-dom'; 
 
 
 const Auth = ({ setIsAuthenticated }) => {
@@ -30,7 +30,7 @@ const Auth = ({ setIsAuthenticated }) => {
       if (result.error) throw result.error;
 
       // alert('Authentication successful!');
-
+      
       // Kun kirjautuu niin Home-sivulle ohjautuu
       setIsAuthenticated(true);
       navigate('/home2');
@@ -42,7 +42,6 @@ const Auth = ({ setIsAuthenticated }) => {
     setPassword('');
   };
 
-  // handleLogOut
 
   return (
     <div style={{ padding: '50px', maxWidth: '500px', margin: '0 auto' }}>

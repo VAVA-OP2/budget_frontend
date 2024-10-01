@@ -11,7 +11,7 @@ export default function AddTransaction() {
     const [selectedCategoryId, setSelectedCategoryId] = useState('');
 
     let { state } = useLocation();
-    // toimii vähän kuin props mutta <Link> -komponentin kanssa
+    // toimii vähän kuin props mutta <Link to=""> -komponentin kanssa
 
     const addIncome = async () => {
         const { data, error } = await supabase
@@ -26,8 +26,6 @@ export default function AddTransaction() {
         console.error(error);
         }
 
-    // lasketaan lisäämisen jälkeen kaikki taulun tulot yhteen 
-    // calculateTotalIncome();
 
   }
 
@@ -45,9 +43,6 @@ export default function AddTransaction() {
       console.error(error);
     }
 
-    // lasketaan lisäämisen jälkeen menot yhteen 
-    // calculateTotalExpense();
-    // await expensesByCategory();
 
   }
 
@@ -96,8 +91,8 @@ export default function AddTransaction() {
 
                 <button onClick={addExpense} style={{ padding: '10px', width: '100%' }}>
                 Add Expense
-                </button>
-</div>  
+                </button> 
+        </div>  
         </div>
     );
 }

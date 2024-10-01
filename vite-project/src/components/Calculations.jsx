@@ -5,7 +5,7 @@ import { resetIncome, resetExpense } from "./Reset";
 import '../styles.css';
 
 
-export default function Home2(props) {
+export default function Calculations(props) {
 
   // lasketut tulojen ja menojen yhteissummat
   const [totalIncome, setTotalIncome] = useState(0);
