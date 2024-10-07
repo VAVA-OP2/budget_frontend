@@ -2,7 +2,7 @@
 // https://vitest.dev/guide/
 
 import { test, vi, expect, afterEach } from 'vitest';
-import { resetIncome, resetExpense } from './Reset.jsx' 
+import { resetIncome, resetExpense } from '../src/components/Reset.jsx' 
 
 // Mockataan supabase-kutsu
 vi.mock('/supabaseClient', () => ({

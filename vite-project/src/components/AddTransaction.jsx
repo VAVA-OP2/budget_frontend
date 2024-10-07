@@ -1,6 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { supabase } from '/supabaseClient';
 import { useState } from 'react';
+import React from 'react';
 
 
 
@@ -14,6 +15,13 @@ export default function AddTransaction() {
     // toimii vähän kuin props mutta <Link to=""> -komponentin kanssa
 
     const addIncome = async () => {
+
+          // tarkistus vain numeroille syöttökenttään
+          if (isNaN(incomeAmount) || incomeAmount.trim() === '') {
+            alert('Please enter a valid number for income.');
+            return;
+        }
+        
         const { data, error } = await supabase
         .from('income')
         .insert([{
@@ -31,6 +39,13 @@ export default function AddTransaction() {
 
 
   const addExpense = async () => {
+
+      // tarkistus vain numeroille syöttökenttään
+      if (isNaN(expenseAmount) || expenseAmount.trim() === '') {
+        alert('Please enter a valid number for expense.');
+        return;
+    }
+
     const { data, error } = await supabase
       .from('expense')
       .insert([{
