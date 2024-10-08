@@ -14,37 +14,52 @@ export default function AddTransaction() {
     // toimii vähän kuin props mutta <Link to=""> -komponentin kanssa
 
     const addIncome = async () => {
-        const { data, error } = await supabase
-        .from('income')
-        .insert([{
-            amount: parseFloat(incomeAmount),
-            user_id: state.userInfo.id
-            // vähän kuin props.userInfo.id
-        }])
-        setIncomeAmount('');
-        if (error) {
-        console.error(error);
-        }
 
-
-  }
-
-
-  const addExpense = async () => {
+      // tarkistus vain numeroille syöttökenttään
+      if (isNaN(incomeAmount) || incomeAmount.trim() === '') {
+        alert('Please enter a valid number for income.');
+        return;
+    } 
+    
     const { data, error } = await supabase
-      .from('expense')
-      .insert([{
-        amount: parseFloat(expenseAmount),
-        categoryid: parseFloat(selectedCategoryId),
+    .from('income')
+    .insert([{
+        amount: parseFloat(incomeAmount),
         user_id: state.userInfo.id
-      }])
-    setExpenseAmount('');
+        // vähän kuin props.userInfo.id
+    }])
     if (error) {
       console.error(error);
+      alert('Error adding income. Please try again.');
+    } else {
+      alert('Income added successfully!');
+      setIncomeAmount('');  // Tyhjennetään syöttökenttä
     }
+}
 
+const addExpense = async () => {
 
+  // tarkistus vain numeroille syöttökenttään
+  if (isNaN(expenseAmount) || expenseAmount.trim() === '') {
+    alert('Please enter a valid number for expense.');
+    return;
+}
+
+const { data, error } = await supabase
+  .from('expense')
+  .insert([{
+    amount: parseFloat(expenseAmount),
+    categoryid: parseFloat(selectedCategoryId),
+    user_id: state.userInfo.id
+  }])
+  if (error) {
+    console.error(error);
+    alert('Error adding expense. Please try again.');
+  } else {
+    alert('Expense added successfully!');
+    setExpenseAmount('');  // Tyhjennetään syöttökenttä
   }
+}
 
     return (
         <div>
