@@ -1,63 +1,65 @@
 import { supabase } from '/supabaseClient';
 import { useState, useEffect } from 'react';
-import Home2 from './Home2';
 import { Link } from 'react-router-dom';
+import Calculations from './Calculations';
+
 
 export default function FetchUsersInfo() {
+  const [userInfo, setUserInfo] = useState(null);
+  const [categories, setCategories] = useState([]);
 
-    const [userInfo, setUserInfo] = useState(null);
-    const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    getUser();
+    getCategories();
+  }, []);
+
+  const getUser = async () => {
+  const { data: { user } } = await supabase.auth.getUser(); 
+  console.log("Fetched user:", user);
+  setUserInfo(user);
+}
+
+  const getCategories = async () => {
+  const { data } = await supabase
+    .from('category')
+    .select('*');
+  console.log("Fetched categories:", data); // Debuggaus
+  setCategories(data);
+}
 
 
-    useEffect(() => {
-        getUser();
-        getCategories();
-    }, []);
+  // Tarkistetaan, että userInfo ja categories ovat ladattu ennen komponenttien renderöintiä
+  if (!userInfo || categories.length === 0) {
+    return <p>Loading user info and categories...</p>;
+  }
 
-    const getUser = async () => {
-        const { data: { user } } = await supabase.auth.getUser(); 
-        setUserInfo(user);
-      }
+  return (
+    <div>
 
-    const getCategories = async () => {
-        const { data } = await supabase
-        .from('category')
-        .select('*')
-      setCategories(data);
-    }  
-
-
-    return (
-
-        <div>
-            
-
-        <div style={{ marginTop: '20px' }}>
+{/* <h1>Welcome to the Home Page</h1> */}
+      <div style={{ marginTop: '20px', float: 'right' }}>
         {userInfo ? <p>Logged in as: {userInfo.email}</p> : <p>Loading...</p>}
-            
-        </div>
+      </div>
 
-        <Home2 categories={categories} userInfo={userInfo} />
+        <Calculations categories={categories} userInfo={userInfo} />
        
       {/* Tulon lisääminen uuden sivun kautta*/}
 
         <Link to="/addTransaction" state={{userInfo, categories}}>
-            <button style={{
-            padding: '5px 15px',
-            backgroundColor: 'blue',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            fontSize: '24px',
-            cursor: 'pointer'
-            }}>
+            <button className="add-button">
             +
             </button>
       </Link>
 
-        </div>
+    <Link to="/statistics" state={{ userInfo, categories }}>
+        <button className="statistics-button">
+          Statistics
+        </button>
 
         
-    );
-
+      </Link> 
+      
+      
+    </div>
+  );
 }

@@ -1,5 +1,5 @@
 import { Link, Outlet } from 'react-router-dom';
-
+import './styles.css';
 
 function App({ isAuthenticated }) {
   return (
@@ -7,14 +7,19 @@ function App({ isAuthenticated }) {
       
       {isAuthenticated && (
         <>
-          <h1>Vava Budget</h1>
+          <div className="header-container">
+            <img 
+              src="./vava-favicon-color.png" 
+              alt="Vava Logo" 
+              className="logo"
+            />
+            <h1 className="header">Vava Budget</h1>
+          </div>
           <nav>
-            <button>
-              <Link to="/home2" style={{ color: 'black' }}>Home</Link>
+            <button style={{ marginRight: '16px' }}>
+              <Link to="/home" style={{ color: 'black' }}>Home</Link>
             </button>{" "}
-            <button>
-              <Link to="/statistics" style={{ color: 'black' }}>Statistics</Link>
-            </button>{" "}
+            
           </nav>
         </>
       )}

@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@weknow/react-bubble-chart-d3": "^1.0.12"
+  }
+}

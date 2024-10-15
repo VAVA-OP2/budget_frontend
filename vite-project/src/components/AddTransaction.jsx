@@ -11,45 +11,55 @@ export default function AddTransaction() {
     const [selectedCategoryId, setSelectedCategoryId] = useState('');
 
     let { state } = useLocation();
-    // toimii vähän kuin props mutta <Link> -komponentin kanssa
+    // toimii vähän kuin props mutta <Link to=""> -komponentin kanssa
 
     const addIncome = async () => {
-        const { data, error } = await supabase
-        .from('income')
-        .insert([{
-            amount: parseFloat(incomeAmount),
-            user_id: state.userInfo.id
-            // vähän kuin props.userInfo.id
-        }])
-        setIncomeAmount('');
-        if (error) {
-        console.error(error);
-        }
 
-    // lasketaan lisäämisen jälkeen kaikki taulun tulot yhteen 
-    // calculateTotalIncome();
-
-  }
-
-
-  const addExpense = async () => {
+      // tarkistus vain numeroille syöttökenttään
+      if (isNaN(incomeAmount) || incomeAmount.trim() === '') {
+        alert('Please enter a valid number for income.');
+        return;
+    } 
+    
     const { data, error } = await supabase
-      .from('expense')
-      .insert([{
-        amount: parseFloat(expenseAmount),
-        categoryid: parseFloat(selectedCategoryId),
+    .from('income')
+    .insert([{
+        amount: parseFloat(incomeAmount),
         user_id: state.userInfo.id
-      }])
-    setExpenseAmount('');
+        // vähän kuin props.userInfo.id
+    }])
     if (error) {
       console.error(error);
+      alert('Error adding income. Please try again.');
+    } else {
+      alert('Income added successfully!');
+      setIncomeAmount('');  // Tyhjennetään syöttökenttä
     }
+}
 
-    // lasketaan lisäämisen jälkeen menot yhteen 
-    // calculateTotalExpense();
-    // await expensesByCategory();
+const addExpense = async () => {
 
+  // tarkistus vain numeroille syöttökenttään
+  if (isNaN(expenseAmount) || expenseAmount.trim() === '') {
+    alert('Please enter a valid number for expense.');
+    return;
+}
+
+const { data, error } = await supabase
+  .from('expense')
+  .insert([{
+    amount: parseFloat(expenseAmount),
+    categoryid: parseFloat(selectedCategoryId),
+    user_id: state.userInfo.id
+  }])
+  if (error) {
+    console.error(error);
+    alert('Error adding expense. Please try again.');
+  } else {
+    alert('Expense added successfully!');
+    setExpenseAmount('');  // Tyhjennetään syöttökenttä
   }
+}
 
     return (
         <div>
@@ -62,7 +72,7 @@ export default function AddTransaction() {
                 placeholder="Enter your income amount"
                 value={incomeAmount}
                 onChange={(e) => setIncomeAmount(e.target.value)}
-                style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                className="input-field"
                 />
 
                 <button onClick={addIncome} style={{ padding: '10px', width: '100%' }}>
@@ -78,13 +88,13 @@ export default function AddTransaction() {
                 placeholder="Enter your expense amount"
                 value={expenseAmount}
                 onChange={(e) => setExpenseAmount(e.target.value)}
-                style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                className="input-field"
                 />
 
                 <select
                 value={selectedCategoryId}
                 onChange={(e) => setSelectedCategoryId(e.target.value)}
-                style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                className="input-field"
                 >
                 <option value="">Select Category</option>
                 {state.categories.map((category) => (
@@ -96,8 +106,8 @@ export default function AddTransaction() {
 
                 <button onClick={addExpense} style={{ padding: '10px', width: '100%' }}>
                 Add Expense
-                </button>
-</div>  
+                </button> 
+        </div>  
         </div>
     );
 }
