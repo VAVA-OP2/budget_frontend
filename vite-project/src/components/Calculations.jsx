@@ -208,6 +208,7 @@ export default function Calculations(props) {
 
         <h3>Your remaining money for each category: </h3>
         {renderRemainingMoneyByCategory()} 
+        
 
         
       </div>

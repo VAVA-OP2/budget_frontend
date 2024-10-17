@@ -2,6 +2,7 @@ import { supabase } from '/supabaseClient';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Calculations from './Calculations';
+import SavingsPage from './SavingsPage';
 
 
 export default function FetchUsersInfo() {
@@ -35,6 +36,7 @@ export default function FetchUsersInfo() {
 
   return (
     <div>
+      
 
 {/* <h1>Welcome to the Home Page</h1> */}
       <div style={{ marginTop: '20px', float: 'right' }}>
@@ -51,6 +53,8 @@ export default function FetchUsersInfo() {
             </button>
       </Link>
 
+      
+
     <Link to="/statistics" state={{ userInfo, categories }}>
         <button className="statistics-button">
           Statistics
@@ -58,6 +62,15 @@ export default function FetchUsersInfo() {
 
         
       </Link> 
+
+      {/* Uusi Savings-painike, joka ohjaa SavingsPage-sivulle */}
+      <Link to="/savings" state={{ userInfo }}> {/* Voit halutessasi välittää myös kategorioita */}
+        <button className="savings-button">
+          Set Savings Goal
+        </button>
+      </Link>
+
+      
       
       
     </div>
