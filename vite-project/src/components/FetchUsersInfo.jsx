@@ -23,7 +23,7 @@ export default function FetchUsersInfo() {
   const { data } = await supabase
     .from('category')
     .select('*');
-  console.log("Fetched categories:", data); // Debuggaus
+  // console.log("Fetched categories:", data); // Debuggaus
   setCategories(data);
 }
 

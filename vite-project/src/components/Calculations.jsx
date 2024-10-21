@@ -3,7 +3,8 @@ import { supabase } from '/supabaseClient';
 import { useNavigate } from "react-router-dom";
 import { resetIncome, resetExpense } from "./Reset";
 import '../styles.css';
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Calculations(props) {
 
@@ -19,6 +20,39 @@ export default function Calculations(props) {
 
   // react routerin navigate että uloskirjautuessa siirtyy takasin kirjautumissivulle
   const navigate = useNavigate();
+
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [searchByDate, setSearchByDate] = useState(false);
+
+  const [incomeByDate, setIncomeByDate] = useState(0);
+
+  const searchDataByDate = async () => {
+      setSearchByDate(true);
+
+      const { data: income, error } = await supabase
+      .from('income')
+      .select('amount')
+      .eq('user_id', props.userInfo.id)
+      .gte('date_added', startDate.toISOString())
+      .lte('date_added', endDate.toISOString())
+      
+    console.log(startDate.toISOString());
+    // lasketaan määrät yhteen
+    let total = 0;
+
+    
+    console.log(income);
+
+    income.forEach((a) => {
+      // 'a' on {amount: 1}
+      // 'a.amount' on '1'
+      total += parseFloat(a.amount);
+    });
+
+    setIncomeByDate(total);
+
+}
 
   useEffect(() => {
        const getData = async () => {
@@ -189,11 +223,23 @@ export default function Calculations(props) {
   return (
     <div style={{ padding: '50px', maxWidth: '600px', margin: '0 auto' }}>
 
+      <div>
+        <p>Search for transactions based on date</p>
 
+        <p>Start Date</p>
+        <DatePicker selected={startDate} onChange={(date) => setStartDate(date)}/>
+
+        <p>End Date</p>
+        <DatePicker selected={endDate} onChange={(date) => setEndDate(date)}/>
+
+        <button onClick={() => searchDataByDate()}>Search</button>
+      </div>
 
 
       <div style={{ marginTop: '20px' }}>
-        <h3>Total Income: {totalIncome} €</h3>
+        {/* <h3>Total Income: {totalIncome} €</h3> */}
+
+        {!searchByDate ? (<h3>Total Income: {totalIncome} €</h3>) : (<h3>Total Income (date): {incomeByDate} €</h3>)}
 
         <button onClick={handleResetIncome}>Reset Income</button>
 
