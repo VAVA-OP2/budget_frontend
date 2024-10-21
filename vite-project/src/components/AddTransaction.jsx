@@ -10,6 +10,11 @@ export default function AddTransaction() {
     const [expenseAmount, setExpenseAmount] = useState('');
     const [selectedCategoryId, setSelectedCategoryId] = useState('');
 
+    const today = new Date();
+    const formattedToday = today.toISOString();
+
+   
+
     let { state } = useLocation();
     // toimii vähän kuin props mutta <Link to=""> -komponentin kanssa
 
@@ -25,8 +30,8 @@ export default function AddTransaction() {
     .from('income')
     .insert([{
         amount: parseFloat(incomeAmount),
-        user_id: state.userInfo.id
-        // vähän kuin props.userInfo.id
+        user_id: state.userInfo.id,
+        date_added: formattedToday,
     }])
     if (error) {
       console.error(error);
@@ -50,7 +55,8 @@ const { data, error } = await supabase
   .insert([{
     amount: parseFloat(expenseAmount),
     categoryid: parseFloat(selectedCategoryId),
-    user_id: state.userInfo.id
+    user_id: state.userInfo.id,
+    date_added: formattedToday,
   }])
   if (error) {
     console.error(error);
@@ -60,6 +66,8 @@ const { data, error } = await supabase
     setExpenseAmount('');  // Tyhjennetään syöttökenttä
   }
 }
+
+
 
     return (
         <div>
@@ -82,6 +90,7 @@ const { data, error } = await supabase
 
             <div>
             <h3>Add Expense</h3>
+
 
                 <input
                 type="text"
