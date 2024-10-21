@@ -1,33 +1,52 @@
 import { supabase } from '/supabaseClient';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Calculations from './Calculations';
-import SavingsPage from './SavingsPage';
-
 
 export default function FetchUsersInfo() {
   const [userInfo, setUserInfo] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [savings, setSavings] = useState({ current_savings: 0, goal_amount: 0 });
+  
 
   useEffect(() => {
     getUser();
     getCategories();
   }, []);
 
+  useEffect(() => {
+    if (userInfo) {
+      getCurrentSavingsAndSavedGoal();
+    }
+  }, [userInfo]);
+
+  // Käyttäjän ja tietojen haku
   const getUser = async () => {
-  const { data: { user } } = await supabase.auth.getUser(); 
-  console.log("Fetched user:", user);
-  setUserInfo(user);
-}
+    const { data: { user } } = await supabase.auth.getUser(); 
+    console.log("Fetched user:", user);
+    setUserInfo(user);
+  };
 
   const getCategories = async () => {
-  const { data } = await supabase
-    .from('category')
-    .select('*');
-  console.log("Fetched categories:", data); // Debuggaus
-  setCategories(data);
-}
+    const { data } = await supabase
+      .from('category')
+      .select('*');
+    console.log("Fetched categories:", data);
+    setCategories(data);
+  };
 
+  const getCurrentSavingsAndSavedGoal = async () => {
+    const { data } = await supabase
+      .from('savings')
+      .select('*')
+      .eq('user_id', userInfo.id); // Käyttäjän ID suodatus
+
+    if (data && data.length > 0) {
+      const { current_savings, goal_amount } = data[0];
+      setSavings({ current_savings, goal_amount });
+      console.log("Fetched savings: ", data);
+    }
+  };
 
   // Tarkistetaan, että userInfo ja categories ovat ladattu ennen komponenttien renderöintiä
   if (!userInfo || categories.length === 0) {
@@ -36,43 +55,32 @@ export default function FetchUsersInfo() {
 
   return (
     <div>
-      
-
-{/* <h1>Welcome to the Home Page</h1> */}
       <div style={{ marginTop: '20px', float: 'right' }}>
         {userInfo ? <p>Logged in as: {userInfo.email}</p> : <p>Loading...</p>}
       </div>
 
-        <Calculations categories={categories} userInfo={userInfo} />
-       
-      {/* Tulon lisääminen uuden sivun kautta*/}
+      <Calculations categories={categories} userInfo={userInfo} />
 
-        <Link to="/addTransaction" state={{userInfo, categories}}>
-            <button className="add-button">
-            +
-            </button>
+      {/* Näytetään current_savings ja goal_amount */}
+      <div>
+        <h2>Savings Information</h2>
+        <p>Current Savings: {savings.current_savings} €</p>
+        <p>Savings Goal: {savings.goal_amount} €</p>
+      </div>
+
+      {/* Tulon lisääminen uuden sivun kautta */}
+      <Link to="/addTransaction" state={{ userInfo, categories }}>
+        <button className="add-button">+</button>
       </Link>
 
-      
-
-    <Link to="/statistics" state={{ userInfo, categories }}>
-        <button className="statistics-button">
-          Statistics
-        </button>
-
-        
-      </Link> 
+      <Link to="/statistics" state={{ userInfo, categories }}>
+        <button className="statistics-button">Statistics</button>
+      </Link>
 
       {/* Uusi Savings-painike, joka ohjaa SavingsPage-sivulle */}
-      <Link to="/savings" state={{ userInfo }}> {/* Voit halutessasi välittää myös kategorioita */}
-        <button className="savings-button">
-          Set Savings Goal
-        </button>
+      <Link to="/savings" state={{ userInfo }}>
+        <button className="savings-button">Set Savings Goal</button>
       </Link>
-
-      
-      
-      
     </div>
   );
 }
