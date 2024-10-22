@@ -41,6 +41,7 @@ export default function AddTransaction() {
     }
   };
 
+
   const addExpense = async () => {
     if (isNaN(expenseAmount) || expenseAmount.trim() === "") {
       alert("Please enter a valid number for expense.");
@@ -103,7 +104,7 @@ export default function AddTransaction() {
       setCustomCategory("");
       setShowCustomCategory(false);
     }
-  };
+  }
 
   // Tekstikenttä tulee näkyviin jos valitaan "other"
   const handleCategoryChange = (e) => {
@@ -116,22 +117,6 @@ export default function AddTransaction() {
       setShowCustomCategory(false);
     }
   };
-
-const { data, error } = await supabase
-  .from('expense')
-  .insert([{
-    amount: parseFloat(expenseAmount),
-    categoryid: parseFloat(selectedCategoryId),
-    user_id: state.userInfo.id
-  }])
-  if (error) {
-    console.error(error);
-    alert('Error adding expense. Please try again.');
-  } else {
-    alert('Expense added successfully!');
-    setExpenseAmount('');  // Tyhjennetään syöttökenttä
-  }
-}
 
   return (
     <div>
