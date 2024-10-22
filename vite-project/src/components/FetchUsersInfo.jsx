@@ -10,8 +10,13 @@ export default function FetchUsersInfo() {
 
   useEffect(() => {
     getUser();
-    getCategories();
   }, []);
+
+  useEffect(() => {
+    if (userInfo) {
+    getCategories();
+    }
+  }, [userInfo]);
 
   const getUser = async () => {
   const { data: { user } } = await supabase.auth.getUser(); 
@@ -22,9 +27,11 @@ export default function FetchUsersInfo() {
   const getCategories = async () => {
   const { data } = await supabase
     .from('category')
-    .select('*');
-  // console.log("Fetched categories:", data); // Debuggaus
-  setCategories(data);
+    .select('*')
+    .or(`user_id.is.null,user_id.eq.${userInfo.id}`)
+      
+    console.log(data);
+    setCategories(data);
 }
 
 
