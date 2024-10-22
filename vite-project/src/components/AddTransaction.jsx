@@ -10,6 +10,11 @@ export default function AddTransaction() {
   const [customLimit, setCustomLimit] = useState("");
   const [showCustomCategory, setShowCustomCategory] = useState(false);
 
+    const today = new Date();
+    const formattedToday = today.toISOString();
+
+   
+
   let { state } = useLocation();
   // toimii vähän kuin props mutta <Link to=""> -komponentin kanssa
 
@@ -20,13 +25,13 @@ export default function AddTransaction() {
       return;
     }
 
-    const { data, error } = await supabase.from("income").insert([
-      {
+    const { data, error } = await supabase
+    .from("income")
+    .insert([{
         amount: parseFloat(incomeAmount),
         user_id: state.userInfo.id,
-        // vähän kuin props.userInfo.id
-      },
-    ]);
+        date_added: formattedToday,
+      }])
     if (error) {
       console.error(error);
       alert("Error adding income. Please try again.");
@@ -68,9 +73,9 @@ export default function AddTransaction() {
         return;
       }
 
-      // Hakee uuden categoryid ja tarkistaa että supabase palauttaa id arvon
       if (categoryData && categoryData.length > 0) {
         finalCategoryId = categoryData[0].categoryid;
+
       } else {
         alert("Error add new category ID.");
         return;
@@ -85,6 +90,7 @@ export default function AddTransaction() {
           amount: parseFloat(expenseAmount),
           categoryid: finalCategoryId,
           user_id: state.userInfo.id,
+          date_added: formattedToday,
         },
       ]);
 
@@ -111,6 +117,22 @@ export default function AddTransaction() {
     }
   };
 
+const { data, error } = await supabase
+  .from('expense')
+  .insert([{
+    amount: parseFloat(expenseAmount),
+    categoryid: parseFloat(selectedCategoryId),
+    user_id: state.userInfo.id
+  }])
+  if (error) {
+    console.error(error);
+    alert('Error adding expense. Please try again.');
+  } else {
+    alert('Expense added successfully!');
+    setExpenseAmount('');  // Tyhjennetään syöttökenttä
+  }
+}
+
   return (
     <div>
       <h3>Add Income</h3>
@@ -129,6 +151,7 @@ export default function AddTransaction() {
 
       <div>
         <h3>Add Expense</h3>
+
         <input
           type="text"
           placeholder="Enter your expense amount"

@@ -27,14 +27,15 @@ export default function FetchUsersInfo() {
   };
 
   const getCategories = async () => {
-    const { data } = await supabase
-      .from("category")
-      .select("*")
-      .or(`user_id.is.null,user_id.eq.${userInfo.id}`);
-
+  const { data } = await supabase
+    .from('category')
+    .select('*')
+    .or(`user_id.is.null,user_id.eq.${userInfo.id}`)
+      
     console.log(data);
     setCategories(data);
-  };
+}
+
 
   // Tarkistetaan, että userInfo ja categories ovat ladattu ennen komponenttien renderöintiä
   if (!userInfo || categories.length === 0) {
