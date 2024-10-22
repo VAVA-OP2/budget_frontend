@@ -61,7 +61,7 @@ export default function FetchUsersInfo() {
 
       <Calculations categories={categories} userInfo={userInfo} />
 
-      {/* Näytetään current_savings ja goal_amount */}
+      
       <div>
         <h2>Savings Information</h2>
         <p>Current Savings: {savings.current_savings} €</p>

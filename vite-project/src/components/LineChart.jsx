@@ -3,24 +3,37 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-export default function LineChart({ currentSavings, goalAmount }) {
+export default function LineChart({ savingsData, goalAmount }) {
+  // Muodosta kaavion labelit aikaleimoista (timestamps)
+  const labels = savingsData.map(entry => entry.date.toLocaleDateString());
+
+  // Muodosta kumulatiivinen säästösumma
+  let cumulativeSavings = 0;
+  const savingsAmounts = savingsData.map(entry => {
+    cumulativeSavings += entry.amount; // Kumulatiivinen summa kasvaa
+    return cumulativeSavings;
+  });
+
+  // Kaavion data ja asetukset
   const data = {
-    labels: ['0%', '25%', '50%', '75%', '100%'], // Voit valita sopivat labelit
+    labels: labels, // Käytetään aikaleimoja labelina
     datasets: [
       {
-        label: 'Current Savings',
-        data: [0, currentSavings], 
+        label: 'Cumulative Savings',
+        data: savingsAmounts, // Käytetään kumulatiivisia säästöjä
         borderColor: 'rgba(75, 192, 192, 1)',
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
         fill: true,
+        pointRadius: 5, // Määritä pisteiden koko
+        pointBackgroundColor: 'rgba(75, 192, 192, 1)',
       },
       {
         label: 'Savings Goal',
-        data: [0, goalAmount], 
+        data: new Array(savingsData.length).fill(goalAmount), // Staattinen viiva säästötavoitteelle
         borderColor: 'rgba(255, 99, 132, 1)',
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         fill: false,
-        borderDash: [5, 5],
+        borderDash: [5, 5], // Pisteviiva tavoitteelle
       },
     ],
   };
@@ -39,6 +52,16 @@ export default function LineChart({ currentSavings, goalAmount }) {
     scales: {
       y: {
         beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Amount',
+        },
+      },  
+      x: {
+        title: {
+          display: true,
+          text: 'Date',
+        },
       },
     },
   };

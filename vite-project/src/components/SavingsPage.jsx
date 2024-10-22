@@ -9,52 +9,71 @@ export default function SavingsPage() {
 
     const [savings, setSavings] = useState(''); // Syötetty uusi säästötavoite
     const [savedGoal, setSavedGoal] = useState(null); // Tallennettu säästötavoite
-    const [currentSavings, setCurrentSavings] = useState(0); // Nykyiset säästöt
     const [addToSavings, setAddToSavings] = useState(''); // Syötettävä summa säästöihin
+    const [savingsData, setSavingsData] = useState([]); // Säästötapahtumat kaaviota varten
 
-    // Hakee tallennetun säästötavoitteen ja nykyiset säästöt tietokannasta
+    // Hakee tallennetun säästötavoitteen ja säästötapahtumat tietokannasta
+    const fetchSavingsData = async () => {
+        // Hae säästötavoite
+        const { data: goalData, error: goalError } = await supabase
+            .from('savings')
+            .select('goal_amount')
+            .eq('user_id', userInfo.id)
+            .single();
+
+        if (goalError && goalError.code !== 'PGRST116') {
+            console.error('Error fetching savings goal:', goalError);
+        } else if (goalData) {
+            setSavedGoal(goalData.goal_amount);
+        }
+
+        // Hae säästötapahtumat savings_log -taulusta
+        const { data: logData, error: logError } = await supabase
+            .from('savings_log')
+            .select('amount, timestamp')
+            .eq('user_id', userInfo.id);
+
+        if (logError) {
+            console.error('Error fetching savings log:', logError);
+        } else {
+            const formattedData = logData.map((entry) => ({
+                amount: entry.amount,
+                date: new Date(entry.timestamp),
+            }));
+            setSavingsData(formattedData); // Käytetään kaaviossa
+        }
+    };
+
     useEffect(() => {
-        const fetchSavingsData = async () => {
-            const { data, error } = await supabase
-                .from('savings')
-                .select('goal_amount, current_savings')
-                .eq('user_id', userInfo.id)
-                .single();
-
-            if (error && error.code !== 'PGRST116') {
-                console.error('Error fetching savings data:', error);
-            } else if (data) {
-                setSavedGoal(data.goal_amount);
-                setCurrentSavings(data.current_savings);
-            }
-        };
-
         if (userInfo.id) {
             fetchSavingsData();
         }
     }, [userInfo]);
 
-    // Lisää rahaa nykyisiin säästöihin
+    // Lisää rahaa säästöihin ja talleta uusi tapahtuma savings_log -tauluun
     const handleAddToSavings = async () => {
         if (isNaN(addToSavings) || addToSavings.trim() === '') {
             alert('Please enter a valid number for adding to savings.');
             return;
         }
 
-        const newSavings = currentSavings + parseFloat(addToSavings);
+        const newAmount = parseFloat(addToSavings);
 
+        // Lisää uusi säästötapahtuma savings_log -tauluun
         const { error } = await supabase
-            .from('savings')
-            .update({ current_savings: newSavings })
-            .eq('user_id', userInfo.id);
+            .from('savings_log')
+            .insert({
+                user_id: userInfo.id,
+                amount: newAmount,
+            });
 
         if (error) {
-            console.error('Error updating current savings:', error);
+            console.error('Error adding to savings log:', error);
             alert('Error adding to savings. Please try again.');
         } else {
-            alert('Savings updated successfully!');
-            setCurrentSavings(newSavings);
-            setAddToSavings('');
+            alert('Savings added successfully!');
+            setAddToSavings(''); // Tyhjennä syöttökenttä
+            fetchSavingsData(); // Päivitä säästötiedot kaaviota varten
         }
     };
 
@@ -99,7 +118,6 @@ export default function SavingsPage() {
                 .insert({
                     goal_amount: parseFloat(savings),
                     user_id: userInfo.id,
-                    current_savings: currentSavings,
                 });
 
             if (insertError) {
@@ -110,6 +128,33 @@ export default function SavingsPage() {
                 setSavedGoal(savings);
                 setSavings('');
             }
+        }
+    };
+
+    // Resetoidaan säästötavoite ja poistetaan säästötapahtumat
+    const resetSavings = async () => {
+        const { error: goalError } = await supabase
+            .from('savings')
+            .update({ goal_amount: 0 }) 
+            .eq('user_id', userInfo.id);
+
+        if (goalError) {
+            console.error('Error resetting savings goal:', goalError);
+            alert('Error resetting savings goal.');
+            return;
+        }
+
+        const { error: logError } = await supabase
+            .from('savings_log')
+            .delete() // Poistetaan kaikki säästötapahtumat
+            .eq('user_id', userInfo.id);
+
+        if (logError) {
+            console.error('Error resetting savings log:', logError);
+            alert('Error resetting savings log.');
+        } else {
+            alert('Savings and goal reset successfully!');
+            fetchSavingsData(); // Päivitä säästötiedot kaaviota varten
         }
     };
 
@@ -139,26 +184,26 @@ export default function SavingsPage() {
                         onChange={(e) => setAddToSavings(e.target.value)}
                     />
                     <button onClick={handleAddToSavings}>Add to Savings</button>
-                    <p>Your current savings are: {currentSavings}</p>
-                    {savedGoal && (
-                        <p>You have saved {((currentSavings / savedGoal) * 100).toFixed(2)}% of your goal.</p>
-                    )}
+                </div>
+
+                <div>
+                    <h2>Reset Savings and Goal</h2>
+                    <button onClick={resetSavings}>Reset</button>
                 </div>
             </div>
 
             {/* LineChart: Näytetään säästöjen kehitys */}
             <div style={{ flex: 1 }}>
-                {savedGoal && currentSavings > 0 && (
-                    <div style={{ height: '100%' }}>  {/* Varmista, että kaavion korkeus täsmää tekstiosion kanssa */}
+                {savedGoal && savingsData.length > 0 && (
+                    <div style={{ height: '100%' }}> 
                         <h2>Savings Progress</h2>
                         <LineChart
-                            currentSavings={currentSavings}
+                            savingsData={savingsData}
                             goalAmount={savedGoal}
                         />
                     </div>
                 )}
             </div>
         </div>
-
     );
 }
