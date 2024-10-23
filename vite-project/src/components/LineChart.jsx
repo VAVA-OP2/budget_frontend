@@ -33,7 +33,7 @@ export default function LineChart({ savingsData, goalAmount }) {
         borderColor: 'rgba(255, 99, 132, 1)',
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         fill: false,
-        borderDash: [5, 5], // Pisteviiva tavoitteelle
+        borderDash: [], // Pisteviiva tavoitteelle esim jos laitaa 5 , 5
       },
     ],
   };
@@ -43,10 +43,14 @@ export default function LineChart({ savingsData, goalAmount }) {
     plugins: {
       legend: {
         position: 'top',
+        labels: {
+          color: 'white', 
+        },
       },
       title: {
         display: true,
         text: 'Savings Progress',
+        color: 'white', 
       },
     },
     scales: {
@@ -55,16 +59,25 @@ export default function LineChart({ savingsData, goalAmount }) {
         title: {
           display: true,
           text: 'Amount',
+          color: 'white', 
         },
-      },  
+        ticks: {
+          color: 'white', 
+        },
+      },
       x: {
         title: {
           display: true,
           text: 'Date',
+          color: 'white', 
+        },
+        ticks: {
+          color: 'white', 
         },
       },
     },
   };
+  
 
   return <Line data={data} options={options} />;
 }
