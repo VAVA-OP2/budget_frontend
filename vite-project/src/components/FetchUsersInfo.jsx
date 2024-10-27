@@ -89,7 +89,7 @@ export default function FetchUsersInfo() {
       
       <div>
         <h2>Savings Information</h2>
-        <p>Current Savings: {totalAddedSavings} €</p> {/* Updated to show the sum of all added amounts */}
+        <p>Current Savings: {totalAddedSavings} €</p> 
         <p>Savings Goal: {savings.goal_amount} €</p>
       </div>
 
