@@ -7,6 +7,7 @@ export default function FetchUsersInfo() {
   const [userInfo, setUserInfo] = useState(null);
   const [categories, setCategories] = useState([]);
   const [savings, setSavings] = useState({ current_savings: 0, goal_amount: 0 });
+  const [totalAddedSavings, setTotalAddedSavings] = useState(0); // New: total of all added amounts
   
 
   useEffect(() => {
@@ -17,6 +18,7 @@ export default function FetchUsersInfo() {
   useEffect(() => {
     if (userInfo) {
       getCurrentSavingsAndSavedGoal();
+      calculateTotalAddedSavings(); // Fetch and calculate all added amounts
     }
   }, [userInfo]);
 
@@ -48,6 +50,21 @@ export default function FetchUsersInfo() {
     }
   };
 
+  // New: Calculate the total of all added savings amounts
+  const calculateTotalAddedSavings = async () => {
+    const { data: logData, error } = await supabase
+        .from('savings_log')
+        .select('amount')
+        .eq('user_id', userInfo.id);
+
+    if (error) {
+        console.error('Error fetching savings log:', error);
+    } else if (logData) {
+        const total = logData.reduce((sum, entry) => sum + entry.amount, 0);
+        setTotalAddedSavings(total); // Set the total added amount
+    }
+};
+
   // Tarkistetaan, että userInfo ja categories ovat ladattu ennen komponenttien renderöintiä
   if (!userInfo || categories.length === 0) {
     return <p>Loading user info and categories...</p>;
@@ -64,7 +81,7 @@ export default function FetchUsersInfo() {
       
       <div>
         <h2>Savings Information</h2>
-        <p>Current Savings: {savings.current_savings} €</p>
+        <p>Current Savings: {totalAddedSavings} €</p> {/* Updated to show the sum of all added amounts */}
         <p>Savings Goal: {savings.goal_amount} €</p>
       </div>
 
@@ -79,7 +96,7 @@ export default function FetchUsersInfo() {
 
       {/* Uusi Savings-painike, joka ohjaa SavingsPage-sivulle */}
       <Link to="/savings" state={{ userInfo }}>
-        <button className="savings-button">Set Savings Goal</button>
+        <button className="savings-button">Go to savings</button>
       </Link>
     </div>
   );
