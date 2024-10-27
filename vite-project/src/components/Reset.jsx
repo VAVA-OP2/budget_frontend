@@ -16,7 +16,7 @@ export const resetIncome = async (userInfo) => {
         } else {
             alert("All income has been successfully deleted!");
         }
-    } 
+    }
 };
 
 //Kysytään käyttäjältä varmistus ja poistetaan tiedot menot taulusta
@@ -34,7 +34,31 @@ export const resetExpense = async (userInfo) => {
         } else {
             alert("All expenses have been successfully deleted!");
         }
-    } 
+    }
 
-    
+
+};
+export const resetSavings = async (userInfo) => {
+    const { error } = await supabase
+        .from('savings')
+        .delete()
+        .eq('user_id', userInfo.id);
+
+    if (error) {
+        console.error('Error resetting savings goal:', error.message);
+        alert('Error resetting savings goal.');
+        return;
+    }
+
+    const { error: logError } = await supabase
+        .from('savings_log')
+        .delete()
+        .eq('user_id', userInfo.id);
+
+    if (logError) {
+        console.error('Error resetting savings log:', logError);
+        alert('Error resetting savings log.');
+    } else {
+        alert('Savings and goal reset successfully!');
+    }
 };

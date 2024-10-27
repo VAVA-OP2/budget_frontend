@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { supabase } from '/supabaseClient';
-import LineChart from './LineChart'; // Tuo LineChart komponentti
+import LineChart from './LineChart';
+import { resetIncome, resetExpense, resetSavings } from './Reset';
 
 export default function SavingsPage() {
     const location = useLocation();
     const { userInfo } = location.state || {};
 
-    const [savings, setSavings] = useState(''); // Syötetty uusi säästötavoite
-    const [savedGoal, setSavedGoal] = useState(null); // Tallennettu säästötavoite
-    const [addToSavings, setAddToSavings] = useState(''); // Syötettävä summa säästöihin
-    const [savingsData, setSavingsData] = useState([]); // Säästötapahtumat kaaviota varten
+    const [savings, setSavings] = useState('');
+    const [savedGoal, setSavedGoal] = useState(null);
+    const [addToSavings, setAddToSavings] = useState('');
+    const [savingsData, setSavingsData] = useState([]);
+    const [allSavingsEntries, setAllSavingsEntries] = useState([]); // New: stores all savings entries
+    const [lastAddedAmount, setLastAddedAmount] = useState(null); // New: stores the last added amount
 
-    // Hakee tallennetun säästötavoitteen ja säästötapahtumat tietokannasta
     const fetchSavingsData = async () => {
-        // Hae säästötavoite
         const { data: goalData, error: goalError } = await supabase
             .from('savings')
             .select('goal_amount')
@@ -27,7 +28,6 @@ export default function SavingsPage() {
             setSavedGoal(goalData.goal_amount);
         }
 
-        // Hae säästötapahtumat savings_log -taulusta
         const { data: logData, error: logError } = await supabase
             .from('savings_log')
             .select('amount, timestamp')
@@ -40,7 +40,8 @@ export default function SavingsPage() {
                 amount: entry.amount,
                 date: new Date(entry.timestamp),
             }));
-            setSavingsData(formattedData); // Käytetään kaaviossa
+            setSavingsData(formattedData);
+            setAllSavingsEntries(formattedData.map(entry => entry.amount)); // New: stores all amounts
         }
     };
 
@@ -50,7 +51,6 @@ export default function SavingsPage() {
         }
     }, [userInfo]);
 
-    // Lisää rahaa säästöihin ja talleta uusi tapahtuma savings_log -tauluun
     const handleAddToSavings = async () => {
         if (isNaN(addToSavings) || addToSavings.trim() === '') {
             alert('Please enter a valid number for adding to savings.');
@@ -59,7 +59,6 @@ export default function SavingsPage() {
 
         const newAmount = parseFloat(addToSavings);
 
-        // Lisää uusi säästötapahtuma savings_log -tauluun
         const { error } = await supabase
             .from('savings_log')
             .insert({
@@ -72,12 +71,13 @@ export default function SavingsPage() {
             alert('Error adding to savings. Please try again.');
         } else {
             alert('Savings added successfully!');
-            setAddToSavings(''); // Tyhjennä syöttökenttä
-            fetchSavingsData(); // Päivitä säästötiedot kaaviota varten
+            setLastAddedAmount(newAmount); // New: update last added amount
+            setAllSavingsEntries(prevEntries => [...prevEntries, newAmount]); // New: add to entries list
+            setAddToSavings('');
+            fetchSavingsData();
         }
     };
 
-    // Lisää tai päivittää säästötavoitteen
     const addOrUpdateSavingsGoal = async () => {
         if (isNaN(savings) || savings.trim() === '') {
             alert('Please enter a valid number for savings goal.');
@@ -97,7 +97,6 @@ export default function SavingsPage() {
         }
 
         if (existingGoal) {
-            // Jos käyttäjällä on jo tavoite, päivitetään se
             const { error: updateError } = await supabase
                 .from('savings')
                 .update({ goal_amount: parseFloat(savings) })
@@ -112,7 +111,6 @@ export default function SavingsPage() {
                 setSavings('');
             }
         } else {
-            // Jos käyttäjällä ei ole tavoitetta, lisätään uusi tietue
             const { error: insertError } = await supabase
                 .from('savings')
                 .insert({
@@ -131,71 +129,48 @@ export default function SavingsPage() {
         }
     };
 
-    // Resetoidaan säästötavoite ja poistetaan säästötapahtumat
-    const resetSavings = async () => {
-        const { error: goalError } = await supabase
-            .from('savings')
-            .update({ goal_amount: 0 }) 
-            .eq('user_id', userInfo.id);
-
-        if (goalError) {
-            console.error('Error resetting savings goal:', goalError);
-            alert('Error resetting savings goal.');
-            return;
-        }
-
-        const { error: logError } = await supabase
-            .from('savings_log')
-            .delete() // Poistetaan kaikki säästötapahtumat
-            .eq('user_id', userInfo.id);
-
-        if (logError) {
-            console.error('Error resetting savings log:', logError);
-            alert('Error resetting savings log.');
-        } else {
-            alert('Savings and goal reset successfully!');
-            fetchSavingsData(); // Päivitä säästötiedot kaaviota varten
-        }
-    };
-
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-
-            {/* Tekstiosio säästöistä */}
             <div style={{ flex: 1, marginRight: '20px' }}>
-                <div>
-                    <h2>Add or Update your Savings Goal</h2>
-                    <input
-                        type="text"
-                        placeholder="Enter your savings goal"
-                        value={savings}
-                        onChange={(e) => setSavings(e.target.value)}
-                    />
-                    <button onClick={addOrUpdateSavingsGoal}>Save Savings Goal</button>
-                    {savedGoal && <p>Your current savings goal is: {savedGoal}</p>}
-                </div>
+                <h2>Add or Update your Savings Goal</h2>
+                <input
+                    type="text"
+                    placeholder="Enter your savings goal"
+                    value={savings}
+                    onChange={(e) => setSavings(e.target.value)}
+                />
+                <button onClick={addOrUpdateSavingsGoal}>Save Savings Goal</button>
+                {savedGoal && <p>Your current savings goal is: {savedGoal}</p>}
 
-                <div>
-                    <h2>Add to your Savings</h2>
-                    <input
-                        type="text"
-                        placeholder="Enter amount to add to savings"
-                        value={addToSavings}
-                        onChange={(e) => setAddToSavings(e.target.value)}
-                    />
-                    <button onClick={handleAddToSavings}>Add to Savings</button>
-                </div>
+                <h2>Add to your Savings</h2>
+                <input
+                    type="text"
+                    placeholder="Enter amount to add to savings"
+                    value={addToSavings}
+                    onChange={(e) => setAddToSavings(e.target.value)}
+                />
+                <button onClick={handleAddToSavings}>Add to Savings</button>
+                {lastAddedAmount !== null && (
+                    <p>Last added amount: {lastAddedAmount} €</p>
+                )}
+                {allSavingsEntries.length > 0 && (
+                    <div>
+                        <h3>All Added Amounts:</h3>
+                        <ul>
+                            {allSavingsEntries.map((amount, index) => (
+                                <li key={index}>{amount} €</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
 
-                <div>
-                    <h2>Reset Savings and Goal</h2>
-                    <button onClick={resetSavings}>Reset</button>
-                </div>
+                <h2>Reset Savings and Goal</h2>
+                <button onClick={() => resetSavings(userInfo)}>Reset</button>
             </div>
 
-            {/* LineChart: Näytetään säästöjen kehitys */}
             <div style={{ flex: 1 }}>
                 {savedGoal && savingsData.length > 0 && (
-                    <div style={{ height: '100%' }}> 
+                    <div style={{ height: '100%' }}>
                         <h2>Savings Progress</h2>
                         <LineChart
                             savingsData={savingsData}
