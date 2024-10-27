@@ -7,6 +7,7 @@ import Statistics from './components/Statistics';
 import Auth from './components/Auth';
 import AddTransaction from './components/AddTransaction';
 import FetchUsersInfo from './components/FetchUsersInfo';
+import SavingsPage from './components/SavingsPage';
 
 const AppWrapper = () => {
   
@@ -32,6 +33,10 @@ const AppWrapper = () => {
         <Route
           path="/addTransaction"
           element={isAuthenticated ? <AddTransaction /> : <Auth setIsAuthenticated={setIsAuthenticated} />}
+        />
+        <Route
+          path="/savings"
+          element={isAuthenticated ? <SavingsPage /> : <Auth setIsAuthenticated={setIsAuthenticated} />}
         />
       </Routes>
     </Router>
