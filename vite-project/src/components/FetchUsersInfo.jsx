@@ -58,7 +58,7 @@ export default function FetchUsersInfo() {
     }
   };
 
-  // New: Calculate the total of all added savings amounts
+ 
   const calculateTotalAddedSavings = async () => {
     const { data: logData, error } = await supabase
         .from('savings_log')
