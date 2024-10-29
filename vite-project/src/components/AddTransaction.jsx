@@ -119,7 +119,7 @@ export default function AddTransaction() {
   };
 
   return (
-    <div>
+    <div className="add-transa-container">
       <h3>Add Income</h3>
 
       <input
@@ -127,14 +127,14 @@ export default function AddTransaction() {
         placeholder="Enter your income amount"
         value={incomeAmount}
         onChange={(e) => setIncomeAmount(e.target.value)}
-        className="input-field"
+        className="input-field-add"
       />
 
-      <button onClick={addIncome} style={{ padding: "10px", width: "100%" }}>
+      <button onClick={addIncome} className="add-transa-button">
         Add Income
       </button>
 
-      <div>
+      <div className="add-transa-container">
         <h3>Add Expense</h3>
 
         <input
@@ -142,12 +142,12 @@ export default function AddTransaction() {
           placeholder="Enter your expense amount"
           value={expenseAmount}
           onChange={(e) => setExpenseAmount(e.target.value)}
-          className="input-field"
+          className="input-field-add"
         />
         <select
           value={selectedCategoryId}
           onChange={handleCategoryChange}
-          className="input-field"
+          className="input-field-add"
         >
           <option value="">Select Category</option>
           {state.categories.map((category) => (
@@ -159,14 +159,14 @@ export default function AddTransaction() {
         </select>
 
         {showCustomCategory && ( // Näytetään tekstikenttä, jos "other" on valittu
-          <div>
+          <div className="add-transa-container">
             <label>Add your category:</label>
             <input
               type="text"
               value={customCategory}
               onChange={(e) => setCustomCategory(e.target.value)}
               placeholder="Enter your category"
-              className="input-field"
+              className="input-field-add"
             />
 
             <input
@@ -174,12 +174,12 @@ export default function AddTransaction() {
               value={customLimit}
               onChange={(e) => setCustomLimit(e.target.value)}
               placeholder="Enter category limit"
-              className="input-field"
+              className="input-field-add"
             />
           </div>
         )}
 
-        <button onClick={addExpense} style={{ padding: "10px", width: "100%" }}>
+        <button onClick={addExpense} className="add-transa-button">
           Add Expense
         </button>
       </div>

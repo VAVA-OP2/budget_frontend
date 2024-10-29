@@ -8,10 +8,10 @@ button {
     background-color: #FCD9DA;
     color: #3E3D3E;
     border: none;
-    padding: 8px 12px;
-    border-radius: 10px;
+    padding: 6px 10px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     transition: background-color 0.3s ease;
 }
 
@@ -41,10 +41,10 @@ button:hover {
     background-color: #BDC696; 
     color: #3E3D3E;            
     margin-right: 40px;
-    font-size: 24px;
-    padding: 12px 16px;
-    width: 140px;
-    height: 50px;
+    font-size: 16px;
+    padding: 10px 12px;
+    width: 100px;
+    height: 35px;
     border-radius: 15px; 
     position: fixed;
     bottom: 53px;
@@ -94,3 +94,114 @@ button:hover {
     height: auto;
     margin-right: 10px; 
   }
+
+.input-field-add {
+    padding: 8px;
+    width: 1000px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    background-color: #F5EFED;
+    color: #3E3D3E;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-transa-button {
+    background-color: #FCD9DA;
+    color: #3E3D3E;
+    border: none;
+    padding: 8px 12px;
+    width: 1000px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+add-transa-button:hover {
+    background-color: #FDC7C8;
+}
+
+.add-transa-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.warning-button-container {
+    display: flex;
+    flex-direction: row;
+    padding: 10px 10px;
+    align-items: center;
+    justify-content: left;
+    gap: 10px;
+}
+
+.warning-button {
+    background-color: #F47B7B;
+    color: #3E3D3E;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
+}
+
+warning-button:hover {
+    background-color: #F25757;
+}
+
+.dates-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+}
+
+.dates-paragraph {
+    font-size: 13px;
+    color: #F5EFED;
+    line-height: 1.5;
+    margin: 10px 0;
+    padding: 10px 10px;
+    text-align: left;
+}
+
+.dates-picker-input {
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+    outline: none;
+    width: 110px;
+    box-sizing: border-box;
+}
+
+.dates-button {
+    background-color: #FCD9DA;
+    color: #3E3D3E;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.3s ease;
+}
+
+dates-button:hover {
+    background-color: #FDC7C8;
+}
+
+.dates-buttons-container {
+    display: flex;
+    flex-direction: row;
+    padding: 10px 10px;
+    align-items: center;
+    justify-content: left;
+    gap: 10px;
+}

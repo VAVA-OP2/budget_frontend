@@ -8,19 +8,15 @@ function App({ isAuthenticated }) {
       {isAuthenticated && (
         <>
           <div className="header-container">
+            <Link to="/home">
             <img 
               src="./vava-favicon-color.png" 
               alt="Vava Logo" 
               className="logo"
             />
+            </Link>
             <h1 className="header">Vava Budget</h1>
           </div>
-          <nav>
-            <button style={{ marginRight: '16px' }}>
-              <Link to="/home" style={{ color: 'black' }}>Home</Link>
-            </button>{" "}
-            
-          </nav>
         </>
       )}
       
