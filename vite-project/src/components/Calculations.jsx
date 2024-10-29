@@ -295,17 +295,18 @@ const getExpensesByDate = async () => {
   return (
     <div style={{ padding: '50px', maxWidth: '600px', margin: '0 auto' }}>
 
-      <div>
-        <p>Search for transactions based on date</p>
+      <p className="dates-paragraph">Search for transactions based on date</p>
+      <div className="dates-container">
 
-        <p>Start Date</p>
+        <p className="dates-paragraph">Start Date</p>
         <DatePicker showIcon selected={startDate} onChange={(date) => {
           const newDate = new Date(date.setHours(3, 0, 0, 0));
           setStartDate(newDate);
-          }}   
+          }}  
+          className="dates-picker-input" 
         />
 
-        <p>End Date</p>
+        <p className="dates-paragraph">End Date</p>
         <DatePicker showIcon selected={new Date(endDate).setDate(new Date(endDate.getDate() - 1))} onChange={(date) => {
 
           const newDate = new Date(date.setHours(3, 0, 0, 0));
@@ -314,20 +315,26 @@ const getExpensesByDate = async () => {
 
             setEndDate(newDate);
           }}
+          className="dates-picker-input"
         />
+        </div>
 
-        <button onClick={() => {
+        <div className="dates-buttons-container">
+        <button className="dates-button"
+          onClick={() => {
           getIncomeByDate();
           getExpensesByDate();
           getExpensesByCategoryWithDate();
         }}>Search</button>
-      </div>
+      
 
-      <button onClick={() => {
+      <button className="dates-button"
+          onClick={() => {
           setSearchByDate(false);
           setStartDate(new Date());
           setEndDate(new Date());
         }}>Reset Dates</button>
+        </div>
 
 
       <div style={{ marginTop: '20px' }}>
@@ -345,13 +352,15 @@ const getExpensesByDate = async () => {
 
        
 
-        
+        <div className="warning-button-container">
 
-        <button onClick={handleResetIncome}>Reset Income</button>
+        <button className="warning-button" onClick={handleResetIncome}>Reset Income</button>
 
 
 
-        <button onClick={handleResetExpense}>Reset Expense</button>
+        <button className="warning-button" onClick={handleResetExpense}>Reset Expense</button>
+
+        </div>
 
         <h3>Balance: {balance} €</h3>
 
