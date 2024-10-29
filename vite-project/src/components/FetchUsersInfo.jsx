@@ -40,7 +40,8 @@ export default function FetchUsersInfo() {
   const getCategories = async () => {
     const { data } = await supabase
       .from('category')
-      .select('*');
+      .select('*')
+      .or(`user_id.is.null,user_id.eq.${userInfo.id}`)
     console.log("Fetched categories:", data);
     setCategories(data);
   };
