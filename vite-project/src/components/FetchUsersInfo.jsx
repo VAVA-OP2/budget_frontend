@@ -1,14 +1,16 @@
-import { supabase } from '/supabaseClient';
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Calculations from './Calculations';
+import { supabase } from "/supabaseClient";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Calculations from "./Calculations";
 
 export default function FetchUsersInfo() {
   const [userInfo, setUserInfo] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [savings, setSavings] = useState({ current_savings: 0, goal_amount: 0 });
+  const [savings, setSavings] = useState({
+    current_savings: 0,
+    goal_amount: 0,
+  });
   const [totalAddedSavings, setTotalAddedSavings] = useState(0); // New: total of all added amounts
-  
 
   //Kaksi peräkkäistä useEffectiä, haetaan ensin userInfo ja sen jälkeen kategoriat.
   useEffect(() => {
@@ -39,17 +41,18 @@ export default function FetchUsersInfo() {
 
   const getCategories = async () => {
     const { data } = await supabase
-      .from('category')
-      .select('*');
+      .from("category")
+      .select("*")
+      .or(`user_id.is.null,user_id.eq.${userInfo.id}`);
     console.log("Fetched categories:", data);
     setCategories(data);
   };
 
   const getCurrentSavingsAndSavedGoal = async () => {
     const { data } = await supabase
-      .from('savings')
-      .select('*')
-      .eq('user_id', userInfo.id); // Käyttäjän ID suodatus
+      .from("savings")
+      .select("*")
+      .eq("user_id", userInfo.id); // Käyttäjän ID suodatus
 
     if (data && data.length > 0) {
       const { current_savings, goal_amount } = data[0];
@@ -58,20 +61,19 @@ export default function FetchUsersInfo() {
     }
   };
 
- 
   const calculateTotalAddedSavings = async () => {
     const { data: logData, error } = await supabase
-        .from('savings_log')
-        .select('amount')
-        .eq('user_id', userInfo.id);
+      .from("savings_log")
+      .select("amount")
+      .eq("user_id", userInfo.id);
 
     if (error) {
-        console.error('Error fetching savings log:', error);
+      console.error("Error fetching savings log:", error);
     } else if (logData) {
-        const total = logData.reduce((sum, entry) => sum + entry.amount, 0);
-        setTotalAddedSavings(total); // Set the total added amount
+      const total = logData.reduce((sum, entry) => sum + entry.amount, 0);
+      setTotalAddedSavings(total); // Set the total added amount
     }
-};
+  };
 
   // Tarkistetaan, että userInfo ja categories ovat ladattu ennen komponenttien renderöintiä
   if (!userInfo || categories.length === 0) {
@@ -80,16 +82,15 @@ export default function FetchUsersInfo() {
 
   return (
     <div>
-      <div style={{ marginTop: '20px', float: 'right' }}>
+      <div style={{ marginTop: "20px", float: "right" }}>
         {userInfo ? <p>Logged in as: {userInfo.email}</p> : <p>Loading...</p>}
       </div>
 
       <Calculations categories={categories} userInfo={userInfo} />
 
-      
       <div>
         <h2>Savings Information</h2>
-        <p>Current Savings: {totalAddedSavings} €</p> 
+        <p>Current Savings: {totalAddedSavings} €</p>
         <p>Savings Goal: {savings.goal_amount} €</p>
       </div>
 
