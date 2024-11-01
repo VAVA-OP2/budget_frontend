@@ -23,7 +23,7 @@ export default function Calculations(props) {
   const navigate = useNavigate();
 
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState();
+  const [endDate, setEndDate] = useState(new Date());
 
   const [searchByDate, setSearchByDate] = useState(false);
 
@@ -306,18 +306,30 @@ const getExpensesByDate = async () => {
 
         <p className="dates-paragraph">Start Date</p>
         <DatePicker showIcon selected={startDate} onChange={(date) => {
-          const newDate = new Date(date.setHours(3, 0, 0, 0));
+
+          // asettaa päivämäärän alkamaan keskiyöstä, muuten päivämäärän kellonaika sama kuin käyttäjän
+          const newDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0));
+
+          // console.log('Start Date: ' + newDate.toISOString());
+
           setStartDate(newDate);
           }}  
           className="dates-picker-input" 
         />
 
+
+        {/* End Daten kalenterinäkymän päivämäärän kanssa ongelmia */}
+        {/* Päivämäärän toiminnallisuus ei toimi jos kalenterinäkymässä ei ole -1 */}
+        {/*  */}
         <p className="dates-paragraph">End Date</p>
-        <DatePicker showIcon selected={new Date(endDate).setDate(new Date(endDate.getDate() - 1))} onChange={(date) => {
+        <DatePicker 
+          showIcon 
+          selected={new Date(endDate).setDate(new Date(endDate.getDate() - 1))} 
+          onChange={(date) => {
 
           const newDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 0));
 
-          console.log('newDate: ' + newDate.toISOString()); 
+          // console.log('newDate: ' + newDate.toISOString()); 
           // käyttäjä valitsee päivämääräksi 15.10.2024 -> newDate 15.10.2024 klo 23.59.59
 
             setEndDate(newDate);
@@ -339,7 +351,7 @@ const getExpensesByDate = async () => {
           onClick={() => {
           setSearchByDate(false);
           setStartDate(new Date());
-          setEndDate();
+          setEndDate(new Date());
         }}>Reset Dates</button>
         </div>
 
@@ -359,15 +371,7 @@ const getExpensesByDate = async () => {
 
        
 
-        <div className="warning-button-container">
-
-        <button className="warning-button" onClick={handleResetIncome}>Reset Income</button>
-
-
-
-        <button className="warning-button" onClick={handleResetExpense}>Reset Expense</button>
-
-        </div>
+       
 
         <h3>Balance: {balance} €</h3>
 
@@ -389,14 +393,17 @@ const getExpensesByDate = async () => {
       </div>
 
       {/* income ja expense datan poistonapit */}
-      <button onClick={handleResetIncome}>Delete income data</button>
-      <button onClick={handleResetExpense}>Delete expense data</button>
-     
-      {/* näytä tämä nappi jos päivämäärähakua on käytetty */}
-      {searchByDate ? (
-          <button onClick={handleResetByDate}>Delete data from date range</button>
-        ):(
-        <div></div>)}
+      <div className="warning-button-container">
+
+        <button className="warning-button" onClick={handleResetIncome}>Delete income data</button>
+        <button className="warning-button" onClick={handleResetExpense}>Delete expense data </button>
+
+        {/* näytä tämä nappi jos päivämäärähakua on käytetty */}
+        {searchByDate ? (
+                  <button className="warning-button" onClick={handleResetByDate}>Delete data from date range</button>
+                ):(
+                <div></div>)}
+      </div>
 
       <button onClick={handleLogout} style={{ marginTop: '20px' }}>
         Log Out
