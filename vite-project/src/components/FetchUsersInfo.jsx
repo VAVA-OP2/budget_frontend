@@ -33,7 +33,7 @@ export default function FetchUsersInfo() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    console.log("Fetched user:", user);
+    // console.log("Fetched user:", user);
     setUserInfo(user);
   };
 
@@ -42,7 +42,7 @@ export default function FetchUsersInfo() {
       .from('category')
       .select('*')
       .or(`user_id.is.null,user_id.eq.${userInfo.id}`)
-    console.log("Fetched categories:", data);
+    // console.log("Fetched categories:", data);
     setCategories(data);
   };
 
@@ -55,7 +55,7 @@ export default function FetchUsersInfo() {
     if (data && data.length > 0) {
       const { current_savings, goal_amount } = data[0];
       setSavings({ current_savings, goal_amount });
-      console.log("Fetched savings: ", data);
+      // console.log("Fetched savings: ", data);
     }
   };
 
