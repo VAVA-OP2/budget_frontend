@@ -1,5 +1,37 @@
 import { supabase } from '/supabaseClient';
 
+export const resetDataByDates = async (userInfo, startDate, endDate) => {
+
+
+    const isConfirmed = confirm("Are you sure you want to delete data within the chosen dates? This action cannot be reversed.");
+
+    if (isConfirmed) {
+        // poista income
+        const { incomeerror } = await supabase
+            .from('income')
+            .delete()
+            .eq('user_id', userInfo.id)
+            .gte('date_added', startDate)
+            .lte('date_added', endDate)
+
+        // poista expense
+        const { expenseerror } = await supabase
+            .from('expense')
+            .delete()
+            .eq('user_id', userInfo.id)
+            .gte('date_added', startDate)
+            .lte('date_added', endDate)
+
+        if (incomeerror || expenseerror) {
+            console.error("Error deleting data");
+        } else {
+            alert("All data successfully deleted!");
+        }
+
+
+    }
+};
+
 
 //Kysytään käyttäjältä varmistus ja poistetaan tiedot tulo taulusta
 export const resetIncome = async (userInfo) => {

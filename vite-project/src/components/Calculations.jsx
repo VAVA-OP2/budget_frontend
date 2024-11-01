@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from '/supabaseClient';
 import { useNavigate } from "react-router-dom";
-import { resetIncome, resetExpense } from "./Reset";
+import { resetIncome, resetExpense, resetDataByDates } from "./Reset";
 import '../styles.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -23,7 +23,7 @@ export default function Calculations(props) {
   const navigate = useNavigate();
 
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [endDate, setEndDate] = useState();
 
   const [searchByDate, setSearchByDate] = useState(false);
 
@@ -228,7 +228,13 @@ export default function Calculations(props) {
       }
     };
 
-    
+    const handleResetByDate = () => {
+      if (props.userInfo) {
+        resetDataByDates(props.userInfo, startDate.toISOString(), endDate.toISOString());
+      } else {
+        alert("Error");
+      }
+    }
 
   // käyttäjän uloskirjautuminen
   const handleLogout = async () => {
@@ -253,12 +259,12 @@ export default function Calculations(props) {
     .gte('date_added', startDate.toISOString())
     .lte('date_added', endDate.toISOString())
     
-  console.log(startDate.toISOString());
+  // console.log(startDate.toISOString());
   // lasketaan määrät yhteen
   let total = 0;
 
   
-  console.log(income);
+  // console.log(income);
 
   income.forEach((a) => {
     // 'a' on {amount: 1}
@@ -305,16 +311,24 @@ const getExpensesByDate = async () => {
           }}   
         />
 
+        
         <p>End Date</p>
-        <DatePicker showIcon selected={new Date(endDate).setDate(new Date(endDate.getDate() - 1))} onChange={(date) => {
+        
+        <DatePicker 
+          showIcon 
+          
+          selected={endDate ? new Date(endDate).setDate(new Date(endDate.getDate() - 1)) : new Date()} 
+          onChange={(date) => {
 
-          const newDate = new Date(date.setHours(3, 0, 0, 0));
-          newDate.setDate(newDate.getDate() + 1);
-          console.log('newDate: ' + newDate.toISOString())
+          const newDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 0));
 
-            setEndDate(newDate);
-          }}
+          console.log('newDate: ' + newDate.toISOString()); 
+          // käyttäjä valitsee päivämääräksi 15.10.2024 -> newDate 15.10.2024 klo 23.59.59
+
+        setEndDate(newDate);
+        }}
         />
+
 
         <button onClick={() => {
           getIncomeByDate();
@@ -326,7 +340,7 @@ const getExpensesByDate = async () => {
       <button onClick={() => {
           setSearchByDate(false);
           setStartDate(new Date());
-          setEndDate(new Date());
+          setEndDate();
         }}>Reset Dates</button>
 
 
@@ -343,20 +357,10 @@ const getExpensesByDate = async () => {
             <h3>Total Expense (by date): {expensesByDate} €</h3>
           </div>)}
 
-       
 
         
 
-        <button onClick={handleResetIncome}>Reset Income</button>
-
-
-
-        <button onClick={handleResetExpense}>Reset Expense</button>
-
         <h3>Balance: {balance} €</h3>
-
-        {/* <h3>Your Expenses by Category</h3>
-        {renderExpensesByCategory()} */}
 
         {!searchByDate ? (
           <div>
@@ -373,12 +377,17 @@ const getExpensesByDate = async () => {
 
         <h3>Your remaining money for each category: </h3>
         {renderRemainingMoneyByCategory()} 
-        
-
-        
       </div>
 
-      
+      {/* income ja expense datan poistonapit */}
+      <button onClick={handleResetIncome}>Delete income data</button>
+      <button onClick={handleResetExpense}>Delete expense data</button>
+     
+      {/* näytä tämä nappi jos päivämäärähakua on käytetty */}
+      {searchByDate ? (
+          <button onClick={handleResetByDate}>Delete data from date range</button>
+        ):(
+        <div></div>)}
 
       <button onClick={handleLogout} style={{ marginTop: '20px' }}>
         Log Out
