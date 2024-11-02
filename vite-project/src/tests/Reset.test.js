@@ -20,13 +20,13 @@ const userInfo = { id: 'test_user' };
 
 describe('resetIncome function', () => {
   it('should confirm before deleting income data', async () => {
-    global.confirm.mockReturnValueOnce(true);
+    global.confirm.mockReturnValueOnce(true); //käyttäjä painaa ok
     await resetIncome(userInfo);
     expect(global.confirm).toHaveBeenCalledWith("Are you sure you want to delete all income? This action cannot be reversed.");
   });
 
   it('should delete income data if confirmed', async () => {
-    global.confirm.mockReturnValueOnce(true);
+    global.confirm.mockReturnValueOnce(true); //käyttäjä painaa ok
     await resetIncome(userInfo);
     expect(supabase.from).toHaveBeenCalledWith('income');
     expect(supabase.delete).toHaveBeenCalled();
