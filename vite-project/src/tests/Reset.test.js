@@ -3,19 +3,20 @@ import { vi } from 'vitest';
 import { supabase } from '/supabaseClient';
 
 // Mockataan `alert`, `confirm` ja `supabase`
+// vitest vi.fn = mockkaus
 global.confirm = vi.fn();
 global.alert = vi.fn();
 
 // Mockataan `supabaseClient`, jotta voidaan tarkistaa kutsut ilman yhteyttä tietokantaan
 vi.mock('/supabaseClient', () => ({
   supabase: {
-    from: vi.fn().mockReturnThis(), // Sallii ketjutetut kutsut, esim. `from().delete()`
+    from: vi.fn().mockReturnThis(), 
     delete: vi.fn().mockReturnThis(),
-    eq: vi.fn().mockResolvedValue({ error: null }), // Mockataan onnistunut poisto ilman virhettä
+    eq: vi.fn().mockResolvedValue({ error: null }), // jos error null nii ei virhettä
   },
 }));
 
-// Käyttäjän tunnistetiedot, joita tarvitaan tietojen poistamiseen
+// Käyttäjän tunnistetiedot, testuseri simuloimaan - tarvitaan tietojen poistamiseen
 const userInfo = { id: 'test_user' };
 
 describe('resetIncome function', () => {
@@ -33,7 +34,7 @@ describe('resetIncome function', () => {
   });
 });
 
-// Uusi describe-lohko `resetExpense`-funktiolle
+// resetExpense
 describe('resetExpense function', () => {
   it('should confirm before deleting expense data', async () => {
     global.confirm.mockReturnValueOnce(true);
@@ -42,16 +43,16 @@ describe('resetExpense function', () => {
   });
 
   it('should delete expense data if confirmed', async () => {
-    // Mockataan vahvistusikkuna näyttämään hyväksyntä (true)
+   
     global.confirm.mockReturnValueOnce(true);
 
-    // Kutsutaan resetExpense-funktiota käyttäjän tiedoilla
+    // resetExpense käyttäjän tiedoilla
     await resetExpense(userInfo);
 
-    // Tarkistetaan, että `supabase.from`-funktiota on kutsuttu `expense`-taulun kanssa
+    
     expect(supabase.from).toHaveBeenCalledWith('expense');
 
-    // Varmistetaan, että `delete`-funktiota kutsutaan poistamaan tietoja
+    // delete-funktiota kutsutaan poistamaan tietoja
     expect(supabase.delete).toHaveBeenCalled();
   });
 });
