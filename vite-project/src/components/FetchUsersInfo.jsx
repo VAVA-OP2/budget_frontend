@@ -35,7 +35,7 @@ export default function FetchUsersInfo() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    console.log("Fetched user:", user);
+    // console.log("Fetched user:", user);
     setUserInfo(user);
   };
 
@@ -44,7 +44,7 @@ export default function FetchUsersInfo() {
       .from('category')
       .select('*')
       .or(`user_id.is.null,user_id.eq.${userInfo.id}`)
-    console.log("Fetched categories:", data);
+    // console.log("Fetched categories:", data);
     setCategories(data);
   };
 
@@ -57,7 +57,7 @@ export default function FetchUsersInfo() {
     if (data && data.length > 0) {
       const { current_savings, goal_amount } = data[0];
       setSavings({ current_savings, goal_amount });
-      console.log("Fetched savings: ", data);
+      // console.log("Fetched savings: ", data);
     }
   };
 
@@ -88,10 +88,15 @@ export default function FetchUsersInfo() {
 
       <Calculations categories={categories} userInfo={userInfo} />
 
-      <div>
+      
+      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
         <h2>Savings Information</h2>
         <p>Current Savings: {totalAddedSavings} €</p>
         <p>Savings Goal: {savings.goal_amount} €</p>
+        {/* Uusi Savings-painike, joka ohjaa SavingsPage-sivulle */}
+        <Link to="/savings" state={{ userInfo }}>
+          <button className="savings-button">Go to savings</button>
+        </Link>
       </div>
 
       {/* Tulon lisääminen uuden sivun kautta */}
@@ -103,10 +108,7 @@ export default function FetchUsersInfo() {
         <button className="statistics-button">Statistics</button>
       </Link>
 
-      {/* Uusi Savings-painike, joka ohjaa SavingsPage-sivulle */}
-      <Link to="/savings" state={{ userInfo }}>
-        <button className="savings-button">Go to savings</button>
-      </Link>
+      
     </div>
   );
 }

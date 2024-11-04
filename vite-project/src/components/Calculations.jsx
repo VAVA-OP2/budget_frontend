@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { supabase } from '/supabaseClient';
 import { useNavigate } from "react-router-dom";
-import { resetIncome, resetExpense } from "./Reset";
+import { resetIncome, resetExpense, resetDataByDates } from "./Reset";
 import '../styles.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -228,7 +228,13 @@ export default function Calculations(props) {
       }
     };
 
-    
+    const handleResetByDate = () => {
+      if (props.userInfo) {
+        resetDataByDates(props.userInfo, startDate.toISOString(), endDate.toISOString());
+      } else {
+        alert("Error");
+      }
+    }
 
   // käyttäjän uloskirjautuminen
   const handleLogout = async () => {
@@ -253,12 +259,12 @@ export default function Calculations(props) {
     .gte('date_added', startDate.toISOString())
     .lte('date_added', endDate.toISOString())
     
-  console.log(startDate.toISOString());
+  // console.log(startDate.toISOString());
   // lasketaan määrät yhteen
   let total = 0;
 
   
-  console.log(income);
+  // console.log(income);
 
   income.forEach((a) => {
     // 'a' on {amount: 1}
@@ -300,18 +306,31 @@ const getExpensesByDate = async () => {
 
         <p className="dates-paragraph">Start Date</p>
         <DatePicker showIcon selected={startDate} onChange={(date) => {
-          const newDate = new Date(date.setHours(3, 0, 0, 0));
+
+          // asettaa päivämäärän alkamaan keskiyöstä, muuten päivämäärän kellonaika sama kuin käyttäjän
+          const newDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0));
+
+          // console.log('Start Date: ' + newDate.toISOString());
+
           setStartDate(newDate);
           }}  
           className="dates-picker-input" 
         />
 
-        <p className="dates-paragraph">End Date</p>
-        <DatePicker showIcon selected={new Date(endDate).setDate(new Date(endDate.getDate() - 1))} onChange={(date) => {
 
-          const newDate = new Date(date.setHours(3, 0, 0, 0));
-          newDate.setDate(newDate.getDate() + 1);
-          console.log('newDate: ' + newDate.toISOString())
+        {/* End Daten kalenterinäkymän päivämäärän kanssa ongelmia */}
+        {/* Päivämäärän toiminnallisuus ei toimi jos kalenterinäkymässä ei ole -1 */}
+        {/*  */}
+        <p className="dates-paragraph">End Date</p>
+        <DatePicker 
+          showIcon 
+          selected={new Date(endDate).setDate(new Date(endDate.getDate() - 1))} 
+          onChange={(date) => {
+
+          const newDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 0));
+
+          // console.log('newDate: ' + newDate.toISOString()); 
+          // käyttäjä valitsee päivämääräksi 15.10.2024 -> newDate 15.10.2024 klo 23.59.59
 
             setEndDate(newDate);
           }}
@@ -352,20 +371,9 @@ const getExpensesByDate = async () => {
 
        
 
-        <div className="warning-button-container">
-
-        <button className="warning-button" onClick={handleResetIncome}>Reset Income</button>
-
-
-
-        <button className="warning-button" onClick={handleResetExpense}>Reset Expense</button>
-
-        </div>
+       
 
         <h3>Balance: {balance} €</h3>
-
-        {/* <h3>Your Expenses by Category</h3>
-        {renderExpensesByCategory()} */}
 
         {!searchByDate ? (
           <div>
@@ -382,12 +390,20 @@ const getExpensesByDate = async () => {
 
         <h3>Your remaining money for each category: </h3>
         {renderRemainingMoneyByCategory()} 
-        
-
-        
       </div>
 
-      
+      {/* income ja expense datan poistonapit */}
+      <div className="warning-button-container">
+
+        <button className="warning-button" onClick={handleResetIncome}>Delete income data</button>
+        <button className="warning-button" onClick={handleResetExpense}>Delete expense data </button>
+
+        {/* näytä tämä nappi jos päivämäärähakua on käytetty */}
+        {searchByDate ? (
+                  <button className="warning-button" onClick={handleResetByDate}>Delete data from date range</button>
+                ):(
+                <div></div>)}
+      </div>
 
       <button onClick={handleLogout} style={{ marginTop: '20px' }}>
         Log Out
