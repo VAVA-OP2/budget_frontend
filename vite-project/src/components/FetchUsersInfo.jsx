@@ -88,10 +88,14 @@ export default function FetchUsersInfo() {
       <Calculations categories={categories} userInfo={userInfo} />
 
       
-      <div>
+      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
         <h2>Savings Information</h2>
         <p>Current Savings: {totalAddedSavings} €</p> 
         <p>Savings Goal: {savings.goal_amount} €</p>
+        {/* Uusi Savings-painike, joka ohjaa SavingsPage-sivulle */}
+        <Link to="/savings" state={{ userInfo }}>
+          <button className="savings-button">Go to savings</button>
+        </Link>
       </div>
 
       {/* Tulon lisääminen uuden sivun kautta */}
@@ -103,10 +107,7 @@ export default function FetchUsersInfo() {
         <button className="statistics-button">Statistics</button>
       </Link>
 
-      {/* Uusi Savings-painike, joka ohjaa SavingsPage-sivulle */}
-      <Link to="/savings" state={{ userInfo }}>
-        <button className="savings-button">Go to savings</button>
-      </Link>
+      
     </div>
   );
 }
