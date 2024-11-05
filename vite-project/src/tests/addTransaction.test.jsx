@@ -30,7 +30,7 @@ describe('AddTransaction component - Income tests', () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.restoreAllMocks(); //palauttaa kaikki testin aikana tehdyt muutokset, jotta seuraavat testit ei vaikuta niihin.
   });
 
   it('shows error for invalid income amount', () => {
@@ -46,3 +46,5 @@ describe('AddTransaction component - Income tests', () => {
     expect(window.alert).toHaveBeenCalledWith('Please enter a valid number for income.');
   });
 });
+
+
