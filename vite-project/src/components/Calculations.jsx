@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react"
-import { supabase } from '/supabaseClient';
+import { useEffect, useState } from "react";
+import { supabase } from "/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { resetIncome, resetExpense, resetDataByDates } from "./Reset";
-import '../styles.css';
+import "../styles.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function Calculations(props) {
-
   // lasketut tulojen ja menojen yhteissummat
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
@@ -17,7 +16,13 @@ export default function Calculations(props) {
 
   // menot jaettuina kategorioiden mukaan
   const [expenseByCategory, setExpenseByCategory] = useState({});
-  const [expenseByCategoryWithDate, setExpenseByCategoryWithDate] = useState({});
+  const [expenseByCategoryWithDate, setExpenseByCategoryWithDate] = useState(
+    {}
+  );
+
+  // Tulot ja menot erikseen
+  const [expenses, setExpenses] = useState([]);
+  const [incomes, setIncomes] = useState([]);
 
   // react routerin navigate että uloskirjautuessa siirtyy takasin kirjautumissivulle
   const navigate = useNavigate();
@@ -31,22 +36,31 @@ export default function Calculations(props) {
   const [incomeByDate, setIncomeByDate] = useState(0);
   const [expensesByDate, setExpensesByDate] = useState(0);
 
+  useEffect(() => {
+    const getData = async () => {
+      calculateBalance();
+      expensesByCategory();
+    };
+    getTotals();
+    getData();
+  }, [
+    props.userInfo,
+    totalIncome,
+    totalExpense,
+    incomeByDate,
+    expensesByDate,
+    searchByDate,
+  ]); // use effect suoritetaan aina uudestaan kun userinfo muuttuja muuttuu
 
   useEffect(() => {
-       const getData = async () => {
-        calculateBalance();
-        expensesByCategory();
-       }
-      getTotals();
-      getData();
-
-      }, [props.userInfo, totalIncome, totalExpense, incomeByDate, expensesByDate, searchByDate]); // use effect suoritetaan aina uudestaan kun userinfo muuttuja muuttuu
-
+    fetchIncomes();
+    fetchExpenses();
+  }, [props.userInfo]);
 
   const getTotals = () => {
     calculateTotalExpense();
     calculateTotalIncome();
-  }
+  };
 
   // Lasketaan saldo tulojen ja menojen perusteella
   const calculateBalance = () => {
@@ -62,9 +76,9 @@ export default function Calculations(props) {
   // laskee käyttäjän lisäämät tulot yhteen: hakee ensin taulusta kaikki "amount" tiedot, joissa user_id vastaa kirjautuneen käyttäjän id -tietoa
   const calculateTotalIncome = async () => {
     const { data: income, error } = await supabase
-      .from('income')
-      .select('amount')
-      .eq('user_id', props.userInfo.id)
+      .from("income")
+      .select("amount")
+      .eq("user_id", props.userInfo.id);
 
     // lasketaan määrät yhteen
     let total = 0;
@@ -76,18 +90,15 @@ export default function Calculations(props) {
     });
 
     setTotalIncome(total);
-
-  }
-
-
+  };
 
   // lasketaan menot yhteen
   // sama idea kuin tulojen yhteenlaskemisessa
   const calculateTotalExpense = async () => {
     const { data: expense, error } = await supabase
-      .from('expense')
-      .select('amount')
-      .eq('user_id', props.userInfo.id)
+      .from("expense")
+      .select("amount")
+      .eq("user_id", props.userInfo.id);
 
     let total = 0;
 
@@ -98,25 +109,50 @@ export default function Calculations(props) {
     });
 
     setTotalExpense(total);
-  }
+  };
 
+  // Haetaan käyttäjän tulot erikseen
+  const fetchIncomes = async () => {
+    const { data, error } = await supabase
+      .from("income")
+      .select("incomeid, amount, date_added")
+      .eq("user_id", props.userInfo.id);
 
+    if (!error && data) {
+      console.log("Fetched incomes:", data);
+      setIncomes(data);
+    } else if (error) {
+      console.error("Error fetching incomes:", error);
+    }
+  };
 
+  //Haetaan käyttäjän menot erikseen
+  const fetchExpenses = async () => {
+    const { data, error } = await supabase
+      .from("expense")
+      .select("expenseid, amount, date_added")
+      .eq("user_id", props.userInfo.id);
+
+    if (!error && data) {
+      console.log("Fetched expenses:", data);
+      setExpenses(data);
+    } else if (error) {
+      console.error("Error fetching expenses:", error);
+    }
+  };
 
   const expensesByCategory = async () => {
-      const { data: expenses, error } = await supabase
-      .from('expense')
-      .select('amount, categoryid')
-      .eq('user_id', props.userInfo.id)
+    const { data: expenses, error } = await supabase
+      .from("expense")
+      .select("amount, categoryid")
+      .eq("user_id", props.userInfo.id);
 
     const grouped = {};
 
     expenses.forEach((expense) => {
       const categoryId = expense.categoryid;
 
-
       if (!grouped[categoryId]) {
-
         grouped[categoryId] = 0;
       }
 
@@ -124,26 +160,23 @@ export default function Calculations(props) {
     });
 
     setExpenseByCategory(grouped);
-  }
-
+  };
 
   // jos haetaan päivämäärien perusteella
   const getExpensesByCategoryWithDate = async () => {
     const { data: expenses, error } = await supabase
-      .from('expense')
-      .select('amount, categoryid')
-      .eq('user_id', props.userInfo.id)
-      .gte('date_added', startDate.toISOString())
-      .lte('date_added', endDate.toISOString())
+      .from("expense")
+      .select("amount, categoryid")
+      .eq("user_id", props.userInfo.id)
+      .gte("date_added", startDate.toISOString())
+      .lte("date_added", endDate.toISOString());
 
     const grouped = {};
 
     expenses.forEach((expense) => {
       const categoryId = expense.categoryid;
 
-
       if (!grouped[categoryId]) {
-
         grouped[categoryId] = 0;
       }
 
@@ -151,9 +184,7 @@ export default function Calculations(props) {
     });
 
     setExpenseByCategoryWithDate(grouped);
-  }
- 
-
+  };
 
   const renderExpensesByCategory = () => {
     if (!searchByDate) {
@@ -162,7 +193,9 @@ export default function Calculations(props) {
           <ul>
             {props.categories.map((category) => (
               <li key={category.categoryid}>
-                {category.categoryname}: {expenseByCategory[category.categoryid] || 0} € {/* jos undefined niin arvo 0 */}
+                {category.categoryname}:{" "}
+                {expenseByCategory[category.categoryid] || 0} €{" "}
+                {/* jos undefined niin arvo 0 */}
               </li>
             ))}
           </ul>
@@ -176,7 +209,9 @@ export default function Calculations(props) {
           <ul>
             {props.categories.map((category) => (
               <li key={category.categoryid}>
-                {category.categoryname}: {expenseByCategoryWithDate[category.categoryid] || 0} € {/* jos undefined niin arvo 0 */}
+                {category.categoryname}:{" "}
+                {expenseByCategoryWithDate[category.categoryid] || 0} €{" "}
+                {/* jos undefined niin arvo 0 */}
               </li>
             ))}
           </ul>
@@ -186,8 +221,6 @@ export default function Calculations(props) {
       }
     }
   };
-
-
 
   const renderRemainingMoneyByCategory = () => {
     if (props.categories.length > 0) {
@@ -209,32 +242,34 @@ export default function Calculations(props) {
     }
   };
 
-    // reset suoritetaan, kun tarkistetaan, että userInfo on olemassa
-    const handleResetIncome = () => {
-      if (props.userInfo) {
-        resetIncome(props.userInfo);
-      } else{
-        alert("Log in to reset.")
-      }
-    };
-
-    
-
-    const handleResetExpense = () => {
-      if (props.userInfo) {
-        resetExpense(props.userInfo);
-      } else{
-        alert("Log in to reset.")
-      }
-    };
-
-    const handleResetByDate = () => {
-      if (props.userInfo) {
-        resetDataByDates(props.userInfo, startDate.toISOString(), endDate.toISOString());
-      } else {
-        alert("Error");
-      }
+  // reset suoritetaan, kun tarkistetaan, että userInfo on olemassa
+  const handleResetIncome = () => {
+    if (props.userInfo) {
+      resetIncome(props.userInfo);
+    } else {
+      alert("Log in to reset.");
     }
+  };
+
+  const handleResetExpense = () => {
+    if (props.userInfo) {
+      resetExpense(props.userInfo);
+    } else {
+      alert("Log in to reset.");
+    }
+  };
+
+  const handleResetByDate = () => {
+    if (props.userInfo) {
+      resetDataByDates(
+        props.userInfo,
+        startDate.toISOString(),
+        endDate.toISOString()
+      );
+    } else {
+      alert("Error");
+    }
+  };
 
   // käyttäjän uloskirjautuminen
   const handleLogout = async () => {
@@ -245,169 +280,229 @@ export default function Calculations(props) {
     setBalance(0);
 
     // https://reactrouter.com/en/main/hooks/use-navigate
-    navigate('/');
+    navigate("/");
   };
 
   // haetaan tulotiedot annettujen päivämäärien perusteella
-  const getIncomeByDate = async () => {  
+  const getIncomeByDate = async () => {
     setSearchByDate(true);
 
     const { data: income, error } = await supabase
-    .from('income')
-    .select('amount')
-    .eq('user_id', props.userInfo.id)
-    .gte('date_added', startDate.toISOString())
-    .lte('date_added', endDate.toISOString())
-    
-  // console.log(startDate.toISOString());
-  // lasketaan määrät yhteen
-  let total = 0;
+      .from("income")
+      .select("amount")
+      .eq("user_id", props.userInfo.id)
+      .gte("date_added", startDate.toISOString())
+      .lte("date_added", endDate.toISOString());
 
-  
-  // console.log(income);
+    // console.log(startDate.toISOString());
+    // lasketaan määrät yhteen
+    let total = 0;
 
-  income.forEach((a) => {
-    // 'a' on {amount: 1}
-    // 'a.amount' on '1'
-    total += parseFloat(a.amount);
-  });
+    // console.log(income);
 
-  setIncomeByDate(total);
+    income.forEach((a) => {
+      // 'a' on {amount: 1}
+      // 'a.amount' on '1'
+      total += parseFloat(a.amount);
+    });
 
-}
+    setIncomeByDate(total);
+  };
 
-const getExpensesByDate = async () => {
-  const { data: expense, error } = await supabase
+  const getExpensesByDate = async () => {
+    const { data: expense, error } = await supabase
 
-    .from('expense')
-    .select('amount')
-    .eq('user_id', props.userInfo.id)
-    .gte('date_added', startDate.toISOString())
-    .lte('date_added', endDate.toISOString())
+      .from("expense")
+      .select("amount")
+      .eq("user_id", props.userInfo.id)
+      .gte("date_added", startDate.toISOString())
+      .lte("date_added", endDate.toISOString());
 
     let total = 0;
 
     expense.forEach((a) => {
-    // 'a' on {amount: 1}
-    // 'a.amount' on 1
-    total += parseFloat(a.amount);
-  });
+      // 'a' on {amount: 1}
+      // 'a.amount' on 1
+      total += parseFloat(a.amount);
+    });
 
-  setExpensesByDate(total); 
-}
-
-
+    setExpensesByDate(total);
+  };
 
   return (
-    <div style={{ padding: '50px', maxWidth: '600px', margin: '0 auto' }}>
-
+    <div style={{ padding: "50px", maxWidth: "600px", margin: "0 auto" }}>
       <p className="dates-paragraph">Search for transactions based on date</p>
       <div className="dates-container">
-
         <p className="dates-paragraph">Start Date</p>
-        <DatePicker showIcon selected={startDate} onChange={(date) => {
+        <DatePicker
+          showIcon
+          selected={startDate}
+          onChange={(date) => {
+            // asettaa päivämäärän alkamaan keskiyöstä, muuten päivämäärän kellonaika sama kuin käyttäjän
+            const newDate = new Date(
+              Date.UTC(
+                date.getFullYear(),
+                date.getMonth(),
+                date.getDate(),
+                0,
+                0,
+                0,
+                0
+              )
+            );
 
-          // asettaa päivämäärän alkamaan keskiyöstä, muuten päivämäärän kellonaika sama kuin käyttäjän
-          const newDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0));
+            // console.log('Start Date: ' + newDate.toISOString());
 
-          // console.log('Start Date: ' + newDate.toISOString());
-
-          setStartDate(newDate);
-          }}  
-          className="dates-picker-input" 
+            setStartDate(newDate);
+          }}
+          className="dates-picker-input"
         />
-
 
         {/* End Daten kalenterinäkymän päivämäärän kanssa ongelmia */}
         {/* Päivämäärän toiminnallisuus ei toimi jos kalenterinäkymässä ei ole -1 */}
         {/*  */}
         <p className="dates-paragraph">End Date</p>
-        <DatePicker 
-          showIcon 
-          selected={new Date(endDate).setDate(new Date(endDate.getDate() - 1))} 
+        <DatePicker
+          showIcon
+          selected={new Date(endDate).setDate(new Date(endDate.getDate() - 1))}
           onChange={(date) => {
+            const newDate = new Date(
+              Date.UTC(
+                date.getFullYear(),
+                date.getMonth(),
+                date.getDate(),
+                23,
+                59,
+                59,
+                0
+              )
+            );
 
-          const newDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 0));
-
-          // console.log('newDate: ' + newDate.toISOString()); 
-          // käyttäjä valitsee päivämääräksi 15.10.2024 -> newDate 15.10.2024 klo 23.59.59
+            // console.log('newDate: ' + newDate.toISOString());
+            // käyttäjä valitsee päivämääräksi 15.10.2024 -> newDate 15.10.2024 klo 23.59.59
 
             setEndDate(newDate);
           }}
           className="dates-picker-input"
         />
-        </div>
+      </div>
 
-        <div className="dates-buttons-container">
-        <button className="dates-button"
+      <div className="dates-buttons-container">
+        <button
+          className="dates-button"
           onClick={() => {
-          getIncomeByDate();
-          getExpensesByDate();
-          getExpensesByCategoryWithDate();
-        }}>Search</button>
-      
+            getIncomeByDate();
+            getExpensesByDate();
+            getExpensesByCategoryWithDate();
+          }}
+        >
+          Search
+        </button>
 
-      <button className="dates-button"
+        <button
+          className="dates-button"
           onClick={() => {
-          setSearchByDate(false);
-          setStartDate(new Date());
-          setEndDate(new Date());
-        }}>Reset Dates</button>
-        </div>
+            setSearchByDate(false);
+            setStartDate(new Date());
+            setEndDate(new Date());
+          }}
+        >
+          Reset Dates
+        </button>
+      </div>
 
-
-      <div style={{ marginTop: '20px' }}>
-
+      <div style={{ marginTop: "20px" }}>
         {!searchByDate ? (
           <div>
-            <h3>Total Income: {totalIncome} €</h3> 
+            <h3>Total Income: {totalIncome} €</h3>
+            <ul>
+              {incomes.map((income) => (
+                <li key={income.incomeid}>{income.amount} € </li>
+              ))}
+            </ul>
+
             <h3>Total Expense: {totalExpense} €</h3>
+            <ul>
+              {expenses.map((expense) => (
+                <li key={expense.expenseid}>{expense.amount} € </li>
+              ))}
+            </ul>
           </div>
-          ) : (
+        ) : (
           <div>
             <h3>Total Income (by date): {incomeByDate} €</h3>
+            <ul>
+              {incomes
+                .filter(
+                  (income) =>
+                    new Date(income.date_added) >= startDate &&
+                    new Date(income.date_added) <= endDate
+                )
+                .map((income) => (
+                  <li key={income.id}>
+                    {new Date(income.date_added).toISOString().slice(0, 10)}:{" "}
+                    {income.amount} €
+                  </li>
+                ))}
+            </ul>
             <h3>Total Expense (by date): {expensesByDate} €</h3>
-          </div>)}
-
-       
-
-       
+            <ul>
+              {expenses
+                .filter(
+                  (expense) =>
+                    new Date(expense.date_added) >= startDate &&
+                    new Date(expense.date_added) <= endDate
+                )
+                .map((expense) => (
+                  <li key={expense.id}>
+                    {new Date(expense.date_added).toISOString().slice(0, 10)}:{" "}
+                    {expense.amount} €
+                  </li>
+                ))}
+            </ul>
+          </div>
+        )}
 
         <h3>Balance: {balance} €</h3>
 
         {!searchByDate ? (
           <div>
-            <h3>Your expenses by category:</h3> 
+            <h3>Your expenses by category:</h3>
             <p>{renderExpensesByCategory()}</p>
           </div>
-          ) : (
-         <div>
-           <h3>Your expenses by category (by date):</h3> 
-           <p>{renderExpensesByCategory()}</p>
-         </div>
-          )}
-
+        ) : (
+          <div>
+            <h3>Your expenses by category (by date):</h3>
+            <p>{renderExpensesByCategory()}</p>
+          </div>
+        )}
 
         <h3>Your remaining money for each category: </h3>
-        {renderRemainingMoneyByCategory()} 
+        {renderRemainingMoneyByCategory()}
       </div>
 
       {/* income ja expense datan poistonapit */}
       <div className="warning-button-container">
-
-        <button className="warning-button" onClick={handleResetIncome}>Delete income data</button>
-        <button className="warning-button" onClick={handleResetExpense}>Delete expense data </button>
+        <button className="warning-button" onClick={handleResetIncome}>
+          Delete income data
+        </button>
+        <button className="warning-button" onClick={handleResetExpense}>
+          Delete expense data{" "}
+        </button>
 
         {/* näytä tämä nappi jos päivämäärähakua on käytetty */}
         {searchByDate ? (
-                  <button className="warning-button" onClick={handleResetByDate}>Delete data from date range</button>
-                ):(
-                <div></div>)}
+          <button className="warning-button" onClick={handleResetByDate}>
+            Delete data from date range
+          </button>
+        ) : (
+          <div></div>
+        )}
       </div>
 
-      <button onClick={handleLogout} style={{ marginTop: '20px' }}>
+      <button onClick={handleLogout} style={{ marginTop: "20px" }}>
         Log Out
       </button>
     </div>
-  )
-};
+  );
+}
