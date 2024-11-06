@@ -205,3 +205,23 @@ dates-button:hover {
     justify-content: left;
     gap: 10px;
 }
+
+.home_content-aligned_left {
+    padding: 50px;
+    max-width: 600px;
+    margin-right: auto;
+    margin-left: 20px;
+    text-align: left;
+}
+
+.login_aligned {
+    margin-top: 20px;
+    margin-right: 25px;
+    float: right;
+}
+
+.logout_button_align {
+    margin-top: 5px;
+    margin-right: 25px;
+    float: right;
+}
