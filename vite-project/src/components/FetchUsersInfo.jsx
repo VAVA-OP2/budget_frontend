@@ -77,19 +77,34 @@ export default function FetchUsersInfo() {
 
   // Tarkistetaan, että userInfo ja categories ovat ladattu ennen komponenttien renderöintiä
   if (!userInfo || categories.length === 0) {
-    return <p>Loading user info and categories...</p>;
+    return <p className="home_content-aligned_left">Loading user info and categories...</p>;
   }
+
+  // käyttäjän uloskirjautuminen
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    // setUser(null);
+    setTotalExpense(0);
+    setTotalIncome(0);
+    setBalance(0);
+
+    // https://reactrouter.com/en/main/hooks/use-navigate
+    navigate("/");
+  };
 
   return (
     <div>
-      <div style={{ marginTop: "20px", float: "right" }}>
+      <div className="loggedin_aligned">
         {userInfo ? <p>Logged in as: {userInfo.email}</p> : <p>Loading...</p>}
+        <button onClick={handleLogout} className="logout_button_align">
+        Log Out
+      </button>
       </div>
 
       <Calculations categories={categories} userInfo={userInfo} />
 
       
-      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+      <div className="home_content-aligned_left">
         <h2>Savings Information</h2>
         <p>Current Savings: {totalAddedSavings} €</p>
         <p>Savings Goal: {savings.goal_amount} €</p>

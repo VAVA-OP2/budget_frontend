@@ -271,18 +271,6 @@ export default function Calculations(props) {
     }
   };
 
-  // käyttäjän uloskirjautuminen
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    // setUser(null);
-    setTotalExpense(0);
-    setTotalIncome(0);
-    setBalance(0);
-
-    // https://reactrouter.com/en/main/hooks/use-navigate
-    navigate("/");
-  };
-
   // haetaan tulotiedot annettujen päivämäärien perusteella
   const getIncomeByDate = async () => {
     setSearchByDate(true);
@@ -330,7 +318,7 @@ export default function Calculations(props) {
   };
 
   return (
-    <div style={{ padding: "50px", maxWidth: "600px", margin: "0 auto" }}>
+    <div className="home_content-aligned_left">
       <p className="dates-paragraph">Search for transactions based on date</p>
       <div className="dates-container">
         <p className="dates-paragraph">Start Date</p>
@@ -499,10 +487,6 @@ export default function Calculations(props) {
           <div></div>
         )}
       </div>
-
-      <button onClick={handleLogout} style={{ marginTop: "20px" }}>
-        Log Out
-      </button>
     </div>
   );
 }

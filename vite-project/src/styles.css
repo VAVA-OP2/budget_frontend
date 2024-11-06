@@ -23,14 +23,14 @@ button:hover {
     background-color: #C4D7F2; 
     color: #3E3D3E;            
     margin-right: 40px;
-    font-size: 24px;
+    font-size: 40px;
     padding: 12px 16px;
-    width: 50px;
-    height: 50px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%; 
     position: fixed;
-    bottom: 53px;
-    right: 20px;
+    bottom: 103px;
+    right: 70px;
 }
 
 .add-button:hover {
@@ -214,7 +214,7 @@ dates-button:hover {
     text-align: left;
 }
 
-.login_aligned {
+.loggedin_aligned {
     margin-top: 20px;
     margin-right: 25px;
     float: right;
@@ -224,4 +224,55 @@ dates-button:hover {
     margin-top: 5px;
     margin-right: 25px;
     float: right;
+}
+
+.savings_content-flex_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px;
+    margin-right: auto;
+    margin-left: 20px;
+    text-align: left;
+}
+
+.savings_content-aligned_left {
+    flex: 1;
+    margin-right: 40px;
+    max-width: 600px;
+}
+
+.savings_content-aligned_right {
+    flex: 1;
+    max-width: 1000px;
+    margin-right: 60px;
+}
+
+.savings_progress_text_align {
+    font-size: larger;
+    text-align: center;
+}
+
+.add-to-savings_button {
+    margin-left: 10px;
+}
+
+.input-field_small {
+    padding: 6px 8px;
+    width: 180px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+    background-color: #F5EFED;
+    color: #3E3D3E;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.input-field_small:focus {
+    outline: none;
+    border-color: #FCD9DA;
 }
