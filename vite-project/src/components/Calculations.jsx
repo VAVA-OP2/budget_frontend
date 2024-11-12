@@ -5,6 +5,7 @@ import { resetIncome, resetExpense, resetDataByDates } from "./Reset";
 import "../styles.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Statistics from "./Statistics";
 
 export default function Calculations(props) {
   // lasketut tulojen ja menojen yhteissummat
@@ -503,6 +504,8 @@ export default function Calculations(props) {
       <button onClick={handleLogout} style={{ marginTop: "20px" }}>
         Log Out
       </button>
+
+      
     </div>
   );
 }
