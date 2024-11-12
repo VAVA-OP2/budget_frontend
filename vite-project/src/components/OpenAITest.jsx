@@ -20,10 +20,12 @@ const OpenAITest = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}` // Lisää JWT token pyyntöön
+          "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ prompt })
+        body: JSON.stringify({ prompt }),
+        mode: "cors"
       });
+      
 
       if (!res.ok) {
         throw new Error("Failed to call OpenAI function");
