@@ -253,7 +253,7 @@ dates-button:hover {
     text-align: center;
 }
 
-.add-to-savings_button {
+.savings_page_buttons {
     margin-left: 10px;
 }
 
@@ -275,4 +275,19 @@ dates-button:hover {
 .input-field_small:focus {
     outline: none;
     border-color: #FCD9DA;
+}
+
+.arrow_back {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 0;
+    height: 0;
+    border-top: 10px;
+    border-bottom: 10px;
+    border-right: 15px solid #F5EFED;
+}
+
+.arrow_back:hover {
+    border-right-color: #FCD9DA;
 }

@@ -134,8 +134,9 @@ export default function SavingsPage() {
                             placeholder="Enter your savings goal"
                             value={savings}
                             onChange={(e) => setSavings(e.target.value)}
+                            className='input-field_small'
                         />
-                        <button onClick={createOrUpdateSavingsGoal}>
+                        <button onClick={createOrUpdateSavingsGoal} className='savings_page_buttons'>
                             {savedGoal ? "Update Savings Goal" : "Save Savings Goal"}
                         </button>
                     </>
@@ -154,7 +155,7 @@ export default function SavingsPage() {
                     onChange={(e) => setAddToSavings(e.target.value)}
                     className='input-field_small'
                 />
-                <button onClick={handleAddToSavings} className='add-to-savings_button'>Add to Savings</button>
+                <button onClick={handleAddToSavings} className='savings_page_buttons'>Add to Savings</button>
 
                 {savingsData.length > 0 && (
                     <div>

@@ -488,11 +488,6 @@ export default function Calculations(props) {
           <div></div>
         )}
       </div>
-
-      <button onClick={handleLogout} style={{ marginTop: "20px" }}>
-        Log Out
-      </button>
-
       
     </div>
   );
