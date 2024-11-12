@@ -2,6 +2,7 @@ import { supabase } from "/supabaseClient";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Calculations from "./Calculations";
+import Statistics from "./Statistics";
 
 export default function FetchUsersInfo() {
   const [userInfo, setUserInfo] = useState(null);
@@ -41,9 +42,9 @@ export default function FetchUsersInfo() {
 
   const getCategories = async () => {
     const { data } = await supabase
-      .from('category')
-      .select('*')
-      .or(`user_id.is.null,user_id.eq.${userInfo.id}`)
+      .from("category")
+      .select("*")
+      .or(`user_id.is.null,user_id.eq.${userInfo.id}`);
     // console.log("Fetched categories:", data);
     setCategories(data);
   };
@@ -103,8 +104,7 @@ export default function FetchUsersInfo() {
 
       <Calculations categories={categories} userInfo={userInfo} />
 
-      
-      <div className="home_content-aligned_left">
+      <div style={{ maxWidth: "600px", margin: "0 auto" }}>
         <h2>Savings Information</h2>
         <p>Current Savings: {totalAddedSavings} €</p>
         <p>Savings Goal: {savings.goal_amount} €</p>
@@ -119,11 +119,7 @@ export default function FetchUsersInfo() {
         <button className="add-button">+</button>
       </Link>
 
-      <Link to="/statistics" state={{ userInfo, categories }}>
-        <button className="statistics-button">Statistics</button>
-      </Link>
-
-      
+      <Statistics userInfo={userInfo} categories={categories} />
     </div>
   );
 }
