@@ -107,6 +107,11 @@ export default function FetchUsersInfo() {
         <button className="statistics-button">Statistics</button>
       </Link>
 
+      {/* Lisää linkki OpenAITest-sivulle */}
+      <Link to="/openai-test">
+        <button className="openai-button">Test OpenAI Function</button>
+      </Link>
+
       
     </div>
   );
