@@ -25,6 +25,10 @@ export default function Calculations(props) {
   const [expenses, setExpenses] = useState([]);
   const [incomes, setIncomes] = useState([]);
 
+  const [incomeByCategory, setIncomeByCategory] = useState({});
+  const [incomeByCategoryWithDate, setIncomeByCategoryWithDate] = useState({});
+  
+
   // react routerin navigate että uloskirjautuessa siirtyy takasin kirjautumissivulle
   const navigate = useNavigate();
 
@@ -41,6 +45,7 @@ export default function Calculations(props) {
     const getData = async () => {
       calculateBalance();
       expensesByCategory();
+      getIncomeByCategories();
     };
     getTotals();
     getData();
@@ -142,6 +147,50 @@ export default function Calculations(props) {
     }
   };
 
+  const getIncomeByCategories = async () => {
+    const { data: income, error } = await supabase
+      .from('income')
+      .select('amount, categoryid')
+      .eq('user_id', props.userInfo.id)
+
+      const grouped = {};
+
+      income.forEach((income) => {
+        const categoryId = income.categoryid;
+
+        if (!grouped[categoryId]) {
+          grouped[categoryId] = 0;
+        }
+
+        grouped[categoryId] += parseFloat(income.amount);
+      }); 
+      setIncomeByCategory(grouped);
+  }
+
+  // getIncomeByCategoriesByDate
+  const getIncomeByCategoriesByDate = async () => {
+    const { data: income, error } = await supabase
+      .from('income')
+      .select('amount, categoryid')
+      .eq('user_id', props.userInfo.id)
+      .gte('date_added', startDate.toISOString())
+      .lte('date_added', endDate.toISOString())
+
+    const grouped = {};
+
+    income.forEach((income) => {
+      const categoryId = income.categoryid;
+      if (!grouped[categoryId]) {
+        grouped[categoryId] = 0;
+      }
+      grouped[categoryId] += parseFloat(income.amount);
+    });
+    setIncomeByCategoryWithDate(grouped);
+  }
+ 
+
+
+
   const expensesByCategory = async () => {
     const { data: expenses, error } = await supabase
       .from("expense")
@@ -159,6 +208,7 @@ export default function Calculations(props) {
 
       grouped[categoryId] += parseFloat(expense.amount);
     });
+    console.log(grouped);
 
     setExpenseByCategory(grouped);
   };
@@ -180,19 +230,17 @@ export default function Calculations(props) {
       if (!grouped[categoryId]) {
         grouped[categoryId] = 0;
       }
-
       grouped[categoryId] += parseFloat(expense.amount);
     });
-
     setExpenseByCategoryWithDate(grouped);
   };
 
   const renderExpensesByCategory = () => {
     if (!searchByDate) {
-      if (props.categories.length > 0) {
+      if (props.expenseCategories.length > 0) {
         return (
           <ul>
-            {props.categories.map((category) => (
+            {props.expenseCategories.map((category) => (
               <li key={category.categoryid}>
                 {category.categoryname}:{" "}
                 {expenseByCategory[category.categoryid] || 0} €{" "}
@@ -205,10 +253,10 @@ export default function Calculations(props) {
         return <p>No expenses by category</p>;
       }
     } else {
-      if (props.categories.length > 0) {
+      if (props.expenseCategories.length > 0) {
         return (
           <ul>
-            {props.categories.map((category) => (
+            {props.expenseCategories.map((category) => (
               <li key={category.categoryid}>
                 {category.categoryname}:{" "}
                 {expenseByCategoryWithDate[category.categoryid] || 0} €{" "}
@@ -223,11 +271,46 @@ export default function Calculations(props) {
     }
   };
 
+  const renderIncomeDataByCategory = () => {
+    if (!searchByDate) {
+      if (props.incomeCategories.length > 0) {
+        return (
+          <div>
+          <ul>
+            {props.incomeCategories.map((category) => (
+              <li key={category.categoryid}>
+                {category.categoryname}: {incomeByCategory[category.categoryid] || 0} € {/* jos undefined niin arvo 0 */}
+              </li>
+            ))}
+          </ul>
+          </div>
+        );
+      } else {
+
+        return <p>No income by category</p>;
+      }
+    } else {
+      if (props.incomeCategories.length > 0) {
+        return (
+          <ul>
+            {props.incomeCategories.map((category) => (
+              <li key={category.categoryid}>
+                {category.categoryname}: {incomeByCategoryWithDate[category.categoryid] || 0} € {/* jos undefined niin arvo 0 */}
+              </li>
+            ))}
+          </ul>
+        );
+      } else {
+        return <p>No income by category</p>;
+      }
+    }
+  };
+
   const renderRemainingMoneyByCategory = () => {
-    if (props.categories.length > 0) {
+    if (props.expenseCategories.length > 0) {
       return (
         <ul>
-          {props.categories.map((category) => {
+          {props.expenseCategories.map((category) => {
             const spent = expenseByCategory[category.categoryid] || 0; // käytetyt rahat, jos undefined niin arvo 0
             const remaining = category.categoryLimit - spent; // jäljellä oleva raha
             return (
@@ -380,16 +463,14 @@ export default function Calculations(props) {
         <button
           className="dates-button"
           onClick={() => {
-            getIncomeByDate();
-            getExpensesByDate();
-            getExpensesByCategoryWithDate();
-          }}
-        >
-          Search
-        </button>
+          getIncomeByDate();
+          getExpensesByDate();
+          getExpensesByCategoryWithDate();
+          getIncomeByCategoriesByDate();
+        }}>Search</button>
+      
 
-        <button
-          className="dates-button"
+      <button className="dates-button"
           onClick={() => {
             setSearchByDate(false);
             setStartDate(new Date());
@@ -456,18 +537,30 @@ export default function Calculations(props) {
 
         {!searchByDate ? (
           <div>
-            <h3>Your expenses by category:</h3>
-            <p>{renderExpensesByCategory()}</p>
-          </div>
-        ) : (
-          <div>
-            <h3>Your expenses by category (by date):</h3>
-            <p>{renderExpensesByCategory()}</p>
-          </div>
-        )}
+            
+              <h3>Your income by category</h3>
+              <p>{renderIncomeDataByCategory()}</p>
 
-        <h3>Your remaining money for each category: </h3>
-        {renderRemainingMoneyByCategory()}
+            
+              <h3>Your expenses by category:</h3> 
+              <p>{renderExpensesByCategory()}</p>
+
+          </div>
+          ) : (
+         <div>
+         
+            <h3>Your income by category (by date):</h3>
+            <p>{renderIncomeDataByCategory()}</p>
+
+            <h3>Your expenses by category (by date):</h3> 
+            <p>{renderExpensesByCategory()}</p>
+         
+         </div>
+          )}
+
+
+        <h3>Your remaining money for each expense category: </h3>
+        {renderRemainingMoneyByCategory()} 
       </div>
 
       {/* income ja expense datan poistonapit */}

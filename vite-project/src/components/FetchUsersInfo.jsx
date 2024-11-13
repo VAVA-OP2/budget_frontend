@@ -6,7 +6,10 @@ import Statistics from "./Statistics";
 
 export default function FetchUsersInfo() {
   const [userInfo, setUserInfo] = useState(null);
-  const [categories, setCategories] = useState([]);
+  const [expenseCategories, setExpenseCategories] = useState([]);
+
+  const [incomeCategories, setIncomeCategories] = useState([]);
+
   const [savings, setSavings] = useState({
     current_savings: 0,
     goal_amount: 0,
@@ -20,7 +23,8 @@ export default function FetchUsersInfo() {
 
   useEffect(() => {
     if (userInfo) {
-      getCategories();
+      getExpenseCategories();
+      getIncomeCategories();
     }
   }, [userInfo]);
 
@@ -40,13 +44,27 @@ export default function FetchUsersInfo() {
     setUserInfo(user);
   };
 
-  const getCategories = async () => {
+  const getExpenseCategories = async () => {
     const { data } = await supabase
-      .from("category")
-      .select("*")
-      .or(`user_id.is.null,user_id.eq.${userInfo.id}`);
+      .from('category')
+      .select('*')
+      .or(`user_id.is.null,user_id.eq.${userInfo.id}`)
     // console.log("Fetched categories:", data);
-    setCategories(data);
+    setExpenseCategories(data);
+  };
+
+  const getIncomeCategories = async () => {
+    const { data, error } = await supabase 
+      .from('incomeCategory')
+      .select('*')
+      .or(`user_id.is.null,user_id.eq.${userInfo.id}`)
+      if (error) {
+        console.log('Error fetching data', error);
+      } else {
+        // console.log('Fetched income categories: ', data);
+        setIncomeCategories(data);
+      }
+      
   };
 
   const getCurrentSavingsAndSavedGoal = async () => {
@@ -77,7 +95,7 @@ export default function FetchUsersInfo() {
   };
 
   // Tarkistetaan, että userInfo ja categories ovat ladattu ennen komponenttien renderöintiä
-  if (!userInfo || categories.length === 0) {
+  if (!userInfo || expenseCategories.length === 0) {
     return <p className="home_content-aligned_left">Loading user info and categories...</p>;
   }
 
@@ -102,7 +120,8 @@ export default function FetchUsersInfo() {
       </button>
       </div>
 
-      <Calculations categories={categories} userInfo={userInfo} />
+      <Calculations expenseCategories={expenseCategories} incomeCategories={incomeCategories} userInfo={userInfo} />
+
 
       <div style={{ maxWidth: "600px", margin: "0 auto" }}>
         <h2>Savings Information</h2>
@@ -115,11 +134,11 @@ export default function FetchUsersInfo() {
       </div>
 
       {/* Tulon lisääminen uuden sivun kautta */}
-      <Link to="/addTransaction" state={{ userInfo, categories }}>
+      <Link to="/addTransaction" state={{ userInfo, expenseCategories: expenseCategories, incomeCategories: incomeCategories }}>
         <button className="add-button">+</button>
       </Link>
 
-      <Statistics userInfo={userInfo} categories={categories} />
+      <Statistics userInfo={userInfo} expenseCategories={expenseCategories} />
     </div>
   );
 }
