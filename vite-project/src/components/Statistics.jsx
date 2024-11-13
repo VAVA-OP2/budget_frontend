@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import BubbleChart from "@weknow/react-bubble-chart-d3";
 import { supabase } from "/supabaseClient";
 
-export default function Statistics({ userInfo, categories }) {
+export default function Statistics({ userInfo, expenseCategories }) {
   const [expenses, setExpenses] = useState([]);
   const colors = [
     "#77dd77",
@@ -33,8 +33,7 @@ export default function Statistics({ userInfo, categories }) {
     fetchExpenses();
   }, [userInfo]);
 
-  const bubbleData = categories
-    .map((category, index) => {
+  const bubbleData = expenseCategories.map((category, index) => {
       let totalAmount = 0;
 
       expenses.forEach((expense) => {
