@@ -4,6 +4,15 @@
 
 Frontendissa on käytössä VITE ja käytämme Reactia ja JavaScriptia.
 
+## **Teknologiat**
+
+- **Frontend:** React, Vite
+- **Backend:** Supabase (Edge Functions)
+- **Tietokanta:** PostgreSQL (Supabase)
+- **Autentikointi:** Supabase Auth
+- **Muut:** OpenAI API (budjetointiehdotukset)
+
+
 # VAVA - Budget app - Frontend
 
 ### Here is located our budgeting app Frontend
