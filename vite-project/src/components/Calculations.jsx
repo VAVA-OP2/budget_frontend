@@ -6,6 +6,8 @@ import "../styles.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import BudgetCard from "./BudgetCard";
+import CategoryCard from "./CetegoryCard";
+import { Card, Typography } from "@mui/material";
 
 export default function Calculations(props) {
   // lasketut tulojen ja menojen yhteissummat
@@ -44,9 +46,17 @@ export default function Calculations(props) {
   const [showIncome, setShowIncome] = useState(false);
   const [showExpense, setShowExpense] = useState(false);
 
+  const [showIncomeCategories, setShowIncomeCategories] = useState(false);
+  const [showExpenseCategories, setShowExpenseCategories] = useState(false);
+
   // kun korttia klikataan, arvo vaihtuu ja näyttää/piilottaa listan
   const toggleIncome = () => setShowIncome(!showIncome);
   const toggleExpense = () => setShowExpense(!showExpense);
+
+  const toggleIncomeCategories = () =>
+    setShowIncomeCategories(!showIncomeCategories);
+  const toggleExpenseCategories = () =>
+    setShowExpenseCategories(!showExpenseCategories);
 
   useEffect(() => {
     const getData = async () => {
@@ -536,22 +546,54 @@ export default function Calculations(props) {
           </div>
         )}
 
-        <h3>Balance: {balance} €</h3>
+        <Card
+          style={{
+            marginBottom: "20px",
+            padding: "15px",
+            cursor: "pointer",
+          }}
+        >
+          <Typography variant="h7" gutterBottom>
+            Balance: {balance} €
+          </Typography>
+        </Card>
         {!searchByDate ? (
           <div>
-            <h3>Your income by category</h3>
-            <p>{renderIncomeDataByCategory()}</p>
-
-            <h3>Your expenses by category:</h3>
-            <p>{renderExpensesByCategory()}</p>
+            <CategoryCard
+              title="Income Categories"
+              categories={incomeByCategory}
+              showDetails={showIncomeCategories}
+              toggleDetails={toggleIncomeCategories}
+              filterByDate={false}
+            />
+            <CategoryCard
+              title="Expense Categories"
+              categories={expenseByCategory}
+              showDetails={showExpenseCategories}
+              toggleDetails={toggleExpenseCategories}
+              filterByDate={false}
+            />
           </div>
         ) : (
           <div>
-            <h3>Your income by category (by date):</h3>
-            <p>{renderIncomeDataByCategory()}</p>
-
-            <h3>Your expenses by category (by date):</h3>
-            <p>{renderExpensesByCategory()}</p>
+            <CategoryCard
+              title="Income Categories (by date)"
+              categories={incomeByCategoryWithDate}
+              showDetails={showIncomeCategories}
+              toggleDetails={toggleIncomeCategories}
+              filterByDate={true}
+              startDate={startDate}
+              endDate={endDate}
+            />
+            <CategoryCard
+              title="Expense Categories (by date)"
+              categories={expenseByCategoryWithDate}
+              showDetails={showExpenseCategories}
+              toggleDetails={toggleExpenseCategories}
+              filterByDate={true}
+              startDate={startDate}
+              endDate={endDate}
+            />
           </div>
         )}
         <h3>Your remaining money for each expense category: </h3>

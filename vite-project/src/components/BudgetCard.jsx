@@ -3,12 +3,13 @@ import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 //propsit
 export default function BudgetCard({
-  title,  
-  totalAmount, 
-  items, 
+  title,
+  totalAmount,
+  items,
   showDetails,
   toggleDetails,
   filterByDate,
@@ -17,7 +18,7 @@ export default function BudgetCard({
 }) {
   let filteredItems = items;
 
-  // Suodatetaan päivämäärän perusteella
+  // suodatetaan päivämäärän perusteella
   if (filterByDate) {
     filteredItems = items.filter(
       (item) =>
@@ -33,18 +34,29 @@ export default function BudgetCard({
         padding: "15px",
         cursor: "pointer",
       }}
-      onClick={toggleDetails}
     >
       <Typography variant="h6" gutterBottom>
         {title}: {totalAmount} €
       </Typography>
+
+      <ExpandMoreIcon
+        style={{
+          cursor: "pointer",
+          transition: "0.4s",
+          transform: showDetails ? "rotate(180deg)" : "rotate(0deg)", // Kun showDetails on true, nuoli kääntyy 180 astetta ja palaa takaisin, kun se on false
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleDetails();
+        }}
+      />
       {showDetails && (
         <List>
           {filteredItems.map((item) => {
             let dateText = "";
             let amountText = `${item.amount} €`;
 
-            // Jos päivämäärä tulee näyttää
+            // jos päivämäärä tulee näyttää
             if (filterByDate) {
               const formattedDate = new Date(item.date_added)
                 .toISOString()
