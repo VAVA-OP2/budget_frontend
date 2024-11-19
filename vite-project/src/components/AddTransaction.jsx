@@ -25,23 +25,27 @@ export default function AddTransaction() {
    
 
   let { state } = useLocation();
-  // toimii vähän kuin props mutta <Link to=""> -komponentin kanssa
+  // toimii vähän kuin props mutta <Link to=""> -komponentin kanssa, eli sisältää mm. userInfon
 
+
+  // uuden tulon lisäys tietokantaan
   const addIncome = async () => {
     if (isNaN(incomeAmount) || incomeAmount.trim() === "") {
       alert("Please enter a valid number for income.");
       return;
     }
 
+    // apumuuttuja kategorian id:lle
     let finalCategoryId = selectedIncomeCategoryId;
-    console.log("Final alussa: ", finalCategoryId);
 
+    // oman custom kategorian luonti
     if (selectedIncomeCategoryId === "customIncome") {
       if (customIncomeCategory.trim() === "") {
         alert("Please enter a custom category.");
         return;
       }
 
+      // lisätään custom kategoria tietokantaan
       const { data: categoryData, error: categoryError } = await supabase
         .from('incomeCategory')
         .insert([
@@ -58,15 +62,16 @@ export default function AddTransaction() {
           return;
         }
 
+        // asetetaan apumuuttujaan custom kategorian id
         if (categoryData && categoryData.length > 0) {
           finalCategoryId = categoryData[0].categoryid;
-          console.log("Final id lopussa: ", finalCategoryId);
         } else {
           alert("Error adding new category Id.");
           return;
         }
     }
-    console.log("Final id tuloa lisätessä: ", finalCategoryId);
+
+    // lisätään tulo tietokantaan
     const { data: incomeData, error } = await supabase
     .from("income")
     .insert([{
@@ -86,13 +91,14 @@ export default function AddTransaction() {
     }
   };
 
-
+  // menon lisääminen tietokantaan
   const addExpense = async () => {
     if (isNaN(expenseAmount) || expenseAmount.trim() === "") {
       alert("Please enter a valid number for expense.");
       return;
     }
 
+    // apumuuttuja kategoriaid:lle
     let finalCategoryId = selectedExpenseCategoryId;
 
     if (selectedExpenseCategoryId === "custom") {
@@ -101,7 +107,7 @@ export default function AddTransaction() {
         return;
       }
 
-      // Lisää uuden kategorian ja varmista, että se onnistuu
+      // Lisää uusi kategoria tietokantaan ja varmista, että se onnistuu
       const { data: categoryData, error: categoryError } = await supabase
         .from("category")
         .insert([
@@ -118,6 +124,7 @@ export default function AddTransaction() {
         alert("Error adding new category. Please try again.");
         return;
       }
+
 
       if (categoryData && categoryData.length > 0) {
         finalCategoryId = categoryData[0].categoryid;
@@ -162,6 +169,7 @@ export default function AddTransaction() {
     }
   };
 
+  // jos käyttäjä haluaa luoda oman kategorian, näytetään tekstikentät kategorian luomiselle
   const handleIncomeCategoryChange = (e) => {
     const selectedValue = e.target.value;
     setSelectedIncomeCategoryId(selectedValue);
