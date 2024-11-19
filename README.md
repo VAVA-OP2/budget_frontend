@@ -1,8 +1,10 @@
-# VAVA - Budjetointiappi - Frontend
+# VAVA - Budjetointiappi 
 
-### Tässä sijaitsee budjetointi appimme Frontend
 
-Frontendissa on käytössä VITE ja käytämme Reactia ja JavaScriptia.
+
+Tervetuloa **VAVA - Budjetointiapin** repositorioon!  Projekti on rakennettu käyttäen **Viteä** kehitysympäristönä sekä **Reactia** ja **JavaScriptiä** .
+
+
 
 ## **Teknologiat**
 
