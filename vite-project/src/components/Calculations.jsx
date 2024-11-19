@@ -5,7 +5,7 @@ import { resetIncome, resetExpense, resetDataByDates } from "./Reset";
 import "../styles.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Statistics from "./Statistics";
+import BudgetCard from "./BudgetCard";
 
 export default function Calculations(props) {
   // lasketut tulojen ja menojen yhteissummat
@@ -27,7 +27,6 @@ export default function Calculations(props) {
 
   const [incomeByCategory, setIncomeByCategory] = useState({});
   const [incomeByCategoryWithDate, setIncomeByCategoryWithDate] = useState({});
-  
 
   // react routerin navigate että uloskirjautuessa siirtyy takasin kirjautumissivulle
   const navigate = useNavigate();
@@ -40,6 +39,14 @@ export default function Calculations(props) {
   // jos haetaan päivämäärien perusteella tietoja, tallennetaan ne näihin tilamuuttujiin
   const [incomeByDate, setIncomeByDate] = useState(0);
   const [expensesByDate, setExpensesByDate] = useState(0);
+
+  //kertoo onko card avattu
+  const [showIncome, setShowIncome] = useState(false);
+  const [showExpense, setShowExpense] = useState(false);
+
+  // kun korttia klikataan, arvo vaihtuu ja näyttää/piilottaa listan
+  const toggleIncome = () => setShowIncome(!showIncome);
+  const toggleExpense = () => setShowExpense(!showExpense);
 
   useEffect(() => {
     const getData = async () => {
@@ -149,32 +156,32 @@ export default function Calculations(props) {
 
   const getIncomeByCategories = async () => {
     const { data: income, error } = await supabase
-      .from('income')
-      .select('amount, categoryid')
-      .eq('user_id', props.userInfo.id)
+      .from("income")
+      .select("amount, categoryid")
+      .eq("user_id", props.userInfo.id);
 
-      const grouped = {};
+    const grouped = {};
 
-      income.forEach((income) => {
-        const categoryId = income.categoryid;
+    income.forEach((income) => {
+      const categoryId = income.categoryid;
 
-        if (!grouped[categoryId]) {
-          grouped[categoryId] = 0;
-        }
+      if (!grouped[categoryId]) {
+        grouped[categoryId] = 0;
+      }
 
-        grouped[categoryId] += parseFloat(income.amount);
-      }); 
-      setIncomeByCategory(grouped);
-  }
+      grouped[categoryId] += parseFloat(income.amount);
+    });
+    setIncomeByCategory(grouped);
+  };
 
   // getIncomeByCategoriesByDate
   const getIncomeByCategoriesByDate = async () => {
     const { data: income, error } = await supabase
-      .from('income')
-      .select('amount, categoryid')
-      .eq('user_id', props.userInfo.id)
-      .gte('date_added', startDate.toISOString())
-      .lte('date_added', endDate.toISOString())
+      .from("income")
+      .select("amount, categoryid")
+      .eq("user_id", props.userInfo.id)
+      .gte("date_added", startDate.toISOString())
+      .lte("date_added", endDate.toISOString());
 
     const grouped = {};
 
@@ -186,10 +193,7 @@ export default function Calculations(props) {
       grouped[categoryId] += parseFloat(income.amount);
     });
     setIncomeByCategoryWithDate(grouped);
-  }
- 
-
-
+  };
 
   const expensesByCategory = async () => {
     const { data: expenses, error } = await supabase
@@ -276,17 +280,18 @@ export default function Calculations(props) {
       if (props.incomeCategories.length > 0) {
         return (
           <div>
-          <ul>
-            {props.incomeCategories.map((category) => (
-              <li key={category.categoryid}>
-                {category.categoryname}: {incomeByCategory[category.categoryid] || 0} € {/* jos undefined niin arvo 0 */}
-              </li>
-            ))}
-          </ul>
+            <ul>
+              {props.incomeCategories.map((category) => (
+                <li key={category.categoryid}>
+                  {category.categoryname}:{" "}
+                  {incomeByCategory[category.categoryid] || 0} €{" "}
+                  {/* jos undefined niin arvo 0 */}
+                </li>
+              ))}
+            </ul>
           </div>
         );
       } else {
-
         return <p>No income by category</p>;
       }
     } else {
@@ -295,7 +300,9 @@ export default function Calculations(props) {
           <ul>
             {props.incomeCategories.map((category) => (
               <li key={category.categoryid}>
-                {category.categoryname}: {incomeByCategoryWithDate[category.categoryid] || 0} € {/* jos undefined niin arvo 0 */}
+                {category.categoryname}:{" "}
+                {incomeByCategoryWithDate[category.categoryid] || 0} €{" "}
+                {/* jos undefined niin arvo 0 */}
               </li>
             ))}
           </ul>
@@ -463,14 +470,17 @@ export default function Calculations(props) {
         <button
           className="dates-button"
           onClick={() => {
-          getIncomeByDate();
-          getExpensesByDate();
-          getExpensesByCategoryWithDate();
-          getIncomeByCategoriesByDate();
-        }}>Search</button>
-      
+            getIncomeByDate();
+            getExpensesByDate();
+            getExpensesByCategoryWithDate();
+            getIncomeByCategoriesByDate();
+          }}
+        >
+          Search
+        </button>
 
-      <button className="dates-button"
+        <button
+          className="dates-button"
           onClick={() => {
             setSearchByDate(false);
             setStartDate(new Date());
@@ -484,83 +494,68 @@ export default function Calculations(props) {
       <div style={{ marginTop: "20px" }}>
         {!searchByDate ? (
           <div>
-            <h3>Total Income: {totalIncome} €</h3>
-            <ul>
-              {incomes.map((income) => (
-                <li key={income.incomeid}>{income.amount} € </li>
-              ))}
-            </ul>
-
-            <h3>Total Expense: {totalExpense} €</h3>
-            <ul>
-              {expenses.map((expense) => (
-                <li key={expense.expenseid}>{expense.amount} € </li>
-              ))}
-            </ul>
+            <BudgetCard
+              title="Total Income"
+              totalAmount={totalIncome}
+              items={incomes}
+              showDetails={showIncome}
+              toggleDetails={toggleIncome}
+              filterByDate={false}
+            />
+            <BudgetCard
+              title="Total Expense"
+              totalAmount={totalExpense}
+              items={expenses}
+              showDetails={showExpense}
+              toggleDetails={toggleExpense}
+              filterByDate={false}
+            />
           </div>
         ) : (
           <div>
-            <h3>Total Income (by date): {incomeByDate} €</h3>
-            <ul>
-              {incomes
-                .filter(
-                  (income) =>
-                    new Date(income.date_added) >= startDate &&
-                    new Date(income.date_added) <= endDate
-                )
-                .map((income) => (
-                  <li key={income.id}>
-                    {new Date(income.date_added).toISOString().slice(0, 10)}:{" "}
-                    {income.amount} €
-                  </li>
-                ))}
-            </ul>
-            <h3>Total Expense (by date): {expensesByDate} €</h3>
-            <ul>
-              {expenses
-                .filter(
-                  (expense) =>
-                    new Date(expense.date_added) >= startDate &&
-                    new Date(expense.date_added) <= endDate
-                )
-                .map((expense) => (
-                  <li key={expense.id}>
-                    {new Date(expense.date_added).toISOString().slice(0, 10)}:{" "}
-                    {expense.amount} €
-                  </li>
-                ))}
-            </ul>
+            <BudgetCard
+              title="Total Income (by date)"
+              totalAmount={incomeByDate}
+              items={incomes}
+              showDetails={showIncome}
+              toggleDetails={toggleIncome}
+              filterByDate={true}
+              startDate={startDate}
+              endDate={endDate}
+            />
+            <BudgetCard
+              title="Total Expense (by date)"
+              totalAmount={expensesByDate}
+              items={expenses}
+              showDetails={showExpense}
+              toggleDetails={toggleExpense}
+              filterByDate={true}
+              startDate={startDate}
+              endDate={endDate}
+            />
           </div>
         )}
 
         <h3>Balance: {balance} €</h3>
-
         {!searchByDate ? (
           <div>
-            
-              <h3>Your income by category</h3>
-              <p>{renderIncomeDataByCategory()}</p>
+            <h3>Your income by category</h3>
+            <p>{renderIncomeDataByCategory()}</p>
 
-            
-              <h3>Your expenses by category:</h3> 
-              <p>{renderExpensesByCategory()}</p>
-
+            <h3>Your expenses by category:</h3>
+            <p>{renderExpensesByCategory()}</p>
           </div>
-          ) : (
-         <div>
-         
+        ) : (
+          <div>
             <h3>Your income by category (by date):</h3>
             <p>{renderIncomeDataByCategory()}</p>
 
-            <h3>Your expenses by category (by date):</h3> 
+            <h3>Your expenses by category (by date):</h3>
             <p>{renderExpensesByCategory()}</p>
-         
-         </div>
-          )}
-
-
+          </div>
+        )}
         <h3>Your remaining money for each expense category: </h3>
-        {renderRemainingMoneyByCategory()} 
+        {renderRemainingMoneyByCategory()}
       </div>
 
       {/* income ja expense datan poistonapit */}
@@ -581,7 +576,6 @@ export default function Calculations(props) {
           <div></div>
         )}
       </div>
-      
     </div>
   );
 }
