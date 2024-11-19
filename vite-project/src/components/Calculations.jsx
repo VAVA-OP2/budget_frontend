@@ -409,173 +409,173 @@ export default function Calculations(props) {
   };
 
   return (
-    <div className="home_content-aligned_left">
-      <p className="dates-paragraph">Search for transactions based on date</p>
-      <div className="dates-container">
-        <p className="dates-paragraph">Start Date</p>
-        <DatePicker
-          showIcon
-          selected={startDate}
-          onChange={(date) => {
-            // asettaa päivämäärän alkamaan keskiyöstä, muuten päivämäärän kellonaika sama kuin käyttäjän
-            const newDate = new Date(
-              Date.UTC(
-                date.getFullYear(),
-                date.getMonth(),
-                date.getDate(),
-                0,
-                0,
-                0,
-                0
-              )
-            );
+        <div className="home_content-aligned_left">
+          <p className="dates-paragraph">Search for transactions based on date</p>
+          <div className="dates-container">
+            <p className="dates-paragraph">Start Date</p>
+            <DatePicker
+              showIcon
+              selected={startDate}
+              onChange={(date) => {
+                // asettaa päivämäärän alkamaan keskiyöstä, muuten päivämäärän kellonaika sama kuin käyttäjän
+                const newDate = new Date(
+                  Date.UTC(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate(),
+                    0,
+                    0,
+                    0,
+                    0
+                  )
+                );
 
-            // console.log('Start Date: ' + newDate.toISOString());
+                // console.log('Start Date: ' + newDate.toISOString());
 
-            setStartDate(newDate);
-          }}
-          className="dates-picker-input"
-        />
-
-        {/* End Daten kalenterinäkymän päivämäärän kanssa ongelmia */}
-        {/* Päivämäärän toiminnallisuus ei toimi jos kalenterinäkymässä ei ole -1 */}
-        {/*  */}
-        <p className="dates-paragraph">End Date</p>
-        <DatePicker
-          showIcon
-          selected={new Date(endDate).setDate(new Date(endDate.getDate() - 1))}
-          onChange={(date) => {
-            const newDate = new Date(
-              Date.UTC(
-                date.getFullYear(),
-                date.getMonth(),
-                date.getDate(),
-                23,
-                59,
-                59,
-                0
-              )
-            );
-
-            // console.log('newDate: ' + newDate.toISOString());
-            // käyttäjä valitsee päivämääräksi 15.10.2024 -> newDate 15.10.2024 klo 23.59.59
-
-            setEndDate(newDate);
-          }}
-          className="dates-picker-input"
-        />
-      </div>
-
-      <div className="dates-buttons-container">
-        <button
-          className="dates-button"
-          onClick={() => {
-            getIncomeByDate();
-            getExpensesByDate();
-            getExpensesByCategoryWithDate();
-            getIncomeByCategoriesByDate();
-          }}
-        >
-          Search
-        </button>
-
-        <button
-          className="dates-button"
-          onClick={() => {
-            setSearchByDate(false);
-            setStartDate(new Date());
-            setEndDate(new Date());
-          }}
-        >
-          Reset Dates
-        </button>
-      </div>
-
-      <div style={{ marginTop: "20px" }}>
-        {!searchByDate ? (
-          <div>
-            <BudgetCard
-              title="Total Income"
-              totalAmount={totalIncome}
-              items={incomes}
-              showDetails={showIncome}
-              toggleDetails={toggleIncome}
-              filterByDate={false}
+                setStartDate(newDate);
+              }}
+              className="dates-picker-input"
             />
-            <BudgetCard
-              title="Total Expense"
-              totalAmount={totalExpense}
-              items={expenses}
-              showDetails={showExpense}
-              toggleDetails={toggleExpense}
-              filterByDate={false}
+
+            {/* End Daten kalenterinäkymän päivämäärän kanssa ongelmia */}
+            {/* Päivämäärän toiminnallisuus ei toimi jos kalenterinäkymässä ei ole -1 */}
+            {/*  */}
+            <p className="dates-paragraph">End Date</p>
+            <DatePicker
+              showIcon
+              selected={new Date(endDate).setDate(new Date(endDate.getDate() - 1))}
+              onChange={(date) => {
+                const newDate = new Date(
+                  Date.UTC(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate(),
+                    23,
+                    59,
+                    59,
+                    0
+                  )
+                );
+
+                // console.log('newDate: ' + newDate.toISOString());
+                // käyttäjä valitsee päivämääräksi 15.10.2024 -> newDate 15.10.2024 klo 23.59.59
+
+                setEndDate(newDate);
+              }}
+              className="dates-picker-input"
             />
           </div>
-        ) : (
-          <div>
-            <BudgetCard
-              title="Total Income (by date)"
-              totalAmount={incomeByDate}
-              items={incomes}
-              showDetails={showIncome}
-              toggleDetails={toggleIncome}
-              filterByDate={true}
-              startDate={startDate}
-              endDate={endDate}
-            />
-            <BudgetCard
-              title="Total Expense (by date)"
-              totalAmount={expensesByDate}
-              items={expenses}
-              showDetails={showExpense}
-              toggleDetails={toggleExpense}
-              filterByDate={true}
-              startDate={startDate}
-              endDate={endDate}
-            />
+
+          <div className="dates-buttons-container">
+            <button
+              className="dates-button"
+              onClick={() => {
+                getIncomeByDate();
+                getExpensesByDate();
+                getExpensesByCategoryWithDate();
+                getIncomeByCategoriesByDate();
+              }}
+            >
+              Search
+            </button>
+
+            <button
+              className="dates-button"
+              onClick={() => {
+                setSearchByDate(false);
+                setStartDate(new Date());
+                setEndDate(new Date());
+              }}
+            >
+              Reset Dates
+            </button>
           </div>
-        )}
 
-        <h3>Balance: {balance} €</h3>
-        {!searchByDate ? (
-          <div>
-            <h3>Your income by category</h3>
-            <p>{renderIncomeDataByCategory()}</p>
+          <div style={{ marginTop: "20px" }}>
+            {!searchByDate ? (
+              <div>
+                <BudgetCard
+                  title="Total Income"
+                  totalAmount={totalIncome}
+                  items={incomes}
+                  showDetails={showIncome}
+                  toggleDetails={toggleIncome}
+                  filterByDate={false}
+                />
+                <BudgetCard
+                  title="Total Expense"
+                  totalAmount={totalExpense}
+                  items={expenses}
+                  showDetails={showExpense}
+                  toggleDetails={toggleExpense}
+                  filterByDate={false}
+                />
+              </div>
+            ) : (
+              <div>
+                <BudgetCard
+                  title="Total Income (by date)"
+                  totalAmount={incomeByDate}
+                  items={incomes}
+                  showDetails={showIncome}
+                  toggleDetails={toggleIncome}
+                  filterByDate={true}
+                  startDate={startDate}
+                  endDate={endDate}
+                />
+                <BudgetCard
+                  title="Total Expense (by date)"
+                  totalAmount={expensesByDate}
+                  items={expenses}
+                  showDetails={showExpense}
+                  toggleDetails={toggleExpense}
+                  filterByDate={true}
+                  startDate={startDate}
+                  endDate={endDate}
+                />
+              </div>
+            )}
 
-            <h3>Your expenses by category:</h3>
-            <p>{renderExpensesByCategory()}</p>
+            <h3>Balance: {balance} €</h3>
+            {!searchByDate ? (
+              <div>
+                <h3>Your income by category</h3>
+                <p>{renderIncomeDataByCategory()}</p>
+
+                <h3>Your expenses by category:</h3>
+                <p>{renderExpensesByCategory()}</p>
+              </div>
+            ) : (
+              <div>
+                <h3>Your income by category (by date):</h3>
+                <p>{renderIncomeDataByCategory()}</p>
+
+                <h3>Your expenses by category (by date):</h3>
+                <p>{renderExpensesByCategory()}</p>
+              </div>
+            )}
+            <h3>Your remaining money for each expense category: </h3>
+            {renderRemainingMoneyByCategory()}
           </div>
-        ) : (
-          <div>
-            <h3>Your income by category (by date):</h3>
-            <p>{renderIncomeDataByCategory()}</p>
 
-            <h3>Your expenses by category (by date):</h3>
-            <p>{renderExpensesByCategory()}</p>
+          {/* income ja expense datan poistonapit */}
+          <div className="warning-button-container">
+            <button className="warning-button" onClick={handleResetIncome}>
+              Delete income data
+            </button>
+            <button className="warning-button" onClick={handleResetExpense}>
+              Delete expense data{" "}
+            </button>
+
+            {/* näytä tämä nappi jos päivämäärähakua on käytetty */}
+            {searchByDate ? (
+              <button className="warning-button" onClick={handleResetByDate}>
+                Delete data from date range
+              </button>
+            ) : (
+              <div></div>
+            )}
           </div>
-        )}
-        <h3>Your remaining money for each expense category: </h3>
-        {renderRemainingMoneyByCategory()}
-      </div>
-
-      {/* income ja expense datan poistonapit */}
-      <div className="warning-button-container">
-        <button className="warning-button" onClick={handleResetIncome}>
-          Delete income data
-        </button>
-        <button className="warning-button" onClick={handleResetExpense}>
-          Delete expense data{" "}
-        </button>
-
-        {/* näytä tämä nappi jos päivämäärähakua on käytetty */}
-        {searchByDate ? (
-          <button className="warning-button" onClick={handleResetByDate}>
-            Delete data from date range
-          </button>
-        ) : (
-          <div></div>
-        )}
-      </div>
-    </div>
+        </div>
   );
 }

@@ -123,7 +123,7 @@ export default function FetchUsersInfo() {
       <Calculations expenseCategories={expenseCategories} incomeCategories={incomeCategories} userInfo={userInfo} />
 
 
-      <div style={{ maxWidth: "600px", margin: "0 auto" }}>
+      <div className="home_content-aligned_left">
         <h2>Savings Information</h2>
         <p>Current Savings: {totalAddedSavings} €</p>
         <p>Savings Goal: {savings.goal_amount} €</p>
@@ -138,7 +138,9 @@ export default function FetchUsersInfo() {
         <button className="add-button">+</button>
       </Link>
 
+      <div className="bubblechart-align">
       <Statistics userInfo={userInfo} expenseCategories={expenseCategories} />
+      </div>
     </div>
   );
 }
