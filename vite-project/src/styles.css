@@ -278,16 +278,8 @@ dates-button:hover {
 }
 
 .arrow_back {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    width: 0;
-    height: 0;
-    border-top: 10px;
-    border-bottom: 10px;
-    border-right: 15px solid #F5EFED;
+    margin-left: 25px;
 }
 
-.arrow_back:hover {
-    border-right-color: #FCD9DA;
-}
+
+

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { supabase } from '/supabaseClient';
 import LineChart from './LineChart';
 import { resetSavings } from './Reset';
+import { FaArrowLeft } from "react-icons/fa";
 
 export default function SavingsPage() {
     const location = useLocation();
@@ -124,6 +125,15 @@ export default function SavingsPage() {
     };
 
     return (
+        <div>
+            <div className="arrow_back">
+                <Link to="/home">
+                    <FaArrowLeft 
+                    color='white'
+                    size='2em'
+                    />
+                </Link>
+        </div>
         <div className='savings_content-flex_container'>
             <div className='savings_content-aligned_left'>
                 <h2>Add or Update your Savings Goal</h2>
@@ -183,6 +193,7 @@ export default function SavingsPage() {
                     </div>
                 )}
             </div>
+        </div>
         </div>
     );
 }

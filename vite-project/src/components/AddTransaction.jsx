@@ -1,6 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { supabase } from "/supabaseClient";
 import { useState } from "react";
+import { FaArrowLeft } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function AddTransaction() {
   const [incomeAmount, setIncomeAmount] = useState("");
@@ -172,6 +174,15 @@ export default function AddTransaction() {
 
 
   return (
+    <div>
+      <div className="arrow_back">
+        <Link to="/home">
+          <FaArrowLeft 
+            color='white'
+            size='2em'
+          />
+        </Link>
+      </div>
     <div className="add-transa-container">
       <h3>Add Income</h3>
 
@@ -262,6 +273,7 @@ export default function AddTransaction() {
           Add Expense
         </button>
       </div>
+    </div>
     </div>
   );
 }
