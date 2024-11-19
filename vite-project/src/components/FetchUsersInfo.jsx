@@ -133,15 +133,15 @@ export default function FetchUsersInfo() {
         </Link>
       </div>
 
-      {/* Tulon lisääminen uuden sivun kautta */}
-      <Link to="/addTransaction" state={{ userInfo, expenseCategories: expenseCategories, incomeCategories: incomeCategories }}>
+      
+
+      
+       {/* Tulon lisääminen uuden sivun kautta */}
+       <Link to="/addTransaction" state={{ userInfo, expenseCategories: expenseCategories, incomeCategories: incomeCategories }}>
         <button className="add-button">+</button>
       </Link>
-
+ 
       <Statistics userInfo={userInfo} expenseCategories={expenseCategories} />
-      <Link to="/statistics" state={{ userInfo, categories }}>
-        <button className="statistics-button">Statistics</button>
-      </Link>
 
       
       <Link to="/openai-test">
