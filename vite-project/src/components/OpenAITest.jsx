@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { supabase } from '/supabaseClient';
+import React, { useState } from "react";
+import { supabase } from "/supabaseClient";
 
 const OpenAITest = () => {
   const [prompt, setPrompt] = useState("");
@@ -7,25 +7,14 @@ const OpenAITest = () => {
 
   const callOpenAiFunction = async () => {
     try {
-      // Hanki käyttäjän JWT token käyttämällä uutta metodia
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
-
-      if (!token) {
-        console.error("User is not authenticated");
-        return;
-      }
-
       const res = await fetch("https://dnpaxqcwteagqgkixckn.supabase.co/functions/v1/openai", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRucGF4cWN3dGVhZ3Fna2l4Y2tuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU0MzIyMjcsImV4cCI6MjA0MTAwODIyN30.XZKW19p0GiuaqFhEf-sCRrv1CtNFDqPU5a6bOABxoVc`,
         },
         body: JSON.stringify({ prompt }),
-        mode: "cors"
       });
-      
 
       if (!res.ok) {
         throw new Error("Failed to call OpenAI function");

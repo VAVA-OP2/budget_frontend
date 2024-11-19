@@ -112,6 +112,10 @@ export default function FetchUsersInfo() {
         <button className="openai-button">Test OpenAI Function</button>
       </Link>
 
+      <Link to="/hello-test">
+        <button className="openai-button">Test hello Function</button>
+      </Link>
+
       
     </div>
   );

@@ -9,6 +9,7 @@ import AddTransaction from './components/AddTransaction';
 import FetchUsersInfo from './components/FetchUsersInfo';
 import SavingsPage from './components/SavingsPage';
 import OpenAITest from './components/OpenAITest';
+import HelloTest from './components/HelloTest';
 
 const AppWrapper = () => {
   
@@ -43,6 +44,11 @@ const AppWrapper = () => {
         <Route
           path="/openai-test"
           element={isAuthenticated ? <OpenAITest /> : <Auth setIsAuthenticated={setIsAuthenticated} />}
+        />
+
+<Route
+          path="/hello-test"
+          element={isAuthenticated ? <HelloTest /> : <Auth setIsAuthenticated={setIsAuthenticated} />}
         />
 
 
