@@ -281,14 +281,6 @@ dates-button:hover {
     margin-left: 25px;
 }
 
-<<<<<<< Updated upstream
-
-
-=======
-.arrow_back:hover {
-    border-right-color: #FCD9DA;
-}
-
 .bubblechart-align {
     display: flex;
     justify-content: center;
@@ -296,4 +288,3 @@ dates-button:hover {
     width: 100%;
     margin-top: 20px;
 }
->>>>>>> Stashed changes
