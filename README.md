@@ -14,6 +14,9 @@ Key features include:
 
 This application is perfect for individuals who want to take control of their finances and achieve their savings goals with ease.
 
+You can try the live version of the app here:  
+[**VAVA - Budgeting App on GitHub Pages**](https://vaddee.github.io/budget_frontend/)
+
 ---
 
 ## **Table of Contents**
