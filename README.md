@@ -3,6 +3,18 @@
 Welcome to the **VAVA - Budgeting App** repository! This project is built using **Vite** as the development environment along with **React** and **JavaScript**.
 
 ---
+## **About the Application**
+
+The **VAVA - Budgeting App** is designed to help users efficiently manage their finances by tracking income, expenses, and savings goals.  
+Key features include:
+- Tracking income and expenses by categories.
+- Setting personalized savings goals and monitoring progress.
+- Visualizing financial data with interactive charts.
+- Receiving AI-powered budgeting suggestions for smarter financial decisions.
+
+This application is perfect for individuals who want to take control of their finances and achieve their savings goals with ease.
+
+---
 
 ## **Table of Contents**
 
