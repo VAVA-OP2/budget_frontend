@@ -1,44 +1,53 @@
-# VAVA - Budjetointiappi 
+# VAVA - Budgeting App
 
+Welcome to the **VAVA - Budgeting App** repository! This project is built using **Vite** as the development environment along with **React** and **JavaScript**.
 
+---
 
-Tervetuloa **VAVA - Budjetointiapin** repositorioon!  Projekti on rakennettu käyttäen **Viteä** kehitysympäristönä sekä **Reactia** ja **JavaScriptiä** .
+## **Table of Contents**
 
+1. [Technologies Used](#technologies-used)
+2. [Installation](#installation)
+3. [Features](#features)
+4. [Usage](#usage)
+5. [Development Guide](#development-guide)
+6. [Contributing](#contributing)
+7. [License](#license)
+8. [Contact](#contact)
 
+---
 
-## **Teknologiat**
+## **Technologies Used**
 
 - **Frontend:** React, Vite
 - **Backend:** Supabase (Edge Functions)
-- **Tietokanta:** PostgreSQL (Supabase)
-- **Autentikointi:** Supabase Auth
-- **Muut:** OpenAI API (budjetointiehdotukset)
+- **Database:** PostgreSQL (via Supabase)
+- **Authentication:** Supabase Auth
+- **Additional Tools:** OpenAI API (for budgeting suggestions)
 
+---
 
-# VAVA - Budget app - Frontend
+## **Installation**
 
-### Here is located our budgeting app Frontend
+Follow these steps to set up and run the project locally:
 
-Our Frontend uses VITE and we utilize React and JavaScript.
-
-
-### Installation
 1. Clone the repository:
    ```bash
    git clone https://github.com/VAVA-OP2/budget_frontend.git
-2. Navigate to the project directoryÖ
+2. Navigate to the project directory:
+   ```bash
    cd budget_frontend
-3. Install dependencies
+3. Install dependencies:
+   ```bash
    npm install
-
 4. Start the development server:
+   ```bash
    npm run dev
-5. Open the app in your browser at http://localhost:3000.
+5. Open the app in your browser at:
+   ```bash
+   http://localhost:3000
 
 
-## Usage
-1. Sign up or log in with your Supabase account.
-2. Add your income and expenses under respective categories.
-3. Set a savings goal and track your progress.
-4. Reset all data from the Reset tab if needed.
+   
+
 
