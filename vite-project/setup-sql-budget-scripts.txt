@@ -1,0 +1,75 @@
+-- Käyttäjätaulu
+CREATE TABLE public.User (
+  userId serial PRIMARY KEY,          -- Yksilöllinen käyttäjä ID
+  username text NOT NULL,             -- Käyttäjänimi
+  password text NOT NULL,             -- Käyttäjän salasana
+  role text NOT NULL                  -- Käyttäjän rooli (admin, käyttäjä jne.)
+);
+
+-- Budjetti-taulu
+CREATE TABLE public.Budget (
+  budgetId serial PRIMARY KEY,        -- Yksilöllinen budjetti ID
+  budgetName text NOT NULL,           -- Budjetin nimi
+  userId integer NOT NULL REFERENCES public.User(userId) -- Viittaus User-tauluun
+);
+
+-- Kategoria-taulu
+CREATE TABLE public.Category (
+  categoryId serial PRIMARY KEY,      -- Yksilöllinen kategoria ID
+  categoryName text NOT NULL,         -- Kategorian nimi (esim. "ruoka", "viihde")
+  categoryLimit integer,              -- Kategorian rajoitus (valinnainen)
+  user_id uuid REFERENCES auth.users(id) -- Viittaus käyttäjä ID:hen (auth.users)
+);
+
+-- Tulo-taulu
+CREATE TABLE public.Income (
+  incomeId serial PRIMARY KEY,        -- Yksilöllinen tulo ID
+  amount numeric NOT NULL,            -- Tulon määrä
+  categoryId integer REFERENCES public.Category(categoryId), -- Viittaus Category-tauluun
+  recurring boolean,                  -- Onko tulo toistuva
+  budgetId integer REFERENCES public.Budget(budgetId),       -- Viittaus Budget-tauluun
+  user_id uuid REFERENCES auth.users(id),                   -- Viittaus auth.users-tauluun
+  date_added timestamp with time zone -- Tulon lisäämisaika
+);
+
+-- Meno-taulu
+CREATE TABLE public.Expense (
+  expenseId serial PRIMARY KEY,       -- Yksilöllinen meno ID
+  amount numeric NOT NULL,            -- Menon määrä
+  categoryId integer REFERENCES public.Category(categoryId), -- Viittaus Category-tauluun
+  recurring boolean,                  -- Onko meno toistuva
+  budgetId integer REFERENCES public.Budget(budgetId),       -- Viittaus Budget-tauluun
+  user_id uuid REFERENCES auth.users(id),                   -- Viittaus auth.users-tauluun
+  date_added timestamp with time zone -- Menon lisäämisaika
+);
+
+-- Tulokategoriataulu (IncomeCategory)
+CREATE TABLE public.IncomeCategory (
+  categoryId serial PRIMARY KEY,      -- Yksilöllinen tulokategoria ID
+  categoryName text NOT NULL,         -- Tulokategorian nimi
+  user_id uuid REFERENCES auth.users(id) -- Viittaus käyttäjä ID:hen (auth.users)
+);
+
+-- Säästötavoitetaulu (Savings)
+CREATE TABLE public.Savings (
+  id uuid DEFAULT extensions.uuid_generate_v4() PRIMARY KEY, -- Yksilöllinen säästötavoite ID
+  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,  -- Viittaus käyttäjä ID:hen (auth.users)
+  goal_amount numeric NOT NULL,                              -- Säästötavoitteen summa
+  current_savings numeric DEFAULT 0                         -- Nykyiset säästöt
+);
+
+-- Säästölogitaulu (SavingsLog)
+CREATE TABLE public.Savings_Log (
+  id serial PRIMARY KEY,               -- Yksilöllinen säästölogi ID
+  user_id uuid REFERENCES auth.users(id), -- Viittaus käyttäjä ID:hen (auth.users)
+  amount numeric NOT NULL,             -- Säästöön lisätty määrä
+  timestamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP -- Aikaleima
+);
+
+-- Promptaulu (Prompts)
+CREATE TABLE public.Prompts (
+  id serial PRIMARY KEY,                -- Yksilöllinen prompt ID
+  prompt_text text NOT NULL,            -- Promptin teksti
+  response_text text,                   -- Promptin vastaus
+  created_at timestamp without time zone DEFAULT now() -- Luontiaika
+);
