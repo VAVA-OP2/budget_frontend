@@ -29,19 +29,18 @@ export default function BudgetCard({
         marginBottom: "20px",
         padding: "15px",
         cursor: "pointer",
-        border: "1px solid #ddd", // Lisää rajaus, jotta laatikko erottuu
-        borderRadius: "8px", // Pyöristetyt kulmat
       }}
     >
       <Typography variant="h6" gutterBottom>
         {title}: {totalAmount} €
       </Typography>
 
+      {/*Nuoli, josta avautuu lista*/}
       <ExpandMoreIcon
         style={{
           cursor: "pointer",
           transition: "0.4s",
-          transform: showDetails ? "rotate(180deg)" : "rotate(0deg)",
+          transform: showDetails ? "rotate(180deg)" : "rotate(0deg)", //kääntää nuolen
         }}
         onClick={(e) => {
           e.stopPropagation();
@@ -49,15 +48,14 @@ export default function BudgetCard({
         }}
       />
 
-      {/* Collapse - avattava lista */}
       <Collapse in={showDetails}>
         <Box
           sx={{
-            marginTop: "10px", // Lisää tilaa ylhäältä
-            padding: "10px", // Lisää sisäistä tilaa
-            border: "1px solid #ddd", // Lisää raja
-            borderRadius: "8px", // Pyöristetyt kulmat
-            backgroundColor: "#f9f9f9", // Taustaväri
+            marginTop: "10px",
+            padding: "10px",
+            border: "1px solid #ddd",
+            borderRadius: "8px",
+            backgroundColor: "#f9f9f9",
           }}
         >
           <List>
