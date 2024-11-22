@@ -3,6 +3,7 @@
 Welcome to the **VAVA - Budgeting App** repository! This project is built using **Vite** as the development environment along with **React** and **JavaScript**.
 
 ---
+
 ## **About the Application**
 
 The **VAVA - Budgeting App** is designed to help users efficiently manage their finances by tracking income, expenses, and savings goals.  
@@ -23,10 +24,11 @@ You can try the live version of the app here:
 
 1. [Technologies Used](#technologies-used)
 2. [Installation](#installation)
-3. [Features](#features)
-4. [Authors](#authors)
-5. [License](#license)
-6. [Contact](#contact)
+3. [Database Setup](#database-setup)
+4. [Features](#features)
+5. [Authors](#authors)
+6. [License](#license)
+7. [Contact](#contact)
 
 ---
 
@@ -59,6 +61,17 @@ Follow these steps to set up and run the project locally:
 5. Open the app in your browser at:
    ```bash
    http://localhost:3000
+
+## **Database Setup**
+
+To replicate the database for this project, follow these steps:
+
+1. Open your PostgreSQL or Supabase SQL editor.
+
+2. Copy the following SQL script and paste it into the editor.
+
+3. Run the script to create the necessary database tables and relationships.
+
 
 ## Features
 
