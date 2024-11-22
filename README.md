@@ -68,9 +68,12 @@ To replicate the database for this project, follow these steps:
 
 1. Open your PostgreSQL or Supabase SQL editor.
 
-2. Copy the following SQL script and paste it into the editor.
+2. Open the [setup-sql-budget-scripts.txt](https://github.com/VAVA-OP2/budget_frontend/blob/main/vite-project/setup-sql-budget-scripts.txt) file in this repository.
 
-3. Run the script to create the necessary database tables and relationships.
+3. Copy the SQL script from the file and paste it into the editor.
+
+4. Run the script to create the necessary database tables and relationships.
+
 
 
 ## Features
