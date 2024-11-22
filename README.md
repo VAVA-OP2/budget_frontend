@@ -111,6 +111,11 @@ This project was developed by the following contributors:
 
 - **Viivi Salin**  
   [GitHub Profile](https://github.com/viivisalin)
+## **License**
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+See the [LICENSE](https://github.com/VAVA-OP2/budget_frontend/blob/main/LICENSE) file for more information.
 
 
 
