@@ -6,8 +6,18 @@ import "../styles.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import BudgetCard from "./BudgetCard";
-import CategoryCard from "./CetegoryCard";
-import { Card, Typography } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
+import {
+  Card,
+  Typography,
+  Collapse,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+} from "@mui/material";
+import CategoryCard from "./CategoryCard";
 
 export default function Calculations(props) {
   // lasketut tulojen ja menojen yhteissummat
@@ -46,17 +56,21 @@ export default function Calculations(props) {
   const [showIncome, setShowIncome] = useState(false);
   const [showExpense, setShowExpense] = useState(false);
 
-  const [showIncomeCategories, setShowIncomeCategories] = useState(false);
-  const [showExpenseCategories, setShowExpenseCategories] = useState(false);
+  const [showIncomeByCategory, setShowIncomeByCategory] = useState(false);
+  const [showExpenseByCategory, setShowExpenseByCategory] = useState(false);
+
+  const [showRemainingMoney, setShowRemainingMoney] = useState(false);
 
   // kun korttia klikataan, arvo vaihtuu ja näyttää/piilottaa listan
   const toggleIncome = () => setShowIncome(!showIncome);
   const toggleExpense = () => setShowExpense(!showExpense);
 
-  const toggleIncomeCategories = () =>
-    setShowIncomeCategories(!showIncomeCategories);
-  const toggleExpenseCategories = () =>
-    setShowExpenseCategories(!showExpenseCategories);
+  const toggleIncomeByCategory = () =>
+    setShowIncomeByCategory(!showIncomeByCategory);
+  const toggleExpenseByCategory = () =>
+    setShowExpenseByCategory(!showExpenseByCategory);
+
+  const toggleRemainingMoney = () => setShowRemainingMoney(!showRemainingMoney);
 
   useEffect(() => {
     const getData = async () => {
@@ -247,80 +261,6 @@ export default function Calculations(props) {
       grouped[categoryId] += parseFloat(expense.amount);
     });
     setExpenseByCategoryWithDate(grouped);
-  };
-
-  const renderExpensesByCategory = () => {
-    if (!searchByDate) {
-      if (props.expenseCategories.length > 0) {
-        return (
-          <ul>
-            {props.expenseCategories.map((category) => (
-              <li key={category.categoryid}>
-                {category.categoryname}:{" "}
-                {expenseByCategory[category.categoryid] || 0} €{" "}
-                {/* jos undefined niin arvo 0 */}
-              </li>
-            ))}
-          </ul>
-        );
-      } else {
-        return <p>No expenses by category</p>;
-      }
-    } else {
-      if (props.expenseCategories.length > 0) {
-        return (
-          <ul>
-            {props.expenseCategories.map((category) => (
-              <li key={category.categoryid}>
-                {category.categoryname}:{" "}
-                {expenseByCategoryWithDate[category.categoryid] || 0} €{" "}
-                {/* jos undefined niin arvo 0 */}
-              </li>
-            ))}
-          </ul>
-        );
-      } else {
-        return <p>No expenses by category</p>;
-      }
-    }
-  };
-
-  const renderIncomeDataByCategory = () => {
-    if (!searchByDate) {
-      if (props.incomeCategories.length > 0) {
-        return (
-          <div>
-            <ul>
-              {props.incomeCategories.map((category) => (
-                <li key={category.categoryid}>
-                  {category.categoryname}:{" "}
-                  {incomeByCategory[category.categoryid] || 0} €{" "}
-                  {/* jos undefined niin arvo 0 */}
-                </li>
-              ))}
-            </ul>
-          </div>
-        );
-      } else {
-        return <p>No income by category</p>;
-      }
-    } else {
-      if (props.incomeCategories.length > 0) {
-        return (
-          <ul>
-            {props.incomeCategories.map((category) => (
-              <li key={category.categoryid}>
-                {category.categoryname}:{" "}
-                {incomeByCategoryWithDate[category.categoryid] || 0} €{" "}
-                {/* jos undefined niin arvo 0 */}
-              </li>
-            ))}
-          </ul>
-        );
-      } else {
-        return <p>No income by category</p>;
-      }
-    }
   };
 
   const renderRemainingMoneyByCategory = () => {
@@ -557,47 +497,277 @@ export default function Calculations(props) {
             Balance: {balance} €
           </Typography>
         </Card>
-        {!searchByDate ? (
-          <div>
-            <CategoryCard
-              title="Income Categories"
-              categories={incomeByCategory}
-              showDetails={showIncomeCategories}
-              toggleDetails={toggleIncomeCategories}
-              filterByDate={false}
-            />
-            <CategoryCard
-              title="Expense Categories"
-              categories={expenseByCategory}
-              showDetails={showExpenseCategories}
-              toggleDetails={toggleExpenseCategories}
-              filterByDate={false}
-            />
-          </div>
-        ) : (
-          <div>
-            <CategoryCard
-              title="Income Categories (by date)"
-              categories={incomeByCategoryWithDate}
-              showDetails={showIncomeCategories}
-              toggleDetails={toggleIncomeCategories}
-              filterByDate={true}
-              startDate={startDate}
-              endDate={endDate}
-            />
-            <CategoryCard
-              title="Expense Categories (by date)"
-              categories={expenseByCategoryWithDate}
-              showDetails={showExpenseCategories}
-              toggleDetails={toggleExpenseCategories}
-              filterByDate={true}
-              startDate={startDate}
-              endDate={endDate}
-            />
-          </div>
-        )}
-        <h3>Your remaining money for each expense category: </h3>
-        {renderRemainingMoneyByCategory()}
+
+        <div style={{ marginTop: "20px" }}>
+          {!searchByDate ? (
+            <div>
+              {/* Income by Category */}
+              <Card
+                style={{
+                  marginBottom: "20px",
+                  padding: "15px",
+                  cursor: "pointer",
+                }}
+                onClick={toggleIncomeByCategory}
+              >
+                <Typography variant="h6">Your income by category</Typography>
+
+                <ExpandMoreIcon
+                  style={{
+                    cursor: "pointer",
+                    transition: "0.4s",
+                    transform: showIncomeByCategory
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleIncomeByCategory();
+                  }}
+                />
+
+                {showIncomeByCategory && (
+                  <List>
+                    {props.incomeCategories.map((category) => (
+                      <ListItem key={category.categoryid}>
+                        <ListItemText
+                          primary={
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Typography variant="h6" component="span">
+                                {category.categoryname}
+                              </Typography>
+                              <Typography
+                                variant="h6"
+                                component="span"
+                                style={{ marginLeft: "10px" }}
+                              >
+                                {(
+                                  incomeByCategory[category.categoryid] || 0
+                                ).toFixed(2)}{" "}
+                                €
+                              </Typography>
+                            </div>
+                          }
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </Card>
+
+              {/* Expense by Category */}
+              <Card
+                style={{
+                  marginBottom: "20px",
+                  padding: "15px",
+                  cursor: "pointer",
+                }}
+                onClick={toggleExpenseByCategory}
+              >
+                <Typography variant="h6">Your expenses by category</Typography>
+
+                <ExpandMoreIcon
+                  style={{
+                    cursor: "pointer",
+                    transition: "0.4s",
+                    transform: showExpenseByCategory
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleExpenseByCategory();
+                  }}
+                />
+
+                {showExpenseByCategory && (
+                  <List>
+                    {props.expenseCategories.map((category) => (
+                      <ListItem key={category.categoryid}>
+                        <ListItemText
+                          primary={
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Typography variant="h6" component="span">
+                                {category.categoryname}
+                              </Typography>
+                              <Typography
+                                variant="h6"
+                                component="span"
+                                style={{ marginLeft: "10px" }}
+                              >
+                                {(
+                                  expenseByCategory[category.categoryid] || 0
+                                ).toFixed(2)}{" "}
+                                €
+                              </Typography>
+                            </div>
+                          }
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </Card>
+            </div>
+          ) : (
+            <div>
+              {/* Income by Category with Date */}
+              <Card
+                style={{
+                  marginBottom: "20px",
+                  padding: "15px",
+                  cursor: "pointer",
+                }}
+                onClick={toggleIncomeByCategory}
+              >
+                <Typography variant="h6">
+                  Your income by category (by date)
+                </Typography>
+
+                <ExpandMoreIcon
+                  style={{
+                    cursor: "pointer",
+                    transition: "0.4s",
+                    transform: showIncomeByCategory
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleIncomeByCategory();
+                  }}
+                />
+
+                {showIncomeByCategory && (
+                  <List>
+                    {props.incomeCategories.map((category) => (
+                      <ListItem key={category.categoryid}>
+                        <ListItemText
+                          primary={
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Typography variant="h6" component="span">
+                                {category.categoryname}
+                              </Typography>
+                              <Typography
+                                variant="h6"
+                                component="span"
+                                style={{ marginLeft: "10px" }}
+                              >
+                                {(
+                                  incomeByCategory[category.categoryid] || 0
+                                ).toFixed(2)}{" "}
+                                €
+                              </Typography>
+                            </div>
+                          }
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </Card>
+
+              {/* Expense by Category with Date */}
+              <Card
+                style={{
+                  marginBottom: "20px",
+                  padding: "15px",
+                  cursor: "pointer",
+                }}
+                onClick={toggleExpenseByCategory}
+              >
+                <Typography variant="h6">
+                  Your expenses by category (by date)
+                </Typography>
+
+                {showExpenseByCategory && (
+                  <List>
+                    {props.expenseCategories.map((category) => (
+                      <ListItem key={category.categoryid}>
+                        <ListItemText
+                          primary={
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Typography variant="h6" component="span">
+                                {category.categoryname}
+                              </Typography>
+                              <Typography
+                                variant="h6"
+                                component="span"
+                                style={{ marginLeft: "10px" }}
+                              >
+                                {(
+                                  expenseByCategory[category.categoryid] || 0
+                                ).toFixed(2)}{" "}
+                                €
+                              </Typography>
+                            </div>
+                          }
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </Card>
+            </div>
+          )}
+        </div>
+
+        {/* Remaining Money by Category */}
+        <div style={{ marginTop: "20px" }}>
+          {!searchByDate ? (
+            <div>
+              <Card
+                onClick={toggleRemainingMoney}
+                style={{
+                  marginBottom: "20px",
+                  padding: "15px",
+                  cursor: "pointer",
+                }}
+              >
+                <Typography variant="h6">
+                  Your remaining money for each expense category
+                </Typography>
+
+                {showRemainingMoney && (
+                  <div>
+                    <Typography style={{ margin: "10px 0" }} />
+                    {renderRemainingMoneyByCategory()}
+                  </div>
+                )}
+              </Card>
+            </div>
+          ) : (
+            <div>
+              <Card
+                onClick={toggleRemainingMoney}
+                style={{
+                  marginBottom: "20px",
+                  padding: "15px",
+                  cursor: "pointer",
+                }}
+              >
+                <Typography variant="h6">
+                  Your remaining money for each expense category (by date)
+                </Typography>
+
+                {showRemainingMoney && (
+                  <div>
+                    <Divider style={{ margin: "10px 0" }} />
+                    {renderRemainingMoneyByCategory()}
+                  </div>
+                )}
+              </Card>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* income ja expense datan poistonapit */}

@@ -1,11 +1,7 @@
 import React from "react";
-import Card from "@mui/material/Card";
-import Typography from "@mui/material/Typography";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
+import { Card, List, ListItem, Typography, Collapse, Box } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-//propsit
 export default function BudgetCard({
   title,
   totalAmount,
@@ -18,7 +14,7 @@ export default function BudgetCard({
 }) {
   let filteredItems = items;
 
-  // suodatetaan päivämäärän perusteella
+  // Suodatetaan päivämäärän perusteella
   if (filterByDate) {
     filteredItems = items.filter(
       (item) =>
@@ -33,6 +29,8 @@ export default function BudgetCard({
         marginBottom: "20px",
         padding: "15px",
         cursor: "pointer",
+        border: "1px solid #ddd", // Lisää rajaus, jotta laatikko erottuu
+        borderRadius: "8px", // Pyöristetyt kulmat
       }}
     >
       <Typography variant="h6" gutterBottom>
@@ -43,37 +41,48 @@ export default function BudgetCard({
         style={{
           cursor: "pointer",
           transition: "0.4s",
-          transform: showDetails ? "rotate(180deg)" : "rotate(0deg)", // Kun showDetails on true, nuoli kääntyy 180 astetta ja palaa takaisin, kun se on false
+          transform: showDetails ? "rotate(180deg)" : "rotate(0deg)",
         }}
         onClick={(e) => {
           e.stopPropagation();
           toggleDetails();
         }}
       />
-      {showDetails && (
-        <List>
-          {filteredItems.map((item) => {
-            let dateText = "";
-            let amountText = `${item.amount} €`;
 
-            // jos päivämäärä tulee näyttää
-            if (filterByDate) {
-              const formattedDate = new Date(item.date_added)
-                .toISOString()
-                .slice(0, 10);
-              dateText = `${formattedDate}: ${amountText}`;
-            } else {
-              dateText = amountText;
-            }
+      {/* Collapse - avattava lista */}
+      <Collapse in={showDetails}>
+        <Box
+          sx={{
+            marginTop: "10px", // Lisää tilaa ylhäältä
+            padding: "10px", // Lisää sisäistä tilaa
+            border: "1px solid #ddd", // Lisää raja
+            borderRadius: "8px", // Pyöristetyt kulmat
+            backgroundColor: "#f9f9f9", // Taustaväri
+          }}
+        >
+          <List>
+            {filteredItems.map((item) => {
+              let dateText = "";
+              let amountText = `${item.amount} €`;
 
-            return (
-              <ListItem key={item.id || item.incomeid || item.expenseid}>
-                {dateText}
-              </ListItem>
-            );
-          })}
-        </List>
-      )}
+              if (filterByDate) {
+                const formattedDate = new Date(item.date_added)
+                  .toISOString()
+                  .slice(0, 10);
+                dateText = `${formattedDate}: ${amountText}`;
+              } else {
+                dateText = amountText;
+              }
+
+              return (
+                <ListItem key={item.id || item.incomeid || item.expenseid}>
+                  {dateText}
+                </ListItem>
+              );
+            })}
+          </List>
+        </Box>
+      </Collapse>
     </Card>
   );
 }
