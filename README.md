@@ -3,6 +3,7 @@
 Welcome to the **VAVA - Budgeting App** repository! This project is built using **Vite** as the development environment along with **React** and **JavaScript**.
 
 ---
+
 ## **About the Application**
 
 The **VAVA - Budgeting App** is designed to help users efficiently manage their finances by tracking income, expenses, and savings goals.  
@@ -23,10 +24,11 @@ You can try the live version of the app here:
 
 1. [Technologies Used](#technologies-used)
 2. [Installation](#installation)
-3. [Features](#features)
-4. [Authors](#authors)
-5. [License](#license)
-6. [Contact](#contact)
+3. [Database Setup](#database-setup)
+4. [Features](#features)
+5. [Authors](#authors)
+6. [License](#license)
+7. [Contact](#contact)
 
 ---
 
@@ -49,7 +51,7 @@ Follow these steps to set up and run the project locally:
    git clone https://github.com/VAVA-OP2/budget_frontend.git
 2. Navigate to the project directory:
    ```bash
-   cd budget_frontend
+   cd vite-project
 3. Install dependencies:
    ```bash
    npm install
@@ -59,6 +61,20 @@ Follow these steps to set up and run the project locally:
 5. Open the app in your browser at:
    ```bash
    http://localhost:3000
+
+## **Database Setup**
+
+To replicate the database for this project, follow these steps:
+
+1. Open your PostgreSQL or Supabase SQL editor.
+
+2. Open the [setup-sql-budget-scripts.txt](https://github.com/VAVA-OP2/budget_frontend/blob/main/vite-project/setup-sql-budget-scripts.txt) file in this repository.
+
+3. Copy the SQL script from the file and paste it into the editor.
+
+4. Run the script to create the necessary database tables and relationships.
+
+
 
 ## Features
 
@@ -95,6 +111,11 @@ This project was developed by the following contributors:
 
 - **Viivi Salin**  
   [GitHub Profile](https://github.com/viivisalin)
+## **License**
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+See the [LICENSE](https://github.com/VAVA-OP2/budget_frontend/blob/main/LICENSE) file for more information.
 
 
 
