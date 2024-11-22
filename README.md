@@ -51,7 +51,7 @@ Follow these steps to set up and run the project locally:
    git clone https://github.com/VAVA-OP2/budget_frontend.git
 2. Navigate to the project directory:
    ```bash
-   cd budget_frontend
+   cd vite-project
 3. Install dependencies:
    ```bash
    npm install
