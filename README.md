@@ -115,7 +115,7 @@ This project was developed by the following contributors:
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
-See the [LICENSE](https://github.com/VAVA-OP2/budget_frontend/blob/main/LICENSE) file for more information.
+See the [LICENSE](https://github.com/VAVA-OP2/budget_frontend/blob/main/vite-project/LICENSE) file for more information.
 
 
 
