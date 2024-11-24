@@ -46,19 +46,34 @@ You can try the live version of the app here:
 
 Follow these steps to set up and run the project locally:
 
-1. Clone the repository:
+1. **Clone the repository**
    ```bash
    git clone https://github.com/VAVA-OP2/budget_frontend.git
-2. Navigate to the project directory:
+2. **Navigate to the project directory**
    ```bash
    cd vite-project
-3. Install dependencies:
+3. **Install dependencies**
    ```bash
+
    npm install
-4. Start the development server:
+
+4. **Set up Supabase**
+   - if you don't already have a Supabase project, create one at https://supabase.com
+   - Go to Project Settings -> API section of your Supabase project and copy the following:
+   Project URL,
+   Service Role Key
+5. **Create a .env file**
+   - In the root directory of the project, crreate a file named .env and add the following lines:
+     ```bash
+     VITE_SUPABASE_URL=YourSupabaseURL
+     VITE_SUPABASE_KEY=YourSupabaseKey
+   - Replace YourSupabaseURL and YourSupabaseKey with the values from your Supabase project.
+
+     
+5. **Start the development server**
    ```bash
    npm run dev
-5. Open the app in your browser at:
+6. **Open the app in your browser at**
    ```bash
    http://localhost:3000
 
