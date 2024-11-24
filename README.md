@@ -90,7 +90,7 @@ To replicate the database for this project, follow these steps:
 4. Run the script to create the necessary database tables and relationships.
 ---
 
-**Note:** The database currently does not contain any data. If you want to test the application without hardcoded data, you need to comment out lines 78-80 in the [`FetchUsersInfo`](https://github.com/VAVA-OP2/budget_frontend/blob/main/src/components/FetchUsersInfo.js) file.
+**Note:** The database currently does not contain any data. If you want to test the application without hardcoded data, you need to comment out lines 78-80 in the [`FetchUsersInfo`](https://github.com/VAVA-OP2/budget_frontend/blob/main/vite-project/src/components/FetchUsersInfo.jsx) file.
 
 
 
