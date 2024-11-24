@@ -88,6 +88,11 @@ To replicate the database for this project, follow these steps:
 3. Copy the SQL script from the file and paste it into the editor.
 
 4. Run the script to create the necessary database tables and relationships.
+---
+
+**Note:** The database currently does not contain any data. If you want to test the application without hardcoded data, you need to comment out lines 78-80 in the [`FetchUsersInfo`](https://github.com/VAVA-OP2/budget_frontend/blob/main/src/components/FetchUsersInfo.js) file.
+
+
 
 
 
