@@ -116,6 +116,11 @@ To replicate the database for this project, follow these steps:
 - **AI-Powered Budgeting Suggestions**  
   Leverage OpenAI API to receive smart budgeting recommendations based on your income and expense data.
 
+## Issues
+
+You can find the issues of the app here:  
+[**VAVA - Issues page**](https://github.com/VAVA-OP2/budget_frontend/issues)
+
 ## **Authors**
 
 This project was developed by the following contributors:
@@ -132,10 +137,7 @@ This project was developed by the following contributors:
 - **Viivi Salin**  
   [GitHub Profile](https://github.com/viivisalin)
 
-## Issues
 
-You can find the issues of the app here:  
-[**VAVA - Issues page**](https://github.com/VAVA-OP2/budget_frontend/issues)
 
 ## **License**
 
