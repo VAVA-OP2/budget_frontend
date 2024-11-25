@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { supabase } from '/supabaseClient';
 import LineChart from './LineChart';
 import { resetSavings } from './Reset';
+import { FaArrowLeft } from "react-icons/fa";
 
 export default function SavingsPage() {
     const location = useLocation();
@@ -124,8 +125,17 @@ export default function SavingsPage() {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ flex: 1, marginRight: '20px' }}>
+        <div>
+            <div className="arrow_back">
+                <Link to="/home">
+                    <FaArrowLeft 
+                    color='white'
+                    size='2em'
+                    />
+                </Link>
+        </div>
+        <div className='savings_content-flex_container'>
+            <div className='savings_content-aligned_left'>
                 <h2>Add or Update your Savings Goal</h2>
                 {savedGoal === null || isEditingGoal ? (
                     <>
@@ -134,8 +144,9 @@ export default function SavingsPage() {
                             placeholder="Enter your savings goal"
                             value={savings}
                             onChange={(e) => setSavings(e.target.value)}
+                            className='input-field_small'
                         />
-                        <button onClick={createOrUpdateSavingsGoal}>
+                        <button onClick={createOrUpdateSavingsGoal} className='savings_page_buttons'>
                             {savedGoal ? "Update Savings Goal" : "Save Savings Goal"}
                         </button>
                     </>
@@ -152,8 +163,9 @@ export default function SavingsPage() {
                     placeholder="Enter amount to add to savings"
                     value={addToSavings}
                     onChange={(e) => setAddToSavings(e.target.value)}
+                    className='input-field_small'
                 />
-                <button onClick={handleAddToSavings}>Add to Savings</button>
+                <button onClick={handleAddToSavings} className='savings_page_buttons'>Add to Savings</button>
 
                 {savingsData.length > 0 && (
                     <div>
@@ -170,10 +182,10 @@ export default function SavingsPage() {
                 <button onClick={handleResetSavings}>Reset</button>
             </div>
 
-            <div style={{ flex: 1 }}>
+            <div className='savings_content-aligned_right'>
                 {savedGoal && savingsData.length > 0 && (
                     <div style={{ height: '100%' }}>
-                        <h2>Savings Progress</h2>
+                        <h2 className='savings_progress_text_align'>Savings Progress</h2>
                         <LineChart
                             savingsData={savingsData}
                             goalAmount={savedGoal}
@@ -181,6 +193,7 @@ export default function SavingsPage() {
                     </div>
                 )}
             </div>
+        </div>
         </div>
     );
 }

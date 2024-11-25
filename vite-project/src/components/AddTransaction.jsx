@@ -1,34 +1,82 @@
 import { useLocation } from "react-router-dom";
 import { supabase } from "/supabaseClient";
 import { useState } from "react";
+import { FaArrowLeft } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function AddTransaction() {
   const [incomeAmount, setIncomeAmount] = useState("");
   const [expenseAmount, setExpenseAmount] = useState("");
-  const [selectedCategoryId, setSelectedCategoryId] = useState("");
-  const [customCategory, setCustomCategory] = useState("");
-  const [customLimit, setCustomLimit] = useState("");
-  const [showCustomCategory, setShowCustomCategory] = useState(false);
 
-    const today = new Date();
-    const formattedToday = today.toISOString();
+  const [selectedExpenseCategoryId, setSelectedExpenseCategoryId] = useState("");
+  const [selectedIncomeCategoryId, setSelectedIncomeCategoryId] = useState();
+
+  const [customExpenseCategory, setCustomExpenseCategory] = useState("");
+  const [customIncomeCategory, setCustomIncomeCategory] = useState("");
+  
+  const [customLimit, setCustomLimit] = useState("");
+  
+  const [showCustomCategory, setShowCustomExpenseCategory] = useState(false);
+  const [showCustomIncomeCategory, setShowCustomIncomeCategory] = useState(false);
+
+  const today = new Date();
+  const formattedToday = today.toISOString();
 
    
 
   let { state } = useLocation();
-  // toimii vähän kuin props mutta <Link to=""> -komponentin kanssa
+  // toimii vähän kuin props mutta <Link to=""> -komponentin kanssa, eli sisältää mm. userInfon
 
+
+  // uuden tulon lisäys tietokantaan
   const addIncome = async () => {
-    // tarkistus vain numeroille syöttökenttään
     if (isNaN(incomeAmount) || incomeAmount.trim() === "") {
       alert("Please enter a valid number for income.");
       return;
     }
 
-    const { data, error } = await supabase
+    // apumuuttuja kategorian id:lle
+    let finalCategoryId = selectedIncomeCategoryId;
+
+    // oman custom kategorian luonti
+    if (selectedIncomeCategoryId === "customIncome") {
+      if (customIncomeCategory.trim() === "") {
+        alert("Please enter a custom category.");
+        return;
+      }
+
+      // lisätään custom kategoria tietokantaan
+      const { data: categoryData, error: categoryError } = await supabase
+        .from('incomeCategory')
+        .insert([
+          {
+            categoryname: customIncomeCategory,
+            user_id: state.userInfo.id,
+          },
+        ])
+        .select();
+
+        if (categoryError) {
+          console.error(categoryError);
+          alert('Error adding new category. Please try again.');
+          return;
+        }
+
+        // asetetaan apumuuttujaan custom kategorian id
+        if (categoryData && categoryData.length > 0) {
+          finalCategoryId = categoryData[0].categoryid;
+        } else {
+          alert("Error adding new category Id.");
+          return;
+        }
+    }
+
+    // lisätään tulo tietokantaan
+    const { data: incomeData, error } = await supabase
     .from("income")
     .insert([{
         amount: parseFloat(incomeAmount),
+        categoryid: finalCategoryId,
         user_id: state.userInfo.id,
         date_added: formattedToday,
       }])
@@ -38,30 +86,33 @@ export default function AddTransaction() {
     } else {
       alert("Income added successfully!");
       setIncomeAmount(""); // Tyhjennetään syöttökenttä
+      setCustomIncomeCategory("");
+      setShowCustomIncomeCategory(false);
     }
   };
 
-
+  // menon lisääminen tietokantaan
   const addExpense = async () => {
     if (isNaN(expenseAmount) || expenseAmount.trim() === "") {
       alert("Please enter a valid number for expense.");
       return;
     }
 
-    let finalCategoryId = selectedCategoryId;
+    // apumuuttuja kategoriaid:lle
+    let finalCategoryId = selectedExpenseCategoryId;
 
-    if (selectedCategoryId === "custom") {
-      if (customCategory.trim() === "" || customLimit.trim() === "") {
+    if (selectedExpenseCategoryId === "custom") {
+      if (customExpenseCategory.trim() === "" || customLimit.trim() === "") {
         alert("Please enter a custom category and limit");
         return;
       }
 
-      // Lisää uuden kategorian ja varmista, että se onnistuu
+      // Lisää uusi kategoria tietokantaan ja varmista, että se onnistuu
       const { data: categoryData, error: categoryError } = await supabase
         .from("category")
         .insert([
           {
-            categoryname: customCategory,
+            categoryname: customExpenseCategory,
             categoryLimit: parseFloat(customLimit),
             user_id: state.userInfo.id,
           },
@@ -73,6 +124,7 @@ export default function AddTransaction() {
         alert("Error adding new category. Please try again.");
         return;
       }
+
 
       if (categoryData && categoryData.length > 0) {
         finalCategoryId = categoryData[0].categoryid;
@@ -101,41 +153,87 @@ export default function AddTransaction() {
     } else {
       alert("Expense added successfully!");
       setExpenseAmount("");
-      setCustomCategory("");
-      setShowCustomCategory(false);
+      setCustomExpenseCategory("");
+      setShowCustomExpenseCategory(false);
     }
   }
 
   // Tekstikenttä tulee näkyviin jos valitaan "other"
-  const handleCategoryChange = (e) => {
+  const handleExpenseCategoryChange = (e) => {
     const selectedValue = e.target.value;
-    setSelectedCategoryId(selectedValue);
-
+    setSelectedExpenseCategoryId(selectedValue);
     if (selectedValue === "custom") {
-      setShowCustomCategory(true);
+      setShowCustomExpenseCategory(true);
     } else {
-      setShowCustomCategory(false);
+      setShowCustomExpenseCategory(false);
     }
   };
 
+  // jos käyttäjä haluaa luoda oman kategorian, näytetään tekstikentät kategorian luomiselle
+  const handleIncomeCategoryChange = (e) => {
+    const selectedValue = e.target.value;
+    setSelectedIncomeCategoryId(selectedValue);
+    if (selectedValue === "customIncome") {
+      setShowCustomIncomeCategory(true);
+    } else {
+      setShowCustomIncomeCategory(false);
+    }
+  };
+
+
   return (
+    <div>
+      <div className="arrow_back">
+        <Link to="/home">
+          <FaArrowLeft 
+            color='white'
+            size='2em'
+          />
+        </Link>
+      </div>
     <div className="add-transa-container">
       <h3>Add Income</h3>
 
       <input
-        type="text"
-        placeholder="Enter your income amount"
-        value={incomeAmount}
-        onChange={(e) => setIncomeAmount(e.target.value)}
-        className="input-field-add"
-      />
+          type="text"
+          placeholder="Enter your income amount"
+          value={incomeAmount}
+          onChange={(e) => setIncomeAmount(e.target.value)}
+          className="input-field-add"
+        />
+        <select
+          value={selectedIncomeCategoryId}
+          onChange={handleIncomeCategoryChange}
+          className="input-field-add"
+        >
+          <option value="">Select Category</option>
+          {state.incomeCategories.map((category) => (
+            <option key={category.categoryid} value={category.categoryid}>
+              {category.categoryname}
+            </option>
+          ))}
+          <option value="customIncome">Other</option>
+        </select>
+
+      {showCustomIncomeCategory && ( // Näytetään tekstikenttä, jos "other" on valittu
+          <div className="add-transa-container">
+            <label>Add your category:</label>
+            <input
+              type="text"
+              value={customIncomeCategory}
+              onChange={(e) => setCustomIncomeCategory(e.target.value)}
+              placeholder="Enter your category"
+              className="input-field-add"
+            />
+          </div>
+        )}
 
       <button onClick={addIncome} className="add-transa-button">
         Add Income
       </button>
 
       <div className="add-transa-container">
-        <h3>Add Expense</h3>
+        <h3>Add  Expense</h3>
 
         <input
           type="text"
@@ -145,12 +243,12 @@ export default function AddTransaction() {
           className="input-field-add"
         />
         <select
-          value={selectedCategoryId}
-          onChange={handleCategoryChange}
+          value={selectedExpenseCategoryId}
+          onChange={handleExpenseCategoryChange}
           className="input-field-add"
         >
           <option value="">Select Category</option>
-          {state.categories.map((category) => (
+          {state.expenseCategories.map((category) => (
             <option key={category.categoryid} value={category.categoryid}>
               {category.categoryname} (Limit: {category.categoryLimit} €)
             </option>
@@ -163,8 +261,8 @@ export default function AddTransaction() {
             <label>Add your category:</label>
             <input
               type="text"
-              value={customCategory}
-              onChange={(e) => setCustomCategory(e.target.value)}
+              value={customExpenseCategory}
+              onChange={(e) => setCustomExpenseCategory(e.target.value)}
               placeholder="Enter your category"
               className="input-field-add"
             />
@@ -183,6 +281,7 @@ export default function AddTransaction() {
           Add Expense
         </button>
       </div>
+    </div>
     </div>
   );
 }
