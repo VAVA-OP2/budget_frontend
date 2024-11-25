@@ -28,7 +28,7 @@ You can try the live version of the app here:
 4. [Features](#features)
 5. [Authors](#authors)
 6. [License](#license)
-7. [Contact](#contact)
+
 
 ---
 
