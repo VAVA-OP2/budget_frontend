@@ -133,6 +133,9 @@ export default function FetchUsersInfo() {
         <Link to="/savings" state={{ userInfo }}>
           <button className="savings-button">Go to savings</button>
         </Link>
+        <Link to="/openai-test">
+        <button className="savings-button">AI Helper</button>
+      </Link>
       </div>
 
       
@@ -148,9 +151,7 @@ export default function FetchUsersInfo() {
       </div>
 
       
-      <Link to="/openai-test">
-        <button className="openai-button">Test OpenAI Function</button>
-      </Link>
+      
       
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../OpenAITestStyles.css"; // Uusi tyylitiedosto
 
 const OpenAITest = () => {
   const [prompt, setPrompt] = useState("");
@@ -30,15 +31,20 @@ const OpenAITest = () => {
   };
 
   return (
-    <div>
-      <h1>Test OpenAI Function</h1>
+    <div className="openai-container">
+      <h1 className="openai-header">How can i help you today?</h1>
       <textarea
+        className="openai-textarea"
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
         placeholder="Enter your prompt here..."
       />
-      <button onClick={callOpenAiFunction}>Submit</button>
-      <p>Response: {response}</p>
+      <button className="openai-button" onClick={callOpenAiFunction}>
+        Submit
+      </button>
+      <div className="openai-response-box">
+        <p className="openai-response-text">Response: {response}</p>
+      </div>
     </div>
   );
 };

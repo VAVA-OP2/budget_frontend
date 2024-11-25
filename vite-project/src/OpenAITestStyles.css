@@ -1,0 +1,84 @@
+/* Yleiset tyylit */
+.body-background {
+    background-color: #595758;
+    color: #F5EFED;
+    font-family: "Montserrat", sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Komponentin pääkontti */
+  .openai-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #3E3D3E;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Otsikko */
+  .openai-header {
+    font-size: 36px;
+    font-weight: bold;
+    color: #F5EFED;
+    text-align: center;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+  
+  /* Tekstikenttä */
+  .openai-textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    background-color: #F5EFED;
+    color: #3E3D3E;
+    box-sizing: border-box;
+    resize: none;
+  }
+  
+  .openai-textarea:focus {
+    outline: none;
+    border-color: #FCD9DA;
+    box-shadow: 0 0 5px rgba(252, 217, 218, 0.5);
+  }
+  
+  /* Lähetä-nappi */
+  .openai-button {
+    background-color: #FCD9DA;
+    color: #3E3D3E;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .openai-button:hover {
+    background-color: #FDC7C8;
+  }
+  
+  /* Vastauskenttä */
+  .openai-response-box {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #FDECED;
+    color: #3E3D3E;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+  }
+  
+  .openai-response-text {
+    margin: 0;
+    line-height: 1.6;
+  }
+  
