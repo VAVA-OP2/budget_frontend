@@ -26,9 +26,9 @@ You can try the live version of the app here:
 2. [Installation](#installation)
 3. [Database Setup](#database-setup)
 4. [Features](#features)
-5. [Authors](#authors)
-6. [License](#license)
-
+5. [Issues](#issues)
+6. [Authors](#authors)
+7. [License](#license)
 
 ---
 
@@ -131,6 +131,12 @@ This project was developed by the following contributors:
 
 - **Viivi Salin**  
   [GitHub Profile](https://github.com/viivisalin)
+
+## Issues
+
+You can find the issues of the app here:  
+[**VAVA - Issues page**](https://github.com/VAVA-OP2/budget_frontend/issues)
+
 ## **License**
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
