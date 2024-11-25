@@ -24,13 +24,7 @@ export default function BudgetCard({
   }
 
   return (
-    <Card
-      style={{
-        marginBottom: "20px",
-        padding: "15px",
-        cursor: "pointer",
-      }}
-    >
+    <Card className="total-card" >
       <Typography variant="h6" gutterBottom>
         {title}: {totalAmount} €
       </Typography>
@@ -49,15 +43,7 @@ export default function BudgetCard({
       />
 
       <Collapse in={showDetails}>
-        <Box
-          sx={{
-            marginTop: "10px",
-            padding: "10px",
-            border: "1px solid #ddd",
-            borderRadius: "8px",
-            backgroundColor: "#f9f9f9",
-          }}
-        >
+        <Box className="box">
           <List>
             {filteredItems.map((item) => {
               let dateText = "";

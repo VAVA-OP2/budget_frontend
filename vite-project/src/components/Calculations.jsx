@@ -457,13 +457,7 @@ export default function Calculations(props) {
           </Grid>
 
           <Grid item xs={12}>
-            <Card
-              style={{
-                marginBottom: "20px",
-                padding: "15px",
-                cursor: "pointer",
-              }}
-            >
+            <Card className="balance-card">
               <Typography variant="h6" gutterBottom>
                 Balance: {balance} €
               </Typography>

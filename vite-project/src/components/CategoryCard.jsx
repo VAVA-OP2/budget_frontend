@@ -4,7 +4,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const CategoryCard = ({ title, categories, data, show, toggle, byDate }) => (
   <Card
-    style={{ marginBottom: "20px", padding: "15px", cursor: "pointer" }}
+    className="by_category-card"
     onClick={toggle}
   >
     <Typography variant="h6">
@@ -22,7 +22,7 @@ const CategoryCard = ({ title, categories, data, show, toggle, byDate }) => (
       }}
     />
     {show && (
-      <List>
+      <List className="list-background">
         {categories.map((category) => (
           <ListItem key={category.categoryid}>
             <ListItemText

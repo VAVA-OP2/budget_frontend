@@ -5,7 +5,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 const RemainingMoneyCard = ({ title, show, toggle, renderContent, byDate }) => (
   <Card
     onClick={toggle}
-    style={{ marginBottom: "20px", padding: "15px", cursor: "pointer" }}
+    className="remaining_money-card"
   >
     <Typography variant="h6">
       {title}: {byDate}
@@ -23,7 +23,7 @@ const RemainingMoneyCard = ({ title, show, toggle, renderContent, byDate }) => (
       }}
     />
     {show && (
-      <div>
+      <div className="div_background">
         <Divider style={{ margin: "10px 0" }} />
         {renderContent()}
       </div>
