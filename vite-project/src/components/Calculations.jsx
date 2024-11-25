@@ -6,6 +6,10 @@ import "../styles.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import BudgetCard from "./BudgetCard";
+import CategoryCard from "./CategoryCard";
+import RemainingMoneyCard from "./RemainingCard";
+import { Card, Typography } from "@mui/material";
+import Grid from "@mui/system/Grid";
 
 export default function Calculations(props) {
   // lasketut tulojen ja menojen yhteissummat
@@ -43,10 +47,21 @@ export default function Calculations(props) {
   //kertoo onko card avattu
   const [showIncome, setShowIncome] = useState(false);
   const [showExpense, setShowExpense] = useState(false);
+  const [showIncomeByCategory, setShowIncomeByCategory] = useState(false);
+  const [showExpenseByCategory, setShowExpenseByCategory] = useState(false);
+  const [showRemainingMoney, setShowRemainingMoney] = useState(false);
 
   // kun korttia klikataan, arvo vaihtuu ja näyttää/piilottaa listan
   const toggleIncome = () => setShowIncome(!showIncome);
   const toggleExpense = () => setShowExpense(!showExpense);
+
+  const toggleIncomeByCategory = () =>
+    setShowIncomeByCategory(!showIncomeByCategory);
+
+  const toggleExpenseByCategory = () =>
+    setShowExpenseByCategory(!showExpenseByCategory);
+
+  const toggleRemainingMoney = () => setShowRemainingMoney(!showRemainingMoney);
 
   useEffect(() => {
     const getData = async () => {
@@ -239,80 +254,6 @@ export default function Calculations(props) {
     setExpenseByCategoryWithDate(grouped);
   };
 
-  const renderExpensesByCategory = () => {
-    if (!searchByDate) {
-      if (props.expenseCategories.length > 0) {
-        return (
-          <ul>
-            {props.expenseCategories.map((category) => (
-              <li key={category.categoryid}>
-                {category.categoryname}:{" "}
-                {expenseByCategory[category.categoryid] || 0} €{" "}
-                {/* jos undefined niin arvo 0 */}
-              </li>
-            ))}
-          </ul>
-        );
-      } else {
-        return <p>No expenses by category</p>;
-      }
-    } else {
-      if (props.expenseCategories.length > 0) {
-        return (
-          <ul>
-            {props.expenseCategories.map((category) => (
-              <li key={category.categoryid}>
-                {category.categoryname}:{" "}
-                {expenseByCategoryWithDate[category.categoryid] || 0} €{" "}
-                {/* jos undefined niin arvo 0 */}
-              </li>
-            ))}
-          </ul>
-        );
-      } else {
-        return <p>No expenses by category</p>;
-      }
-    }
-  };
-
-  const renderIncomeDataByCategory = () => {
-    if (!searchByDate) {
-      if (props.incomeCategories.length > 0) {
-        return (
-          <div>
-            <ul>
-              {props.incomeCategories.map((category) => (
-                <li key={category.categoryid}>
-                  {category.categoryname}:{" "}
-                  {incomeByCategory[category.categoryid] || 0} €{" "}
-                  {/* jos undefined niin arvo 0 */}
-                </li>
-              ))}
-            </ul>
-          </div>
-        );
-      } else {
-        return <p>No income by category</p>;
-      }
-    } else {
-      if (props.incomeCategories.length > 0) {
-        return (
-          <ul>
-            {props.incomeCategories.map((category) => (
-              <li key={category.categoryid}>
-                {category.categoryname}:{" "}
-                {incomeByCategoryWithDate[category.categoryid] || 0} €{" "}
-                {/* jos undefined niin arvo 0 */}
-              </li>
-            ))}
-          </ul>
-        );
-      } else {
-        return <p>No income by category</p>;
-      }
-    }
-  };
-
   const renderRemainingMoneyByCategory = () => {
     if (props.expenseCategories.length > 0) {
       return (
@@ -460,24 +401,23 @@ export default function Calculations(props) {
                 // console.log('newDate: ' + newDate.toISOString());
                 // käyttäjä valitsee päivämääräksi 15.10.2024 -> newDate 15.10.2024 klo 23.59.59
 
-                setEndDate(newDate);
-              }}
-              className="dates-picker-input"
-            />
-          </div>
-
-          <div className="dates-buttons-container">
-            <button
-              className="dates-button"
-              onClick={() => {
-                getIncomeByDate();
-                getExpensesByDate();
-                getExpensesByCategoryWithDate();
-                getIncomeByCategoriesByDate();
-              }}
-            >
-              Search
-            </button>
+            setEndDate(newDate);
+          }}
+          className="dates-picker-input"
+        />
+      </div>
+      <div className="dates-buttons-container">
+        <button
+          className="dates-button"
+          onClick={() => {
+            getIncomeByDate();
+            getExpensesByDate();
+            getExpensesByCategoryWithDate();
+            getIncomeByCategoriesByDate();
+          }}
+        >
+          Search
+        </button>
 
             <button
               className="dates-button"
@@ -491,81 +431,159 @@ export default function Calculations(props) {
             </button>
           </div>
 
-          <div style={{ marginTop: "20px" }}>
-            {!searchByDate ? (
-              <div>
-                <BudgetCard
-                  title="Total Income"
-                  totalAmount={totalIncome}
-                  items={incomes}
-                  showDetails={showIncome}
-                  toggleDetails={toggleIncome}
-                  filterByDate={false}
-                />
-                <BudgetCard
-                  title="Total Expense"
-                  totalAmount={totalExpense}
-                  items={expenses}
-                  showDetails={showExpense}
-                  toggleDetails={toggleExpense}
-                  filterByDate={false}
-                />
-              </div>
-            ) : (
-              <div>
-                <BudgetCard
-                  title="Total Income (by date)"
-                  totalAmount={incomeByDate}
-                  items={incomes}
-                  showDetails={showIncome}
-                  toggleDetails={toggleIncome}
-                  filterByDate={true}
-                  startDate={startDate}
-                  endDate={endDate}
-                />
-                <BudgetCard
-                  title="Total Expense (by date)"
-                  totalAmount={expensesByDate}
-                  items={expenses}
-                  showDetails={showExpense}
-                  toggleDetails={toggleExpense}
-                  filterByDate={true}
-                  startDate={startDate}
-                  endDate={endDate}
-                />
-              </div>
-            )}
+      {/*Renderöidään laatikot */}
 
-            <h3>Balance: {balance} €</h3>
-            {!searchByDate ? (
-              <div>
-                <h3>Your income by category</h3>
-                <p>{renderIncomeDataByCategory()}</p>
+      {!searchByDate ? (
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <BudgetCard
+              title="Total Income"
+              totalAmount={totalIncome}
+              items={incomes}
+              showDetails={showIncome}
+              toggleDetails={toggleIncome}
+              filterByDate={false}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <BudgetCard
+              title="Total Expense"
+              totalAmount={totalExpense}
+              items={expenses}
+              showDetails={showExpense}
+              toggleDetails={toggleExpense}
+              filterByDate={false}
+            />
+          </Grid>
 
-                <h3>Your expenses by category:</h3>
-                <p>{renderExpensesByCategory()}</p>
-              </div>
-            ) : (
-              <div>
-                <h3>Your income by category (by date):</h3>
-                <p>{renderIncomeDataByCategory()}</p>
+          <Grid item xs={12}>
+            <Card className="balance-card">
+              <Typography variant="h6" gutterBottom>
+                Balance: {balance} €
+              </Typography>
+            </Card>
+          </Grid>
 
-                <h3>Your expenses by category (by date):</h3>
-                <p>{renderExpensesByCategory()}</p>
-              </div>
-            )}
-            <h3>Your remaining money for each expense category: </h3>
-            {renderRemainingMoneyByCategory()}
-          </div>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <CategoryCard
+                title="Your income by category"
+                categories={props.incomeCategories}
+                data={incomeByCategory}
+                show={showIncomeByCategory}
+                toggle={toggleIncomeByCategory}
+                byDate={false}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <CategoryCard
+                title="Your expenses by category"
+                categories={props.expenseCategories}
+                data={expenseByCategory}
+                show={showExpenseByCategory}
+                toggle={toggleExpenseByCategory}
+                byDate={false}
+              />
+            </Grid>
 
-          {/* income ja expense datan poistonapit */}
-          <div className="warning-button-container">
-            <button className="warning-button" onClick={handleResetIncome}>
-              Delete income data
-            </button>
-            <button className="warning-button" onClick={handleResetExpense}>
-              Delete expense data{" "}
-            </button>
+            <Grid item xs={12}>
+              <RemainingMoneyCard
+                title="Your remaining money for each expense category"
+                categories={props.expenseCategories}
+                data={expenseByCategory}
+                show={showRemainingMoney}
+                toggle={toggleRemainingMoney}
+                renderContent={renderRemainingMoneyByCategory}
+                byDate={false}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+      ) : (
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <BudgetCard
+              title="Total Income (by date)"
+              totalAmount={incomeByDate}
+              items={incomes}
+              showDetails={showIncome}
+              toggleDetails={toggleIncome}
+              filterByDate={true}
+              startDate={startDate}
+              endDate={endDate}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <BudgetCard
+              title="Total Expense (by date)"
+              totalAmount={expensesByDate}
+              items={expenses}
+              showDetails={showExpense}
+              toggleDetails={toggleExpense}
+              filterByDate={true}
+              startDate={startDate}
+              endDate={endDate}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card
+              style={{
+                marginBottom: "20px",
+                padding: "15px",
+                cursor: "pointer",
+              }}
+            >
+              <Typography variant="h6" gutterBottom>
+                Balance: {balance} €
+              </Typography>
+            </Card>
+          </Grid>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <CategoryCard
+                title="Your income by category (by date)"
+                categories={props.incomeCategories}
+                data={props.incomeByCategoryByDate}
+                show={showIncomeByCategory}
+                toggle={toggleIncomeByCategory}
+                byDate={true}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <CategoryCard
+                title="Your expenses by category (by date)"
+                categories={props.expenseCategories}
+                data={props.expenseByCategoryByDate}
+                show={showExpenseByCategory}
+                toggle={toggleExpenseByCategory}
+                byDate={true}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <RemainingMoneyCard
+                title="Your remaining money for each expense category (by date)"
+                categories={props.expenseCategories}
+                data={props.expenseByCategoryByDate}
+                show={showRemainingMoney}
+                toggle={toggleRemainingMoney}
+                renderContent={renderRemainingMoneyByCategory}
+                byDate={true}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+      )}
+      {/* income ja expense datan poistonapit */}
+      <div className="warning-button-container">
+        <button className="warning-button" onClick={handleResetIncome}>
+          Delete income data
+        </button>
+        <button className="warning-button" onClick={handleResetExpense}>
+          Delete expense data{" "}
+        </button>
 
             {/* näytä tämä nappi jos päivämäärähakua on käytetty */}
             {searchByDate ? (

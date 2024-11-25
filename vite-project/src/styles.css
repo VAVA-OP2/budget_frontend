@@ -37,24 +37,6 @@ button:hover {
     background-color: #B4CAE8; 
 }
 
-.statistics-button {
-    background-color: #BDC696; 
-    color: #3E3D3E;            
-    margin-right: 40px;
-    font-size: 16px;
-    padding: 10px 12px;
-    width: 100px;
-    height: 35px;
-    border-radius: 15px; 
-    position: fixed;
-    bottom: 53px;
-    left: 20px;
-}
-
-.statistics-button:hover {
-    background-color: #AAB284; 
-}
-
 .input-field {
     padding: 8px;
     width: 100%;
@@ -210,7 +192,7 @@ dates-button:hover {
     padding: 50px;
     max-width: 600px;
     margin-right: auto;
-    margin-left: 20px;
+    margin-left: 40px;
     text-align: left;
 }
 
@@ -287,4 +269,82 @@ dates-button:hover {
     align-items: center;
     width: 100%;
     margin-top: 20px;
+}
+
+.balance-card {
+    margin-bottom: 20px;
+    padding: 15px;
+    cursor: pointer;
+    background-color: #D9D4ED !important;
+    color: #3E3D3E !important;
+    border-radius: 12px !important;
+    transition: background-color 0.3s ease;
+}
+
+.balance-card:hover {
+    background-color: #CDC5E7 !important;
+}
+
+.total-card {
+    margin-bottom: 20px;
+    padding: 15px;
+    cursor: pointer;
+    background-color: #D9D4ED !important;
+    color: #3E3D3E !important;
+    border-radius: 12px !important;
+    transition: background-color 0.3s ease;
+}
+
+.total-card:hover {
+    background-color: #CDC5E7 !important;
+}
+
+.box {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #F5EFED;
+    border-radius: 8px;
+    background-color: #FDECED;
+}
+
+.by_category-card {
+    margin-bottom: 20px;
+    padding: 15px;
+    cursor: pointer;
+    background-color: #D9D4ED !important;
+    color: #3E3D3E !important;
+    border-radius: 12px !important;
+    transition: background-color 0.3s ease;
+}
+
+.by_category-card:hover {
+    background-color: #CDC5E7 !important;
+}
+
+.list-background {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #FDECED;
+}
+
+.remaining_money-card {
+    margin-bottom: 20px;
+    padding: 15px;
+    cursor: pointer;
+    background-color: #D9D4ED !important;
+    color: #3E3D3E !important;
+    border-radius: 12px !important;
+    transition: background-color 0.3s ease;
+}
+
+.remaining_money-card:hover {
+    background-color: #CDC5E7 !important;
+}
+
+.div_background {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #FDECED;
 }

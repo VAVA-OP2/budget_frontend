@@ -16,6 +16,8 @@ export default function FetchUsersInfo() {
   });
   const [totalAddedSavings, setTotalAddedSavings] = useState(0); // New: total of all added amounts
 
+  let navigate = useNavigate();
+
   //Kaksi peräkkäistä useEffectiä, haetaan ensin userInfo ja sen jälkeen kategoriat.
   useEffect(() => {
     getUser();
@@ -103,9 +105,9 @@ export default function FetchUsersInfo() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     // setUser(null);
-    setTotalExpense(0);
-    setTotalIncome(0);
-    setBalance(0);
+    // setTotalExpense(0);
+    // setTotalIncome(0);
+    // setBalance(0);
 
     // https://reactrouter.com/en/main/hooks/use-navigate
     navigate("/");
