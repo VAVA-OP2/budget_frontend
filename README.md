@@ -18,6 +18,10 @@ This application is perfect for individuals who want to take control of their fi
 You can try the live version of the app here:  
 [**VAVA - Budgeting App on GitHub Pages**](https://vava-op2.github.io/budget_frontend//)
 
+Account for testing the application: 
+ohjelmistoprojekti2@hotmail.com
+Vavaprojekti2
+
 ---
 
 ## **Table of Contents**
